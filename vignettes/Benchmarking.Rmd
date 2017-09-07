@@ -16,7 +16,7 @@ library(mlrng)
 
 A classification task using the famous iris data set is predefined in the package:
 ```{r}
-Tasks$ids
+listTasks()
 iris.task = getTask("iris")
 ```
 Some simple task operations:
@@ -132,7 +132,6 @@ learners = list("classif.dummy", "classif.rpart")
 resamplings = getResampling("cv")
 measures = getMeasure("mmce")
 
-options(warn = 2)
 bmr = benchmark(
   tasks = tasks,
   learners = learners,
