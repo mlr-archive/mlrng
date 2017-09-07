@@ -1,0 +1,22 @@
+context("predict")
+
+test_that("Step by step modeling", {
+  task = getTask("iris")
+  learner = getLearner("classif.dummy", method = "sample")
+  model = train(task, learner)
+  expect_is(model, "WrappedModel")
+  pred = predict(model, task)
+  expect_integer(pred$..id, len = 150, any.missing = FALSE)
+  expect_character(pred$predicted, len = 150, any.missing = FALSE)
+  expect_subset(pred$predicted, levels(iris$Species))
+
+  train = sample(150, 100)
+  test = setdiff(seq_len(150), train)
+  learner = getLearner("classif.rpart", mtry = 2)
+  model = train(task, learner, subset = train)
+  expect_is(model, "WrappedModel")
+  pred = predict(model, task, subset = test)
+  expect_integer(pred$..id, len = length(test), any.missing = FALSE)
+  expect_character(pred$predicted, len = length(test), any.missing = FALSE)
+  expect_subset(pred$predicted, levels(iris$Species))
+})

@@ -1,0 +1,14 @@
+^LICENSE$
+^src/.+\.o$
+^src/.+\.so$
+\.swp$
+^\.ignore$
+^\.editorconfig$
+^\.travis\.yml$
+^man-roxygen$
+^appveyor\.yml$
+^.*\.Rproj$
+^\.Rproj\.user$
+^docs$
+^todo.md$
+^attic$

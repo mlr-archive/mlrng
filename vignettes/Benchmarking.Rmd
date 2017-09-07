@@ -1,0 +1,142 @@
+---
+title: "Benchmarking Example"
+output: rmarkdown::pdf_vignette
+vignette: >
+  %\VignetteIndexEntry{Benchmarking}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r, include=FALSE}
+library(mlrng)
+```
+
+## Create Tasks
+
+### Task `iris`
+
+A classification task using the famous iris data set is predefined in the package:
+```{r}
+Tasks$ids
+iris.task = getTask("iris")
+```
+Some simple task operations:
+```{r}
+iris.task$nrow
+iris.task$ncol
+iris.task$target
+iris.task$features
+iris.task$formula
+```
+The data is stored in an abstract class `DataBackend`.
+It is designed to transparently access in-memory data structures like `data.frame` or `data.table` as well as real DBMS via the `dplyr` package.
+Because most data bases can only be accessed read-only, the operations on these backends are limited.
+You can subset rows and columns though:
+```{r}
+iris.task$backend$drop("Sepal.Width")
+iris.task$backend$subsample(ratio = 0.9)
+iris.task$features
+iris.task$nrow
+```
+
+### Task `BreastCancer`
+
+```{r}
+data("BreastCancer", package = "mlbench")
+str(BreastCancer)
+```
+This task ordered factors which we need to convert to integers first:
+```{r}
+convert = function(x) if (is.ordered(x)) as.integer(x) else x
+BreastCancer = as.data.frame(lapply(BreastCancer, convert))
+```
+```{r}
+bc.task = ClassifTask$new(
+  data = BreastCancer,
+  target = "Class",         # name of target variable
+  cols = setdiff(names(BreastCancer), "Id"),
+  positive = "malignant"   # positive class
+)
+```
+Note that we can subset tasks to retrieve the data and also note that the id column is not passed to learner models:
+```{r}
+head(bc.task[["Class"]])
+bc.task[1:3, c("Mitoses", "Class")]
+bc.task$formula
+```
+
+## Create Learners
+
+All learners are stored in a register called `Learners` and can easily be listed:
+```{r}
+listLearners()
+```
+
+### Dummy classification learner
+
+You can retrieve learners from the register `Learners` with the `getLearner()` function.
+```{r}
+lrn.dummy = getLearner("classif.dummy")
+```
+
+The parameter set is stored in the slot `par.set` and parameters deviating from the default are stored in `par.vals`:
+```{r}
+lrn.dummy$par.set
+lrn.dummy$par.vals
+```
+
+Now, we set the parameter `method` to `"sample"`, change the `id` and add the learner to the register:
+```{r}
+lrn.dummy$setHyperPars(list(method = "sample"))
+lrn.dummy$id = "classif.dummy.sample"
+Learners$register(lrn.dummy)
+listLearners()
+```
+From now on, we can just pass the id `"classif.dummy.sample"` to other functions to use this learner.
+
+### CART
+
+```{r}
+lrn.rpart = getLearner("classif.rpart")
+```
+
+## Measures
+
+```{r}
+listMeasures()
+measure = getMeasure("mmce")
+```
+
+## Resampling
+
+```{r}
+listResamplings()
+r = getResampling("cv")
+r$pars
+r$pars$iters = 3
+```
+
+## Resample
+
+```{r}
+rr = resample(task = iris.task, learner = lrn.dummy, resampling = r, measure = measure)
+rr$performance()
+rr$aggr
+as.data.table(rr)
+```
+
+## Benchmark
+
+```{r}
+tasks = list("iris", "breastcancer")
+learners = list("classif.dummy", "classif.rpart")
+resamplings = getResampling("cv")
+measures = getMeasure("mmce")
+
+options(warn = 2)
+bmr = benchmark(
+  tasks = tasks,
+  learners = learners,
+  resamplings = r,
+  measures = measure)
+bmr
+```

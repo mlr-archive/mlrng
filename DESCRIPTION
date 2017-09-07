@@ -1,0 +1,63 @@
+Package: mlrng
+Type: Package
+Title: Machine Learning in R - Next Generation
+Version: 0.1
+Author: Michel Lang <michellang@gmail.com>
+Maintainer: Michel Lang <michellang@gmail.com>
+Description: Machine Learning in R
+License: GPL-2
+LazyData: yes
+NeedsCompilation: no
+Depends:
+    data.table
+Imports:
+    backports (>= 1.1.1),
+    BBmisc,
+    checkmate,
+    glue,
+    parallelMap,
+    ParamHelpers,
+    R6,
+    stringi
+Suggests:
+    devtools,
+    RSQLite,
+    dbplyr,
+    dplyr,
+    knitr,
+    kernlab,
+    lazyeval,
+    mlbench,
+    rmarkdown,
+    testthat
+RoxygenNote: 6.0.1
+Collate:
+    'ClassifTask.R'
+    'DataBackend.R'
+    'Register.R'
+    'Task.R'
+    'ExampleTasks.R'
+    'Learner.R'
+    'Learner.classif.dummy.R'
+    'Learner.classif.rpart.R'
+    'Learner.regr.dummy.R'
+    'Learner.regr.rpart.R'
+    'Measure.R'
+    'Measure.mmce.R'
+    'Measure.mse.R'
+    'RegrTask.R'
+    'Resampling.R'
+    'Resampling.cv.R'
+    'Resampling.holdout.R'
+    'Resampling.subsampling.R'
+    'WrappedModel.R'
+    'benchmark.R'
+    'downsample.R'
+    'helper.R'
+    'predict.R'
+    'resample.R'
+    'runHook.R'
+    'train.R'
+    'tune.R'
+    'zzz.R'
+VignetteBuilder: knitr

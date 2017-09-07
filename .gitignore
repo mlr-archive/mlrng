@@ -1,0 +1,6 @@
+.DS_Store
+/src/*.so
+/src/*.o
+/inst/doc
+/man/*
+/vignettes/*.pdf
