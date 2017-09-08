@@ -16,11 +16,9 @@
 #' @return [\code{\link{Register}}].
 #' @export
 #' @examples
-#' \dontrun{
 #' Learners$ids
 #' Learners$exists("classif.dummy")
 #' Learners$get("classif.dummy")
-#' }
 Learners = Register$new("Learner")
 
 Learner = R6Class("Learner",
@@ -46,6 +44,7 @@ Learner = R6Class("Learner",
       self$properties = assertCharacter(properties, any.missing = FALSE, unique = TRUE)
       self$train = assertFunction(train, args = c("task", "subset"), ordered = TRUE)
       self$predict = assertFunction(predict, args = c("model", "task", "subset"), ordered = TRUE)
+      environment(self$train) = environment(self$predict) = environment(self$initialize)
     },
 
     setHyperPars = function(par.vals) {

@@ -6,8 +6,8 @@
 #' @importFrom R6 R6Class
 #' @importFrom parallelMap parallelMap parallelExport parallelLibrary
 #' @importFrom BBmisc vlapply vcapply seq_row seq_col
-NULL
-
+#' @keywords internal
+"_PACKAGE"
 
 .onLoad = function(libname, pkgname) { #nocov start
   backports::import(pkgname)

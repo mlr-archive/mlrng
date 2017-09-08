@@ -112,7 +112,7 @@ measure = getMeasure("mmce")
 listResamplings()
 r = getResampling("cv")
 r$pars
-r$pars$iters = 3
+r$iters = 3
 ```
 
 ## Resample

@@ -47,7 +47,7 @@ resample = function(task, learner, resampling, measures) {
   ResampleResult$new(result, measures)
 }
 
-resampleIteration = function(task, learner, resampling, measures, i) {
+resampleIteration = function(task, learner, resampling, measures, i, store.model = TRUE) {
   train = resampling[[i]]
   test = which(!train)
   gmessage("[Resample]: task={task$id} | learner={learner$id} | resampling={resampling$id}: {i}/{length(resampling)}")
@@ -56,7 +56,7 @@ resampleIteration = function(task, learner, resampling, measures, i) {
   predicted = predictWithHooks(model, task, learner, subset = test)
   performance = lapply(measures, function(x) x$fun(truth, predicted$predicted))
   list(
-    model = model,
+    model = if (store.model) model else NULL,
     predicted = predicted$predicted,
     performance = setNames(performance, ids(measures))
   )

@@ -2,11 +2,13 @@ Package: mlrng
 Type: Package
 Title: Machine Learning in R - Next Generation
 Version: 0.1
-Author: Michel Lang <michellang@gmail.com>
-Maintainer: Michel Lang <michellang@gmail.com>
+Authors@R: c(
+        person("Bernd", "Bischl", NULL, "bernd_bischl@gmx.de", role = c("cre",
+        "aut")),
+    person("Michel", "Lang", NULL, "michellang@gmail.com", role = c("aut"))
+    )
 Description: Machine Learning in R
 License: GPL-2
-LazyData: yes
 NeedsCompilation: no
 Depends:
     data.table

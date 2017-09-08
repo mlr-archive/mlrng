@@ -40,7 +40,7 @@ TuneControlGrid = R6Class("TuneControlGrid",
   public = list(
     run = function(task, learner, resampling, measures) {
       design = setDT(ParamHelpers::generateGridDesign(self$par.set, self$budget))
-      jobs = CJ(i.design = seq_row(design), i.outer = seq_len(resampling$pars$iters), i.inner = seq_len(self$resampling$pars$iters))
+      jobs = CJ(i.design = seq_row(design), i.outer = seq_len(resampling$iters), i.inner = seq_len(self$resampling$iters))
 
       res = parallelMap(function(i) {
         row = jobs[i]
@@ -62,7 +62,7 @@ TuneControlGrid = R6Class("TuneControlGrid",
 tune = function(task, learner, resampling, measures, ctrl) {
   task = getTask(task)
   learner = getLearner(learner)
-  assertClass(par.set, "ParamSet")
+  assertClass(ctrl$par.set, "ParamSet")
   resampling = getResampling(resampling)
   measures = getMeasures(measures)
 

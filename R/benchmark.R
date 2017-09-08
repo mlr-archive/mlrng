@@ -5,7 +5,7 @@ BenchmarkResult = R6Class("BenchmarkResult",
     initialize = function(task.ids, learner.ids, resamplings) {
       self$data = rbindlist(Map(
         function(task.id, resampling) {
-          CJ(task = task.id, learner = learner.ids, iter = seq_col(resampling$instance))
+          CJ(task = task.id, learner = learner.ids, iter = seq_along(resampling))
         }, task.id = task.ids, resampling = resamplings))
     },
     store = function(res) {
@@ -35,7 +35,7 @@ benchmark = function(tasks, learners, resamplings, measures) {
     learner = learners[bmr$data$learner],
     resampling = resamplings[bmr$data$task],
     i = bmr$data$iter,
-    more.args = list(measures = measures),
+    more.args = list(measures = measures, store.model = FALSE),
     level = pm.level
   )
   bmr$store(result)

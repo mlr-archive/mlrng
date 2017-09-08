@@ -1,6 +1,18 @@
 #' @include Register.R
 Tasks = Register$new("Task")
 
+#' @title Base Class for Tasks
+#' @format \code{\link{R6Class}} object
+#' @usage Task$new(...)
+#' @template params-task
+#'
+#' @description
+#' A \code{\link[R6]{R6Class}} to construct tasks.
+#' This is the abstract base class, do not use directly!
+#'
+#' @template fields-task
+#' @return [\code{\link{Task}}].
+#' @family Tasks
 #' @export
 Task = R6Class("Task",
   public = list(
@@ -40,6 +52,20 @@ Task = R6Class("Task",
   )
 )
 
+#' @title Base Class for Supervised Tasks
+#'
+#' @usage SupervisedTask$new(...)
+#' @template params-task
+#' @template params-supervisedtask
+#'
+#' @description
+#' A \code{\link[R6]{R6Class}} to construct supervised tasks.
+#' This is the abstract base class, do not use directly!
+#'
+#' @template fields-task
+#' @template fields-supervisedtask
+#' @return [\code{\link{SupervisedTask}}].
+#' @family Tasks
 #' @export
 SupervisedTask = R6Class("SupervisedTask",
   inherit = Task,

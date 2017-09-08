@@ -6,14 +6,17 @@ Resampling = R6Class("Resampling",
     id = NA_character_,
     description = NA_character_,
     instantiate = NULL,
+    iters = NA_integer_,
     pars = list(),
     instance = NULL,
 
-    initialize = function(id, description, instantiate, pars = list()) {
+    initialize = function(id, description, instantiate, iters, pars = list()) {
       self$id = assertString(id)
       self$description = assertString(description)
       self$instantiate = assertFunction(instantiate, args = "x")
+      self$iters = assertCount(iters)
       self$pars = assertList(pars, names = "unique")
+      environment(self$instantiate) = environment(self$initialize)
     },
     reset = function() {
       self$instance = NULL
@@ -23,19 +26,19 @@ Resampling = R6Class("Resampling",
 
 #' @export
 length.Resampling = function(x) {
-  x$pars$iters
+  x$iters
 }
 
-getNestedResampling = function(n, outer, inner) {
-  if (FALSE) {
-    task = getTask("iris")
-    n = task$nrow
-    self = list(
-      pars = list(
-    outer = getResampling("cv"),
-    inner = getResampling("holdout")
-    ))
-  }
+if (FALSE) {
+  task = getTask("iris")
+  outer = getResampling("cv")
+  inner = getResampling("holdout")
+  r = getNestedResampling(outer, inner)
+  r$instantiate(task)
+  r$instance
+}
+
+getNestedResampling = function(outer, inner) {
   assertClass(outer, "Resampling")
   assertClass(inner, "Resampling")
 
@@ -51,7 +54,7 @@ getNestedResampling = function(n, outer, inner) {
       instance = lapply(ni, function(n) self$pars$inner$clone()$instantiate(n))
       self$instance = do.call(cbind, instance)
     },
-    pars = list(iters = 10L, inner = inner, outer = outer)
+    pars = list(iters = length(inner) * length(outer), inner = inner, outer = outer)
   )
 }
 
