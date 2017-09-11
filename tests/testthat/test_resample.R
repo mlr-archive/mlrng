@@ -1,26 +1,5 @@
 context("resample")
 
-expect_resampling = function(r, task) {
-  expect_is(r, "Resampling")
-  expect_identical(length(r), r$iters)
-  expect_null(r$instance)
-
-  r$instantiate(task)
-  n = task$nrow
-
-  expect_list(r$instance, len = 2, names = "unique")
-  expect_set_equal(names(r$instance), c("train", "test"))
-  expect_identical(length(r$instance$train), r$iters)
-  expect_identical(length(r$instance$test), r$iters)
-  expect_equal(lengths(r$instance$train), rep(n, r$iters))
-  expect_equal(lengths(r$instance$test), rep(n, r$iters))
-  for (i in seq_len(r$iters)) {
-    expect_integer(r$train(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
-    expect_integer(r$test(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
-  }
-  expect_true(all(vlapply(Map(xor, r$instance$train, r$instance$test), all)))
-}
-
 test_that("Basic resampling", {
   learner = getLearner("classif.rpart", mtry = 2)
   learner = downsampleWrapper(learner, ratio = 0.1)
