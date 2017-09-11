@@ -7,5 +7,5 @@ test_that("benchmark", {
   measures = "mmce"
 
   bmr = benchmark(tasks, learners, resamplings, measures)
-  bmr$data
+  expect_data_table(bmr$data, nrow = 40)
 })

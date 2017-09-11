@@ -47,7 +47,6 @@ OptPath = R6Class("NewOptPath",
 )
 
 if (FALSE) {
-
   par.set = ParamSet$new(
     Param$new("minsplit", "integer", lower = 0, upper = Inf, default = 20L),
     Param$new("cp", "numeric", lower = 0L, upper = 1)
@@ -61,4 +60,14 @@ if (FALSE) {
     for (i in 1:1e5) op$add(list(minsplit = 10, cp = 0.2), y = 13)
   })
   op$data
+
+  library(ParamHelpers)
+  ps = makeParamSet(
+    makeIntegerParam("minsplit", lower = 0, upper = Inf, default = 20L),
+    makeNumericParam("cp", lower = 0, upper = 1)
+  )
+  op = makeOptPathDF(ps, y.names ="y", minimize = TRUE)
+  system.time({
+    for (i in 1:1e5) addOptPathEl(op = op, x = list(minsplit = 10, cp = 0.2), y = 13)
+  })
 }

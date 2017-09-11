@@ -14,6 +14,7 @@ Depends:
     data.table
 Imports:
     backports (>= 1.1.1),
+    bit,
     BBmisc,
     checkmate,
     glue,

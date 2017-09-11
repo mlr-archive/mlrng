@@ -30,9 +30,10 @@ test_that("Tasks are cloned", {
 
 
   data = data.table(x = 1:30, y = factor(sample(letters[1:2], 30, replace = TRUE)))
-  task = ClassifTask$new(data, target = "y", id = "example")
+  task = ClassifTask$new(data, target = "y", id = "testthat-example")
   Tasks$register(task)
-  rtask = Tasks$get("example")
+  on.exit(Tasks$remove("testthat-example"))
+  rtask = Tasks$get("testthat-example")
   expect_true(!identical(address(task), address(rtask)))
   expect_true(!identical(address(task$backend), address(rtask$backend)))
 

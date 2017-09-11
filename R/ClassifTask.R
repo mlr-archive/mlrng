@@ -39,6 +39,7 @@ ClassifTask = R6Class("ClassifTask",
   ),
 
   active = list(
-    levels = function() levels(self$backend[[self$target]])
+    levels = function() levels(self$backend[[self$target]]),
+    nlevels = function() nlevels(self$backend[[self$target]])
   )
 )

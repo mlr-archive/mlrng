@@ -2,10 +2,11 @@
 #' @import data.table
 #' @import stringi
 #' @import ParamHelpers
+#' @importFrom bit as.bit as.which
+#' @importFrom BBmisc vlapply viapply vcapply seq_row seq_col
+#' @importFrom parallelMap parallelMap parallelExport parallelLibrary
 #' @importFrom glue glue
 #' @importFrom R6 R6Class
-#' @importFrom parallelMap parallelMap parallelExport parallelLibrary
-#' @importFrom BBmisc vlapply vcapply seq_row seq_col
 #' @keywords internal
 "_PACKAGE"
 

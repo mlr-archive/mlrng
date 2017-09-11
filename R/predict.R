@@ -1,4 +1,6 @@
 predictWithHooks = function(model, task, learner, subset) {
+  assertInteger(subset, any.missing = FALSE, null.ok = TRUE) # FIXME: IFDEBUG
+
   ee = new.env(parent = emptyenv())
   ee$model = model
   ee$task = task

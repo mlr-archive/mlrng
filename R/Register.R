@@ -3,12 +3,10 @@ Register = R6Class("Register",
   public = list(
     storage = NULL,
     contains = NA_character_,
-    source = NA_character_,
 
-    initialize = function(contains, source = "mlrng") {
+    initialize = function(contains) {
       self$storage = new.env(parent = emptyenv())
       self$contains = contains
-      self$source = source
     },
 
     register = function(obj, id = NULL) {
@@ -38,6 +36,11 @@ Register = R6Class("Register",
       ids %chin% ls(self$storage, all.names = TRUE, sorted = FALSE)
     },
 
+    remove = function(ids) {
+      assertCharacter(ids, any.missing = FALSE)
+      rm(list = ids, envir = self$storage)
+    },
+
     print = function(...) {
       gcat("
         Register of {length(self$ids)} objects of class `{self$contains}`:
@@ -54,6 +57,18 @@ Register = R6Class("Register",
     }
   )
 )
+
+#' @export
+as.data.table.Register = function(x, ...) {
+  tab = rbindlist(eapply(x$storage, function(e) {
+    x = if (inherits(e, "LazyElement")) e$get() else e$clone()
+    list(
+      id = e$id,
+      obj = list(x)
+    )
+  }, USE.NAMES = FALSE))
+  setkeyv(tab, "id")[]
+}
 
 LazyElement = R6Class("LazyElement",
   cloneable = FALSE,

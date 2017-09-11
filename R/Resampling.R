@@ -18,8 +18,16 @@ Resampling = R6Class("Resampling",
       self$pars = assertList(pars, names = "unique")
       environment(self$instantiate) = environment(self$initialize)
     },
-    reset = function() {
-      self$instance = NULL
+
+    reset = function() self$instance = NULL,
+    train = function(i) as.which(self$instance$train[[i]]),
+    test = function(i) as.which(self$instance$test[[i]])
+  ),
+  private = list(
+    setInstance = function(train, test = NULL) {
+      if (is.null(test))
+        test = lapply(train, function(x) !x)
+      self$instance = list(train = train, test = test)
     }
   )
 )
@@ -54,7 +62,8 @@ getNestedResampling = function(outer, inner) {
       instance = lapply(ni, function(n) self$pars$inner$clone()$instantiate(n))
       self$instance = do.call(cbind, instance)
     },
-    pars = list(iters = length(inner) * length(outer), inner = inner, outer = outer)
+    iters = length(inner) * length(outer),
+    pars = list(inner = inner, outer = outer)
   )
 }
 
@@ -98,5 +107,5 @@ listResamplings = function() {
   if (is.null(x$instance))
     stop("Resampling has not been instantiated yet")
   assertInt(i, lower = 1L, upper = ncol(x$instance))
-  x$instance[, i]
+  x$train(i)
 }
