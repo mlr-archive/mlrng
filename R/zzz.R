@@ -2,7 +2,7 @@
 #' @import data.table
 #' @import stringi
 #' @import ParamHelpers
-#' @importFrom bit as.bit as.which
+#' @importFrom bit as.bit as.which as.bitwhich
 #' @importFrom BBmisc vlapply viapply vcapply seq_row seq_col
 #' @importFrom parallelMap parallelMap parallelExport parallelLibrary
 #' @importFrom glue glue
