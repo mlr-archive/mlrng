@@ -113,11 +113,16 @@ listTasks = function() {
 `[.Task` = function(x, i, j, ...) {
   i = if (missing(i)) NULL else x$backend$ids(i)
   if (missing(j)) j = NULL
-  x$backend$get(ids = i, j = j)
+  x$backend$get(ids = i, cols = j)
 }
 
 #' @export
 `[[.Task` = function(x, i, ...) {
   assertString(i)
-  x$backend$get(ids = NULL, j = i)[[1L]]
+  x$backend$get(ids = NULL, cols = i)[[1L]]
+}
+
+#' @export
+as.data.table.Task = function(x, keep.rownames = FALSE, ...) {
+  x$backend$get()
 }

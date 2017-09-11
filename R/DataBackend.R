@@ -55,16 +55,17 @@ DataBackend = R6Class("DataBackend",
       }
     },
 
-    translate_cols = function(j) {
-      if (is.null(j)) {
+    translate_cols = function(cols) {
+      if (is.null(cols)) {
         self$cols
       } else {
-        assertCharacter(j, any.missing = FALSE)
-        assertSubset(j, self$cols)
+        assertCharacter(cols, any.missing = FALSE)
+        assertSubset(cols, self$cols)
       }
     }
   )
 )
+
 
 DataTableBackend = R6Class("DataTableBackend",
   inherit = DataBackend,
@@ -98,10 +99,10 @@ DataTableBackend = R6Class("DataTableBackend",
       setnames(self$rows, "..id", self$id.col)
     },
 
-    get = function(ids = NULL, j = NULL) {
-      i = private$translate_ids(ids)
-      j = private$translate_cols(j)
-      self$data[.(i), j, with = FALSE, on = self$id.col]
+    get = function(ids = NULL, cols = NULL) {
+      ids = private$translate_ids(ids)
+      cols = private$translate_cols(cols)
+      self$data[.(ids), cols, with = FALSE, on = self$id.col]
     }
   ),
 
@@ -144,13 +145,13 @@ DplyrBackend = R6Class("DplyrBackend",
       self$data = data
     },
 
-    get = function(ids = NULL, j = NULL) {
+    get = function(ids = NULL, cols = NULL) {
       ids = private$translate_ids(ids)
-      j = private$translate_cols(j)
+      cols = private$translate_cols(cols)
 
       f = lazyeval::interp("id %in% ids", id = as.name(self$id.col), ids = ids[[self$id.col]])
       tab = dplyr::filter_(self$data, f)
-      tab = dplyr::select(tab, dplyr::one_of(j))
+      tab = dplyr::select(tab, dplyr::one_of(cols))
       tab = dplyr::collect(tab)
       tab = dplyr::mutate_if(tab, is.character, as.factor)
       setDT(tab)[]
@@ -174,11 +175,12 @@ DplyrBackend = R6Class("DplyrBackend",
 `[.DataBackend` = function(x, i, j, ...) {
   if (missing(i)) i = NULL
   if (missing(j)) j = NULL
-  x$get(ids = i, j = j)
+  x$get(ids = i, cols = j)
 }
 
 #' @export
 `[[.DataBackend` = function(x, i, ...) {
   assertString(i)
-  x$get(j = i)[[1L]]
+  x$get(cols = i)[[1L]]
 }
+

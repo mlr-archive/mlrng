@@ -59,7 +59,7 @@ Register = R6Class("Register",
 )
 
 #' @export
-as.data.table.Register = function(x, ...) {
+as.data.table.Register = function(x, keep.rownames = FALSE, ...) {
   tab = rbindlist(eapply(x$storage, function(e) {
     x = if (inherits(e, "LazyElement")) e$get() else e$clone()
     list(

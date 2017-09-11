@@ -10,7 +10,7 @@ test_that("Basic data.table backend ops", {
     expect_identical(b$id.col, "..id")
     expect_data_table(b$get(), nrow = 150, ncol = 5, any.missing = FALSE)
     expect_data_table(b$get(data.table(..id = 1:10)), nrow = 10, ncol = 5)
-    expect_data_table(b$get(j = "Sepal.Length"), nrow = 150, ncol = 1)
+    expect_data_table(b$get(cols = "Sepal.Length"), nrow = 150, ncol = 1)
     b$drop("Sepal.Length")
     b$slice(1:49)
     expect_data_table(b$get(), nrow = 49, ncol = 4)
@@ -50,7 +50,7 @@ test_that("getting ids", {
   expect_identical(task$backend$ids(1:20), 1:20)
 
   task = asDplyrTask(task)
-  task$backend$get(j = "Species")
+  task$backend$get(cols = "Species")
 })
 
 test_that("id columns work", {
