@@ -1,5 +1,6 @@
-#' @title Create a Learner
 #' @include Register.R
+
+#' @title Registered Learners
 #' @docType class
 #' @format \code{\link{R6Class}} object
 #'
@@ -21,6 +22,16 @@
 #' Learners$get("classif.dummy")
 Learners = Register$new("Learner")
 
+#' @title Class for Learners
+#' @format \code{\link{R6Class}} object
+#' @usage Learner$new(...)
+#'
+#' @description
+#' A \code{\link[R6]{R6Class}} to construct learners.
+#'
+#' @return [\code{\link{Learner}}].
+#' @family Learner
+#' @export
 Learner = R6Class("Learner",
   public = list(
     name = NA_character_,
@@ -62,6 +73,8 @@ Learner = R6Class("Learner",
   )
 )
 
+#' @export
+#' @rdname Learners
 getLearner = function(x, ...) {
   x = Learners$get(x)
   if (...length() == 0L)
@@ -69,6 +82,8 @@ getLearner = function(x, ...) {
   x
 }
 
+#' @export
+#' @rdname Learners
 getLearners = function(x, ...) {
   if (!is.list(x))
     x = list(x)
@@ -77,6 +92,7 @@ getLearners = function(x, ...) {
 }
 
 #' @export
+#' @rdname Learners
 listLearners = function() {
   tab = rbindlist(eapply(Learners$storage, function(lrn) {
     list(

@@ -19,6 +19,8 @@ BenchmarkResult = R6Class("BenchmarkResult",
   )
 )
 
+
+#' @export
 benchmark = function(tasks, learners, resamplings, measures) {
   tasks = getTasks(tasks)
   learners = getLearners(learners)

@@ -1,4 +1,21 @@
 #' @include Register.R
+
+#' @title Registered Tasks
+#' @docType class
+#' @format \code{\link{R6Class}} object
+#'
+#' @description
+#' A \code{\link[R6]{R6Class}} to manage tasks
+#'
+#' @field ids Returns the ids of registered tasks.
+#' @field storage Environment where all \code{\link{Task}} objects are stored.
+#' @section Methods:
+#' \describe{
+#'  \item{\code{exists(ids)}}{Returns \code{TRUE} if a \code{\link{Task}} with id \code{ids} is registered.}
+#'  \item{\code{get(id)}}{Returns \code{\link{Task} with corresponding \code{id}}.}
+#' }
+#' @return [\code{\link{Register}}].
+#' @export
 Tasks = Register$new("Task")
 
 #' @title Base Class for Tasks
@@ -84,10 +101,14 @@ SupervisedTask = R6Class("SupervisedTask",
   )
 )
 
+#' @export
+#' @rdname Tasks
 getTask = function(x) {
   Tasks$get(x)
 }
 
+#' @export
+#' @rdname Tasks
 getTasks = function(x) {
   if (!is.list(x))
     x = list(x)
@@ -96,6 +117,7 @@ getTasks = function(x) {
 }
 
 #' @export
+#' @rdname Tasks
 listTasks = function() {
   tab = rbindlist(lapply(Tasks$ids, function(id) {
     task = getTask(id)

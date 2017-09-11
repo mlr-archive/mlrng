@@ -1,6 +1,9 @@
 #' @include Register.R
+
+#' @export
 Resamplings = Register$new("Resampling")
 
+#' @export
 Resampling = R6Class("Resampling",
   public = list(
     id = NA_character_,
@@ -71,6 +74,7 @@ getNestedResampling = function(outer, inner) {
   )
 }
 
+#' @export
 getResampling = function(x, task = NULL) {
   rdesc = Resamplings$get(x)
   if (!is.null(task)) {
@@ -85,6 +89,7 @@ getResampling = function(x, task = NULL) {
   return(rdesc)
 }
 
+#' @export
 getResamplings = function(x, tasks = NULL) {
   if (is.null(tasks))
     tasks = list(NULL)

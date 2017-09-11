@@ -1,6 +1,9 @@
 #' @include Register.R
+
+#' @export
 Measures = Register$new("Measure")
 
+#' @export
 Measure = R6Class("Measure",
   public = list(
     id = NA_character_,
@@ -14,14 +17,12 @@ Measure = R6Class("Measure",
   )
 )
 
-assertMeasure = function(x) {
-  assertClass(x, "Measure")
-}
-
+#' @export
 getMeasure = function(x) {
   Measures$get(x)
 }
 
+#' @export
 getMeasures = function(x) {
   if (!is.list(x))
     x = list(x)

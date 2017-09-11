@@ -1,6 +1,9 @@
 ---
 title: "Benchmarking Example"
-output: rmarkdown::pdf_vignette
+output:
+  pdf_document
+urlcolor: blue
+linkcolor: blue
 vignette: >
   %\VignetteIndexEntry{Benchmarking}
   %\VignetteEngine{knitr::rmarkdown}
