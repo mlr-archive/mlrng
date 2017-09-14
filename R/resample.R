@@ -55,7 +55,7 @@ resampleIteration = function(task, learner, resampling, measures, i, store.model
   model = trainWithHooks(task = task, learner = learner, subset = train)
   truth = task[[task$target]][test]
   predicted = predictWithHooks(model, task, learner, subset = test)
-  performance = lapply(measures, function(x) x$fun(truth, predicted$predicted))
+  performance = lapply(measures, function(x) x$fun(truth, predicted$response))
   list(
     model = if (store.model) model else NULL,
     predicted = predicted$predicted,

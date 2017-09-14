@@ -12,10 +12,7 @@ predictWithHooks = function(model, task, learner, subset) {
 
   subset = subset %??% seq_len(task$nrow)
   predicted = do.call(learner$predict, c(list(model = model, task = task, subset = subset), learner$par.vals))
-  data.table(
-    ..id = task$backend$ids(subset)[[1L]],
-    predicted = predicted
-  )
+  Prediction$new(task = task, subset = subset, response = predicted)
 }
 
 #' @export
