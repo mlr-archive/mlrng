@@ -107,12 +107,13 @@ getResampling = function(x, task = NULL) {
 
 #' @export
 getResamplings = function(x, tasks = NULL) {
-  if (is.null(tasks))
-    tasks = list(NULL)
-  if (!is.list(x))
-    x = list(x)
-  res = Map(getResampling, x = x, task = tasks)
-  setNames(res, ids(res))
+  x = Resamplings$mget(x)
+  if (!is.null(tasks)) {
+    x = Map(function(x, task) { x$clone()$instantiate(task); x}, x = x, task = tasks)
+    if (length(x) != length(tasks))
+      x = setNames(x, ids(x))
+  }
+  x
 }
 
 #' @export

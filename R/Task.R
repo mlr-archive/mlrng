@@ -108,10 +108,7 @@ getTask = function(x) {
 #' @export
 #' @rdname Tasks
 getTasks = function(x) {
-  if (!is.list(x))
-    x = as.list(x)
-  res = lapply(x, getTask)
-  setNames(res, ids(res))
+  Tasks$mget(x)
 }
 
 #' @export

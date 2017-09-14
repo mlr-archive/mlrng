@@ -31,6 +31,17 @@ Register = R6Class("Register",
       if (inherits(obj, "LazyElement")) obj$get() else obj$clone(deep = TRUE)
     },
 
+    mget = function(ids) {
+      if (is.character(ids)) {
+        ids = lapply(ids, self$get)
+      } else if (inherits(ids, self$contains)) {
+        ids = list(ids)
+      } else {
+        ids = lapply(ids, self$get)
+      }
+      setNames(ids, ids(ids))
+    },
+
     exists = function(ids) {
       assertCharacter(ids, any.missing = FALSE)
       ids %chin% ls(self$storage, all.names = TRUE, sorted = FALSE)
@@ -47,7 +58,6 @@ Register = R6Class("Register",
 
         {format(self)}
       ")
-
     }
   ),
 

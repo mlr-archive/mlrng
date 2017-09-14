@@ -84,10 +84,7 @@ getLearner = function(x, ...) {
 #' @export
 #' @rdname Learners
 getLearners = function(x, ...) {
-  if (!is.list(x))
-    x = as.list(x)
-  res = lapply(x, Learners$get, ...)
-  setNames(res, ids(res))
+  Learners$mget(x)
 }
 
 #' @export
