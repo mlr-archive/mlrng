@@ -8,4 +8,5 @@ test_that("benchmark", {
 
   bmr = benchmark(tasks, learners, resamplings, measures)
   expect_data_table(bmr$data, nrow = 40)
+  expect_data_table(as.data.table(bmr), nrow = 40)
 })
