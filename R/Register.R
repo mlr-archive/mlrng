@@ -21,7 +21,8 @@ Register = R6Class("Register",
       if (inherits(id, self$contains))
         return(id)
 
-      obj = get0(as.character(id), envir = self$storage, inherits = FALSE)
+      assertString(id)
+      obj = get0(id, envir = self$storage, inherits = FALSE)
       if (is.null(obj)) {
         if (must.work)
           gstop("{self$contains} with id '{id}' not found")

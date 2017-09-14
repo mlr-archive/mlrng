@@ -43,3 +43,8 @@ benchmark = function(tasks, learners, resamplings, measures) {
   bmr$store(result)
   bmr
 }
+
+#' @export
+as.data.table.BenchmarkResult = function(x, keep.rownames = FALSE, ...) {
+  x$data
+}
