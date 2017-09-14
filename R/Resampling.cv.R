@@ -10,7 +10,7 @@ Resamplings$register(
       assertCount(x)
       seq_len0 = function(n) seq(from = 0L, to = n - 1L)
       m = outer(X = sample(seq_len0(x) %% self$iters), Y = seq_len0(self$iters), "!=")
-      private$setInstance(train = lapply(seq_col(m), function(i) as.bit(m[, i])))
+      private$setInstance(train = lapply(seq_col(m), function(i) m[, i]))
     }
   )
 )

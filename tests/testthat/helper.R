@@ -59,14 +59,7 @@ expect_resampling = function(r, task) {
   r$instantiate(task)
   n = task$nrow
 
-  expect_list(r$instance, len = 2, names = "unique")
-  expect_set_equal(names(r$instance), c("train", "test"))
-  expect_true(all(BBmisc::vlapply(r$instance$train, bit::is.bit)))
-  expect_true(all(BBmisc::vlapply(r$instance$test, bit::is.bit)))
-  expect_identical(length(r$instance$train), r$iters)
-  expect_identical(length(r$instance$test), r$iters)
-  expect_equal(lengths(r$instance$train), rep(n, r$iters))
-  expect_equal(lengths(r$instance$test), rep(n, r$iters))
+  expect_list(r$instance, types = "Split", len = r$iters, names = "unnamed")
   for (i in seq_len(r$iters)) {
     expect_integer(r$train(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
     expect_integer(r$test(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
