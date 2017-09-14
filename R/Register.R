@@ -51,14 +51,6 @@ Register = R6Class("Register",
     remove = function(ids) {
       assertCharacter(ids, any.missing = FALSE)
       rm(list = ids, envir = self$storage)
-    },
-
-    print = function(...) {
-      gcat("
-        Register of {length(self$ids)} objects of class `{self$contains}`:
-
-        {format(self)}
-      ")
     }
   ),
 
@@ -68,6 +60,16 @@ Register = R6Class("Register",
     }
   )
 )
+
+#' @export
+summary.Register = function(object, ...) {
+  ids = object$ids
+  gmessage("
+    Register of {length(ids)} {object$contains}
+    Ids: {collapse(single_quote(ids), sep = ', ')}
+  ")
+}
+
 
 #' @export
 as.data.table.Register = function(x, keep.rownames = FALSE, ...) {

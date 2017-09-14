@@ -59,7 +59,6 @@ Collate:
     'helper.R'
     'predict.R'
     'resample.R'
-    'runHook.R'
     'train.R'
     'tune.R'
     'zzz.R'
