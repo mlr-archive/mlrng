@@ -23,15 +23,31 @@ Resampling = R6Class("Resampling",
     },
 
     reset = function() self$instance = NULL,
-    train = function(i) as.which(self$instance$train[[i]]),
-    test = function(i) as.which(self$instance$test[[i]])
+    train = function(i) self$instance[[i]]$train,
+    test = function(i) self$instance[[i]]$test
   ),
+
   private = list(
     setInstance = function(train, test = NULL) {
-      if (is.null(test))
-        test = lapply(train, function(x) !x)
-      self$instance = list(train = train, test = test)
+      self$instance = Map(Split$new, train = train, test = test %??% list(NULL))
     }
+  )
+)
+
+Split = R6Class("Split",
+  private = list(
+    train.bit = NULL,
+    test.bit = NULL
+  ),
+  public = list(
+    initialize = function(train, test = NULL) {
+      private$train.bit = as.bit(train)
+      private$test.bit = as.bit(test %??% !private$train.bit)
+    }
+  ),
+  active = list(
+    train = function() as.which(private$train.bit),
+    test = function() as.which(self$test.bit)
   )
 )
 

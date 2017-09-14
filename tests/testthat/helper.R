@@ -59,8 +59,8 @@ expect_resampling = function(r, task) {
   r$instantiate(task)
   n = task$nrow
 
-  expect_list(r$instance, len = 2, names = "unique")
-  expect_set_equal(names(r$instance), c("train", "test"))
+  expect_data_table(r$instance, ncol = 3, col.names = "unique")
+  expect_set_equal(names(r$instance), c("iter", "train", "test"))
   expect_true(all(BBmisc::vlapply(r$instance$train, bit::is.bit)))
   expect_true(all(BBmisc::vlapply(r$instance$test, bit::is.bit)))
   expect_identical(length(r$instance$train), r$iters)
