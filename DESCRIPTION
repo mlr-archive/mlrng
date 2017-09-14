@@ -35,7 +35,7 @@ Suggests:
     RSQLite,
     testthat
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'ClassifTask.R'
     'DataBackend.R'
     'Register.R'
@@ -56,7 +56,6 @@ Collate:
     'Resampling.subsampling.R'
     'WrappedModel.R'
     'benchmark.R'
-    'downsample.R'
     'helper.R'
     'predict.R'
     'resample.R'

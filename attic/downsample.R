@@ -3,7 +3,8 @@ downsample = function(task, ratio) {
   assertNumber(ratio, lower = 0, upper = 1)
 
   n = task$nrow
-  task$data[..status == "active"][sample(n, n * (1 - ratio)), ..status := "inactive"]
+  status = NULL
+  task$data[status == "active"][sample(n, n * (1 - ratio)), status := "inactive"]
 }
 
 downsampleWrapper = function(lrn, ratio = 0.1) {

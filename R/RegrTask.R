@@ -1,7 +1,6 @@
 #' @title Regression Tasks
 #' @format \code{\link{R6Class}} object
 #'
-#' @usage RegrTask$new(...)
 #' @template params-task
 #' @template params-supervisedtask
 #'

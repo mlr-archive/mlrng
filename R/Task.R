@@ -20,7 +20,6 @@ Tasks = Register$new("Task")
 
 #' @title Base Class for Tasks
 #' @format \code{\link{R6Class}} object
-#' @usage Task$new(...)
 #' @template params-task
 #'
 #' @description
@@ -71,7 +70,6 @@ Task = R6Class("Task",
 
 #' @title Base Class for Supervised Tasks
 #'
-#' @usage SupervisedTask$new(...)
 #' @template params-task
 #' @template params-supervisedtask
 #'
@@ -111,7 +109,7 @@ getTask = function(x) {
 #' @rdname Tasks
 getTasks = function(x) {
   if (!is.list(x))
-    x = list(x)
+    x = as.list(x)
   res = lapply(x, getTask)
   setNames(res, ids(res))
 }

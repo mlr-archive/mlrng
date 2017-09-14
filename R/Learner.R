@@ -24,7 +24,6 @@ Learners = Register$new("Learner")
 
 #' @title Class for Learners
 #' @format \code{\link{R6Class}} object
-#' @usage Learner$new(...)
 #'
 #' @description
 #' A \code{\link[R6]{R6Class}} to construct learners.
@@ -86,7 +85,7 @@ getLearner = function(x, ...) {
 #' @rdname Learners
 getLearners = function(x, ...) {
   if (!is.list(x))
-    x = list(x)
+    x = as.list(x)
   res = lapply(x, Learners$get, ...)
   setNames(res, ids(res))
 }

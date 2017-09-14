@@ -1,7 +1,6 @@
 #' @title Classification Tasks
 #' @format \code{\link{R6Class}} object
 #'
-#' @usage ClassifTask$new(...)
 #' @template params-task
 #' @template params-supervisedtask
 #'

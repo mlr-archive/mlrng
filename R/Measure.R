@@ -25,7 +25,7 @@ getMeasure = function(x) {
 #' @export
 getMeasures = function(x) {
   if (!is.list(x))
-    x = list(x)
+    x = as.list(x)
   res = lapply(x, Measures$get)
   setNames(res, ids(res))
 }
