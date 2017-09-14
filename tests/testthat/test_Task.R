@@ -23,7 +23,13 @@ test_that("Example Tasks", {
   }
 })
 
-test_that("Tasks rows are accessed integers", {
+test_that("Task data is copied", {
+  task = getTask("iris")
+  expect_false(identical(address(task$backend$data), address(task[])))
+  expect_false(identical(address(task$backend$data), address(task[1:150, ])))
+})
+
+test_that("Tasks rows are accessed with integers, backend with ids", {
   id = function(x) data.table(..id = as.integer(x))
   task = getTask("iris")
   task$backend$slice(20:25)

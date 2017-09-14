@@ -46,5 +46,5 @@ benchmark = function(tasks, learners, resamplings, measures) {
 
 #' @export
 as.data.table.BenchmarkResult = function(x, keep.rownames = FALSE, ...) {
-  x$data
+  copy(x$data)
 }
