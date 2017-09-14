@@ -25,8 +25,8 @@ expect_supervisedtask = function(task) {
 expect_classiftask = function(task) {
   expect_supervisedtask(task)
   expect_factor(task[[task$target]], any.missing = FALSE)
-  cl = task$levels
-  if (nlevels(cl) > 2L)
+  expect_int(task$nlevels, lower = 2L)
+  if (task$nlevels > 2L)
     expect_identical(task$positive, NA_character_)
   else
     expect_string(task$positive, na.ok = TRUE)
