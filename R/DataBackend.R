@@ -84,6 +84,7 @@ DataTableBackend = R6Class("DataTableBackend",
         assertChoice(id.col, names(self$data))
         if (anyDuplicated(self$data[[id.col]]))
           stop("Duplicated ids in ID column")
+        cols = setdiff(cols, id.col)
       }
 
       assertDataTable(self$data[1L, cols, with = FALSE], types = c("numeric", "factor"))
