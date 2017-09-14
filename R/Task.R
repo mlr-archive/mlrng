@@ -90,12 +90,18 @@ SupervisedTask = R6Class("SupervisedTask",
       super$initialize(data, cols = cols, id.col = id.col, id = id)
       self$target = assertChoice(target, self$backend$cols)
     }
-  ),
+
+
+    ),
   active = list(
+    # [formula]. target ~ x1 + ... + xp
     formula = function() {
       reformulate(setdiff(self$backend$cols, self$target), response = self$target)
     },
-    features = function() setdiff(self$backend$cols, self$target)
+    # [charvec]. featurenames without targetnames
+    features = function() setdiff(self$backend$cols, self$target),
+    # [vec]. targetvalues
+    targets = function() self[[self$target]]
   )
 )
 
