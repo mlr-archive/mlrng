@@ -7,7 +7,7 @@ Authors@R: c(
         "aut")),
     person("Michel", "Lang", NULL, "michellang@gmail.com", role = c("aut"))
     )
-Description: Machine Learning in R
+Description: Machine Learning in R. Next Gen.
 License: GPL-2
 NeedsCompilation: no
 Depends:
