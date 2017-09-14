@@ -1,6 +1,8 @@
 #' @include Measure.R
 Measures$register(Measure$new(
   id = "mse",
-  requires = "task.regr",
+  name = "Mean squared error",
+  tasktypes = c("regr"),
+  requires = c("pred", "pred.truth", "pred.response"),
   fun = function(truth, predicted) mean((truth - predicted)^2)
 ))
