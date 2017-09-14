@@ -46,7 +46,7 @@ TuneControlGrid = R6Class("TuneControlGrid",
         row = jobs[i]
         pars = as.list(design[row$i.design])
         learner = learner$clone()
-        learner$setHyperPars(pars)
+        learner$par.vals = pars
         subset = resampling[[row$i.outer]]
         subtask = task$clone(deep = TRUE)
         subtask$backend$slice(subset)

@@ -110,8 +110,7 @@ getResamplings = function(x, tasks = NULL) {
   x = Resamplings$mget(x)
   if (!is.null(tasks)) {
     x = Map(function(x, task) { x$clone()$instantiate(task); x}, x = x, task = tasks)
-    if (length(x) != length(tasks))
-      x = setNames(x, ids(x))
+    x = setNames(x, ids(x))
   }
   x
 }

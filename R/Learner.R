@@ -38,7 +38,6 @@ Learner = R6Class("Learner",
     type = NA_character_,
     packages = NA_character_,
     par.set = list(),
-    par.vals = list(),
     properties = character(0L),
     train = NULL,
     predict = NULL,
@@ -49,18 +48,12 @@ Learner = R6Class("Learner",
       self$name = assertString(name)
       self$id = stri_paste(type, ".", name)
       self$par.set = assertClass(par.set, "ParamSet")
-      self$par.vals = assertList(par.vals, names = "unique")
+      private$pv = assertList(par.vals, names = "unique")
       self$packages = assertCharacter(packages, any.missing = FALSE, unique = TRUE)
       self$properties = assertCharacter(properties, any.missing = FALSE, unique = TRUE)
       self$train = assertFunction(train, args = c("task", "subset"), ordered = TRUE)
       self$predict = assertFunction(predict, args = c("model", "task", "subset"), ordered = TRUE)
       environment(self$train) = environment(self$predict) = environment(self$initialize)
-    },
-
-    setHyperPars = function(par.vals) {
-      assertList(par.vals, names = "unique")
-      assertSubset(names(par.vals), getParamIds(self$par.set))
-      self$par.vals[names(par.vals)] = par.vals
     },
 
     addHook = function(id, hooks) {
@@ -69,6 +62,18 @@ Learner = R6Class("Learner",
       assertSubset(names(hooks), c("pre.train", "post.train", "pre.predict", "post.predict", "pars"))
       self$hooks = c(self$hooks, setNames(list(hooks), id))
     }
+  ),
+  active = list(
+    par.vals = function(rhs) {
+      if (missing(rhs))
+        return(private$pv)
+      assertList(rhs, names = "unique")
+      assertSubset(names(rhs), getParamIds(self$par.set))
+      private$pv[names(rhs)] = rhs
+    }
+  ),
+  private = list(
+    pv = NULL
   )
 )
 
@@ -76,15 +81,21 @@ Learner = R6Class("Learner",
 #' @rdname Learners
 getLearner = function(x, ...) {
   x = Learners$get(x)
-  if (...length() == 0L)
-    x$setHyperPars(list(...))
+  if (...length() > 0L) {
+    x$par.vals = list(...)
+  }
   x
 }
 
 #' @export
 #' @rdname Learners
 getLearners = function(x, ...) {
-  Learners$mget(x)
+  x = Learners$mget(x)
+  if (...length() > 0L) {
+    dots = list(...)
+    x = lapply(x, function(x) x$par.vals = dots)
+  }
+  x
 }
 
 #' @export

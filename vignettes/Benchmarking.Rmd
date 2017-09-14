@@ -89,7 +89,7 @@ lrn.dummy$par.vals
 
 Now, we set the parameter `method` to `"sample"`, change the `id` and add the learner to the register:
 ```{r}
-lrn.dummy$setHyperPars(list(method = "sample"))
+lrn.dummy$par.vals = list(method = "sample")
 lrn.dummy$id = "classif.dummy.sample"
 Learners$register(lrn.dummy)
 listLearners()
