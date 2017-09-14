@@ -14,8 +14,8 @@ Depends:
     data.table
 Imports:
     backports (>= 1.1.1),
-    bit,
     BBmisc,
+    bit,
     checkmate,
     glue,
     parallelMap,
@@ -23,15 +23,16 @@ Imports:
     R6,
     stringi
 Suggests:
-    devtools,
-    RSQLite,
     dbplyr,
+    devtools,
     dplyr,
-    knitr,
     kernlab,
+    knitr,
     lazyeval,
     mlbench,
     rmarkdown,
+    rpart,
+    RSQLite,
     testthat
 RoxygenNote: 6.0.1
 Collate:
