@@ -15,6 +15,7 @@ test_that("resampling cv", {
   r = getResampling("cv")
   expect_identical(r$iters, 10L)
   expect_resampling(r, task)
+  expect_is(r[[1]], "Split")
   expect_equal(BBmisc::viapply(r$instance, function(x) length(x$train)), rep(135, r$iters))
   expect_equal(BBmisc::viapply(r$instance, function(x) length(x$test)), rep(15, r$iters))
   expect_true(all(BBmisc::vlapply(Map(xor, r$instance$train, r$instance$test), all)))

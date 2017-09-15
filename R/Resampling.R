@@ -22,14 +22,25 @@ Resampling = R6Class("Resampling",
       environment(self$instantiate) = environment(self$initialize)
     },
 
-    reset = function() self$instance = NULL,
-    train = function(i) self$instance[[i]]$train,
-    test = function(i) self$instance[[i]]$test
+    reset = function() {
+      self$instance = NULL
+    },
+    train = function(i) {
+      if (is.null(self$instance))
+        stop("Resampling has not been instantiated yet")
+      self$instance[[i]]$train
+    },
+    test = function(i) {
+      if (is.null(self$instance))
+        stop("Resampling has not been instantiated yet")
+      self$instance[[i]]$test
+    }
   ),
 
   private = list(
     setInstance = function(train, test = NULL) {
       self$instance = Map(Split$new, train = train, test = test %??% list(NULL))
+      invisible(self)
     }
   )
 )
@@ -131,6 +142,6 @@ listResamplings = function() {
 `[[.Resampling` = function(x, i, ...) {
   if (is.null(x$instance))
     stop("Resampling has not been instantiated yet")
-  assertInt(i, lower = 1L, upper = length(x$iters))
-  x$train(i)
+  assertInt(i, lower = 1L, upper = x$iters)
+  x$instance[[i]]
 }

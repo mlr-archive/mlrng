@@ -57,6 +57,9 @@ resampleIteration = function(task, learner, resampling, measures, i, store.model
   predicted = predictWithHooks(model, task, learner, subset = test)
   performance = lapply(measures, function(x) x$fun(truth, predicted$response))
   list(
+    task = task,
+    model = model,
+    split = resampling[[i]],
     model = if (store.model) model else NULL,
     predicted = predicted$predicted,
     performance = setNames(performance, ids(measures))
