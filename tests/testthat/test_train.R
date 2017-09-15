@@ -1,14 +1,15 @@
 context("train")
 
 test_that("train", {
-  lrn = getLearner("classif.dummy")
-  mod = train("spam", lrn)
+  task = Tasks$get("spam")
+  lrn = Learners$get("classif.dummy")
+  mod = train(task, lrn)
   expect_is(mod, "WrappedModel")
 })
 
 test_that("train on dplyr task", {
   task = asDplyrTask("spam")
-  lrn = getLearner("classif.dummy")
+  lrn = Learners$get("classif.dummy")
   mod = train(task, lrn)
   expect_is(mod, "WrappedModel")
   p = predict(mod, task)

@@ -81,7 +81,7 @@ Learner = R6Class("Learner",
 #' @export
 #' @rdname Learners
 listLearners = function() {
-  tab = rbindlist(eapply(Learners$storage, function(lrn) {
+  tab = rbindlist(eapply(Learners$env, function(lrn) {
     list(
       id = lrn$id,
       name = lrn$name,

@@ -2,7 +2,7 @@ context("resample")
 
 test_that("Basic resampling", {
   skip("wrappers not finished")
-  learner = getLearner("classif.rpart", mtry = 2)
+  learner = Learners$get("classif.rpart", mtry = 2)
   learner = downsampleWrapper(learner, ratio = 0.1)
   rr = resample("iris", learner, "cv", "mmce")
   expect_class(rr, "ResampleResult")
@@ -11,8 +11,8 @@ test_that("Basic resampling", {
 })
 
 test_that("resampling cv", {
-  task = getTask("iris")
-  r = getResampling("cv")
+  task = Tasks$get("iris")
+  r = Resamplings$get("cv")
   expect_identical(r$iters, 10L)
   expect_resampling(r, task)
   expect_equal(BBmisc::viapply(r$instance, function(x) length(x$train)), rep(135, r$iters))
@@ -21,8 +21,8 @@ test_that("resampling cv", {
 })
 
 test_that("resampling holdout", {
-  task = getTask("sonar")
-  r = getResampling("holdout")
+  task = Tasks$get("sonar")
+  r = Resamplings$get("holdout")
   expect_identical(r$iters, 1L)
   expect_equal(r$pars, list(ratio = 2/3))
   expect_resampling(r, task)
@@ -32,8 +32,8 @@ test_that("resampling holdout", {
 })
 
 test_that("resampling subsample", {
-  task = getTask("pima")
-  r = getResampling("subsampling")
+  task = Tasks$get("pima")
+  r = Resamplings$get("subsampling")
   expect_identical(r$iters, 30L)
   expect_equal(r$pars, list(ratio = 2/3))
   expect_resampling(r, task)
@@ -44,9 +44,9 @@ test_that("resampling subsample", {
 
 test_that("nested resampling", {
   skip("Not finished yet")
-  task = getTask("iris")
-  outer = getResampling("cv")
-  inner = getResampling("cv")
+  task = Tasks$get("iris")
+  outer = Resamplings$get("cv")
+  inner = Resamplings$get("cv")
   inner$iters = 3
 
   r = getNestedResampling(outer, inner)

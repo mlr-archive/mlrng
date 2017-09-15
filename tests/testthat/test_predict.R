@@ -1,8 +1,8 @@
 context("predict")
 
 test_that("Step by step modeling", {
-  task = getTask("iris")
-  learner = getLearner("classif.dummy", method = "sample")
+  task = Tasks$get("iris")
+  learner = Learners$get("classif.dummy")
   model = train(task, learner)
   expect_is(model, "WrappedModel")
   pred = predict(model, task)
@@ -12,7 +12,7 @@ test_that("Step by step modeling", {
 
   train = sample(150, 100)
   test = setdiff(seq_len(150), train)
-  learner = getLearner("classif.rpart", mtry = 2)
+  learner = Learners$get("classif.rpart")
   model = train(task, learner, subset = train)
   expect_is(model, "WrappedModel")
   pred = predict(model, task, subset = test)

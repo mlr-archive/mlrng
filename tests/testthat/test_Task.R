@@ -18,20 +18,20 @@ test_that("Task Construction", {
 
 test_that("Example Tasks", {
   for (id in Tasks$ids) {
-    task = getTask(id)
+    task = Tasks$get(id)
     expect_data_table(task[], types = c("numeric", "factor"))
   }
 })
 
 test_that("Task data is copied", {
-  task = getTask("iris")
+  task = Tasks$get("iris")
   expect_false(identical(address(task$backend$data), address(task[])))
   expect_false(identical(address(task$backend$data), address(task[1:150, ])))
 })
 
 test_that("Tasks rows are accessed with integers, backend with ids", {
   id = function(x) data.table(..id = as.integer(x))
-  task = getTask("iris")
+  task = Tasks$get("iris")
   task$backend$slice(20:25)
   expect_data_table(task$backend[id(20), ], nrow = 1, ncol = 5, any.missing = FALSE)
   expect_data_table(task$backend[20, ], nrow = 1, ncol = 5, any.missing = FALSE)

@@ -90,30 +90,6 @@ length.Resampling = function(x) {
 #   )
 # }
 
-#' @export
-getResampling = function(x, task = NULL) {
-  rdesc = Resamplings$get(x)
-  if (!is.null(task)) {
-    task = getTask(task)
-    if (is.null(rdesc$instance)) {
-      rdesc = rdesc$clone()
-      rdesc$instantiate(task)
-    } else if (nrow(rdesc$instance) != task$nrow) {
-      stop("Resampling has been instantiate with a different task size")
-    }
-  }
-  return(rdesc)
-}
-
-#' @export
-getResamplings = function(x, tasks = NULL) {
-  x = Resamplings$mget(x)
-  if (!is.null(tasks)) {
-    x = Map(function(x, task) { x$clone()$instantiate(task); x}, x = x, task = tasks)
-    x = setNames(x, ids(x))
-  }
-  x
-}
 
 #' @export
 listResamplings = function() {

@@ -22,11 +22,6 @@ BenchmarkResult = R6Class("BenchmarkResult",
 
 #' @export
 benchmark = function(tasks, learners, resamplings, measures) {
-  tasks = Tasks$get(tasks)
-  learner = Learners$get(learner)
-  resamplings = getResamplings(resamplings, tasks = tasks)
-  names(resamplings) = names(tasks)
-  measures = getMeasures(measures)
 
   bmr = BenchmarkResult$new(names(tasks), names(learners), resamplings)
   pm.level = "mlrng.resample"

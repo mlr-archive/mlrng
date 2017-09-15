@@ -141,6 +141,7 @@ as.data.table.Dictionary = function(x, keep.rownames = FALSE, ...) {
 
 # class to define lazy objects, which can be expanded / allocated later
 # FIXME: dont we want to specify the type here that get returns?
+# then check class an get()
 LazyElement = R6Class("LazyElement",
   cloneable = FALSE,
   public = list(
