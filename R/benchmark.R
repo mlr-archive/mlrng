@@ -22,8 +22,8 @@ BenchmarkResult = R6Class("BenchmarkResult",
 
 #' @export
 benchmark = function(tasks, learners, resamplings, measures) {
-  tasks = getTasks(tasks)
-  learners = getLearners(learners)
+  tasks = Tasks$get(tasks)
+  learner = Learners$get(learner)
   resamplings = getResamplings(resamplings, tasks = tasks)
   names(resamplings) = names(tasks)
   measures = getMeasures(measures)

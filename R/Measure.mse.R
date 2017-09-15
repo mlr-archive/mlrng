@@ -1,5 +1,5 @@
 #' @include Measure.R
-Measures$register(Measure$new(
+Measures$add(Measure$new(
   id = "mse",
   name = "Mean squared error",
   tasktypes = c("regr"),

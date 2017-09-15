@@ -1,4 +1,4 @@
-#' @include Register.R
+#' @include Dictionary.R
 
 #' @title Registered Learners
 #' @docType class
@@ -14,13 +14,13 @@
 #'  \item{\code{exists(ids)}}{Returns \code{TRUE} if a learner with id \code{ids} is registered.}
 #'  \item{\code{get(id)}}{Returns \code{\link{Learner} with corresponding \code{id}}.}
 #' }
-#' @return [\code{\link{Register}}].
+#' @return [\code{\link{Dictionary}}].
 #' @export
 #' @examples
 #' Learners$ids
 #' Learners$exists("classif.dummy")
 #' Learners$get("classif.dummy")
-Learners = Register$new("Learner")
+Learners = Dictionary$new("Learner")
 
 #' @title Class for Learners
 #' @format \code{\link{R6Class}} object
@@ -77,26 +77,6 @@ Learner = R6Class("Learner",
   )
 )
 
-#' @export
-#' @rdname Learners
-getLearner = function(x, ...) {
-  x = Learners$get(x)
-  if (...length() > 0L) {
-    x$par.vals = list(...)
-  }
-  x
-}
-
-#' @export
-#' @rdname Learners
-getLearners = function(x, ...) {
-  x = Learners$mget(x)
-  if (...length() > 0L) {
-    dots = list(...)
-    x = lapply(x, function(x) x$par.vals = dots)
-  }
-  x
-}
 
 #' @export
 #' @rdname Learners

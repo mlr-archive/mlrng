@@ -1,5 +1,5 @@
 #' @include Measure.R
-Measures$register(Measure$new(
+Measures$add(Measure$new(
   id = "mmce",
   name = "Mean misclassification error",
   tasktypes = c("classif"),

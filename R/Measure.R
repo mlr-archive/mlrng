@@ -1,7 +1,7 @@
-#' @include Register.R
+#' @include Dictionary.R
 
 #' @export
-Measures = Register$new("Measure")
+Measures = Dictionary$new("Measure")
 
 #' @export
 Measure = R6Class("Measure",
@@ -21,15 +21,6 @@ Measure = R6Class("Measure",
   )
 )
 
-#' @export
-getMeasure = function(x) {
-  Measures$get(x)
-}
-
-#' @export
-getMeasures = function(x) {
-  Measures$mget(x)
-}
 
 #' @export
 listMeasures = function() {

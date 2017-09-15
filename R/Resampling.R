@@ -1,7 +1,7 @@
-#' @include Register.R
+#' @include Dictionary.R
 
 #' @export
-Resamplings = Register$new("Resampling")
+Resamplings = Dictionary$new("Resampling")
 
 #' @export
 Resampling = R6Class("Resampling",

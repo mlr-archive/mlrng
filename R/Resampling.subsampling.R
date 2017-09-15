@@ -1,5 +1,5 @@
 #' @include Resampling.R
-Resamplings$register(
+Resamplings$add(
   Resampling$new(
     id = "subsampling",
     description = "subsampling",

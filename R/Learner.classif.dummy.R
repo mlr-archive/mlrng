@@ -1,5 +1,5 @@
 #' @include Learner.R
-Learners$register(Learner$new(
+Learners$add(Learner$new(
   type = "classif",
   name = "dummy",
   par.set = makeParamSet(

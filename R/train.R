@@ -14,7 +14,7 @@ trainWithHooks = function(task, learner, subset = NULL) {
 
 #' @export
 train = function(task, learner, subset = NULL) {
-  task = getTask(task)
-  learner = getLearner(learner)
+  task = Tasks$get(task)
+  learner = Learners$get(learner)
   WrappedModel$new(task, learner, trainWithHooks(task = task, learner = learner, subset = subset))
 }
