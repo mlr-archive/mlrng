@@ -1,4 +1,4 @@
-#' @include Register.R
+#' @include Dictionary.R
 #' @include Task.R
 getDataSet = function(name, pkg = "mlrng") {
   if (length(find.package(pkg, quiet = TRUE)) == 0L)
@@ -8,27 +8,27 @@ getDataSet = function(name, pkg = "mlrng") {
   ee[[name]]
 }
 
-Tasks$register(
+Tasks$add(
   LazyElement$new("iris", function() ClassifTask$new(id = "iris", getDataSet("iris", "datasets"), target = "Species"))
 )
 
-Tasks$register(
+Tasks$add(
   LazyElement$new("bh", function() RegrTask$new(id = "bh", getDataSet("BostonHousing", "mlbench"), target = "medv"))
 )
 
-Tasks$register(
+Tasks$add(
   LazyElement$new("sonar", function() ClassifTask$new(id = "sonar", getDataSet("Sonar", "mlbench"), target = "Class", positive = "M"))
 )
 
-Tasks$register(
+Tasks$add(
   LazyElement$new("pima", function() ClassifTask$new(id = "pima", getDataSet("PimaIndiansDiabetes2", "mlbench"), target = "diabetes", positive = "pos"))
 )
 
-Tasks$register(
+Tasks$add(
   LazyElement$new("spam", function() ClassifTask$new(id = "spam", getDataSet("spam", "kernlab"), target = "type", positive = "spam"))
 )
 
-Tasks$register(
+Tasks$add(
   LazyElement$new("breastcancer", function() {
     data = getDataSet("BreastCancer", "mlbench")
     i = vlapply(data, is.ordered)

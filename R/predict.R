@@ -18,5 +18,5 @@ predictWithHooks = function(model, task, learner, subset) {
 #' @export
 predict.WrappedModel = function(object, task, subset = NULL, ...) {
   assertIntegerish(subset, null.ok = TRUE, any.missing = FALSE)
-  predictWithHooks(model = object$model, task = getTask(task), learner = object$learner, subset = subset)
+  predictWithHooks(model = object$model, task = task, learner = object$learner, subset = subset)
 }

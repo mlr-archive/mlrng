@@ -1,7 +1,7 @@
 context("Backend")
 
 test_that("Basic data.table backend ops", {
-  task = getTask("iris")
+  task = Tasks$get("iris")
 
   for (task in list(task, asDplyrTask(task))) {
     b = task$backend
@@ -20,7 +20,7 @@ test_that("Basic data.table backend ops", {
   }
 
   # example task still has same dimensions?
-  expect_identical(getTask("iris")$nrow, 150L)
+  expect_identical(Tasks$get("iris")$nrow, 150L)
 })
 
 test_that("Tasks are cloned", {
@@ -31,7 +31,7 @@ test_that("Tasks are cloned", {
 
   data = data.table(x = 1:30, y = factor(sample(letters[1:2], 30, replace = TRUE)))
   task = ClassifTask$new(data, target = "y", id = "testthat-example")
-  Tasks$register(task)
+  Tasks$add(task)
   on.exit(Tasks$remove("testthat-example"))
   rtask = Tasks$get("testthat-example")
   expect_true(!identical(address(task), address(rtask)))
@@ -40,13 +40,13 @@ test_that("Tasks are cloned", {
   task$backend$subsample(ratio = 0.5)
   expect_identical(rtask$nrow, 30L)
 
-  task = getTask("sonar")
+  task = Tasks$get("sonar")
   task$backend$subsample(ratio = 0.5)
-  expect_identical(getTask("sonar")$nrow, 208L)
+  expect_identical(Tasks$get("sonar")$nrow, 208L)
 })
 
 test_that("getting ids", {
-  task = getTask("iris")
+  task = Tasks$get("iris")
   expect_identical(task$backend$ids(1:20), 1:20)
 
   task = asDplyrTask(task)
@@ -54,9 +54,10 @@ test_that("getting ids", {
 })
 
 test_that("id columns work", {
-  task = getTask("breastcancer")
+  task = Tasks$get("breastcancer")
   task$backend$ids(1:10)
 
-  mod = train(task, "classif.dummy")
+  lrn = Learners$get("classif.dummy")
+  mod = train(task, lrn)
   predict(mod, task)
 })

@@ -67,7 +67,8 @@ expect_resampling = function(r, task) {
 }
 
 asDplyrTask = function(task) {
-  task = getTask(task)
+  if (isScalarCharacter(task))
+    task = Tasks$get(task)
 
   requireNamespace("dplyr")
   con = dplyr::src_sqlite(":memory:", create = TRUE)

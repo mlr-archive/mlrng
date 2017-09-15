@@ -4,7 +4,8 @@
 #' @import ParamHelpers
 #' @importFrom utils data hasName
 #' @importFrom bit as.bit as.which as.bitwhich
-#' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col
+#' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col which.first isScalarCharacter
+#'   convertToShortString
 #' @importFrom parallelMap parallelMap parallelExport parallelLibrary
 #' @importFrom glue glue collapse single_quote
 #' @importFrom R6 R6Class

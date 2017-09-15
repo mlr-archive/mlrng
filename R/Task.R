@@ -1,4 +1,4 @@
-#' @include Register.R
+#' @include Dictionary.R
 
 #' @title Registered Tasks
 #' @docType class
@@ -14,9 +14,9 @@
 #'  \item{\code{exists(ids)}}{Returns \code{TRUE} if a \code{\link{Task}} with id \code{ids} is registered.}
 #'  \item{\code{get(id)}}{Returns \code{\link{Task} with corresponding \code{id}}.}
 #' }
-#' @return [\code{\link{Register}}].
+#' @return [\code{\link{Dictionary}}].
 #' @export
-Tasks = Register$new("Task")
+Tasks = Dictionary$new("Task")
 
 #' @title Base Class for Tasks
 #' @format \code{\link{R6Class}} object
@@ -104,18 +104,6 @@ SupervisedTask = R6Class("SupervisedTask",
     targets = function() self[[self$target]]
   )
 )
-
-#' @export
-#' @rdname Tasks
-getTask = function(x) {
-  Tasks$get(x)
-}
-
-#' @export
-#' @rdname Tasks
-getTasks = function(x) {
-  Tasks$mget(x)
-}
 
 #' @export
 #' @rdname Tasks

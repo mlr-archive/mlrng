@@ -1,6 +1,6 @@
 context("classif.rpart")
 
 test_that("basic tests", {
-  lrn = getLearner("classif.rpart")
+  lrn = Learners$get("classif.rpart")
   expect_learner(lrn)
 })

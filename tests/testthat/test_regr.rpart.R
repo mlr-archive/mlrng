@@ -1,6 +1,6 @@
 context("regr.rpart")
 
 test_that("basic tests", {
-  lrn = getLearner("regr.rpart")
+  lrn = Learners$get("regr.rpart")
   expect_learner(lrn)
 })
