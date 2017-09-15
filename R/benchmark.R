@@ -3,15 +3,10 @@ BenchmarkResult = R6Class("BenchmarkResult",
   public = list(
     data = NULL,
     initialize = function(tasks, learners, resamplings) {
-      self$data = rbindlist(Map(
-        function(task.id, learner.id, resampling.id) {
-          CJ(
-            task = task.id,
-            learner = learner.id,
-            resampling = resampling.id,
-            iter = seq_along(resamplings[[resampling.id]])
-          )
-        }, task.id = names(tasks), learner.id = names(learners), resampling.id = names(resamplings)))
+      fun = function(resampling) {
+        CJ(task = names(tasks), learner = names(learners), resampling = resampling$id, iter = seq_along(resampling))
+      }
+      self$data = rbindlist(lapply(resamplings, fun))
     },
     store = function(res) {
       self$data = cbind(self$data, rbindlist(lapply(res, function(x) {
@@ -42,21 +37,19 @@ benchmark = function(tasks, learners, resamplings, measures) {
   for (tn in names(tasks)) {
     rr[[tn]] = setNames(vector("list", length(resamplings)), names(resamplings))
     for (rn in names(resamplings)) {
-      rr[[tn]][[rn]] = resamplings[[rn]]$clone()
-      rr[[tn]][[rn]]$instantiate(tasks[[tn]])
+      rr[[tn]][[rn]] = resamplings[[rn]]$clone()$instantiate(tasks[[tn]])
     }
   }
   rr = unlist(rr, recursive = FALSE)
 
-
-  bmr = BenchmarkResult$new(tasks, learners, rr)
+  bmr = BenchmarkResult$new(tasks, learners, resamplings)
   pm.level = "mlrng.resample"
   parallelLibrary(packages = "mlrng", master = FALSE, level = pm.level)
   result = parallelMap(
     fun = resampleIteration,
     task = tasks[bmr$data$task],
     learner = learners[bmr$data$learner],
-    resampling = rr[bmr$data$resampling],
+    resampling = rr[sprintf("%s.%s", bmr$data$task, bmr$data$resampling)],
     i = bmr$data$iter,
     more.args = list(measures = measures, store.model = FALSE),
     level = pm.level

@@ -48,6 +48,7 @@ resample = function(task, learner, resampling, measures) {
 }
 
 resampleIteration = function(task, learner, resampling, measures, i, store.model = TRUE) {
+  # FIXME: rewrite so that we accept a "Split" instead of resampling and i
   train = resampling$train(i)
   test = resampling$test(i)
 
