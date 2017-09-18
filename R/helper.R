@@ -27,3 +27,11 @@ gstop = function(..., .sep = "", .envir = parent.frame(), .call = TRUE) {
 ids = function(x) {
   vcapply(x, function(x) x$id)
 }
+
+stri_peek = function(str, append = "...") {
+  width = getOption("width", 80L)
+  str = stri_flatten(str, ",")
+  if (stri_length(str) > width)
+    return(stri_join(stri_sub(str, 1L, width - stri_length(append)), append))
+  return(str)
+}

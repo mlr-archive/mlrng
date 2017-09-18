@@ -20,41 +20,50 @@ Dictionary = R6Class("Dictionary",
       if (!is.null(self$eltype) && !inherits(obj, "LazyElement")) # we cannot check type
         assertClass(obj, self$eltype)
       if (is.null(id)) id = obj$id else assertString(id)
-      if (!overwrite && id %chin% self$ids)
-        gstop("Id '{id}' already present in dictionary!")
+      if (!overwrite && self$contains(id))
+        gstop("Id '{id}' already present in dictionary!", .call = FALSE)
       assign(x = id, value = obj, envir = self$env)
     },
 
     # get object from dict by id
     # [string] x [bool] --> eltype
-    get = function(id, check = TRUE, deep = FALSE) {
+    get = function(id, deep = FALSE) {
       assertString(id)
-      if (check) private$checkIdsContained(id)
+      assertContains(self, id)
       obj = get0(id, envir = self$env, inherits = FALSE)
       if (inherits(obj, "LazyElement")) obj$get() else obj$clone(deep = deep)
     },
 
-    # are ids present in dic?
+    # are ids present in dict?
     # [charvec] --> [logical].
     contains = function(ids) {
-      assertCharacter(ids, any.missing = FALSE)
-      ids %chin% self$ids
+      vlapply(ids, exists, envir = self$env, inherits = FALSE)
     },
 
     # [charvec] --> X. Removes elements from the dict
-    remove = function(ids, check = TRUE) {
+    remove = function(ids) {
       assertCharacter(ids, any.missing = FALSE)
-      if (check) private$checkIdsContained(ids)
+      assertContains(self, ids)
       rm(list = ids, envir = self$env)
       invisible(self)
     },
 
     # [charvec] --> X. Restricts to some elements from the dict
-    restrict = function(ids, check = TRUE) {
+    slice = function(ids) {
       assertCharacter(ids, any.missing = FALSE)
-      if (check) private$checkIdsContained(ids)
-      rest = setdiff(self$ids, ids)
-      self$remove(rest)
+      assertContains(self, ids)
+      rm(list = setdiff(ls(self$env, all.names = TRUE, sorted = FALSE), ids), envir = self$env)
+      invisible(self)
+    },
+
+    print = function(...) {
+      ids = self$ids
+      gmessage("
+        Dictionary of {length(ids)} {self$eltype}
+        Ids: {stri_peek(ids)}
+      ")
+      if (getOption("mlrng.verbose", TRUE))
+        cat("\n", format(self), "\n")
     }
   ),
 
@@ -64,14 +73,6 @@ Dictionary = R6Class("Dictionary",
   ),
 
   private = list(
-    # check that all ids are in dict, otherwise report error
-    checkIdsContained = function(ids) {
-      allids = self$ids
-      j = wf(!(ids %chin% allids))
-      if (length(j) > 0L)
-        gstop("{self$eltype} with id '{ids[j]}' not found!")
-    },
-
     # deep-clones each element in env
     # FIXME: we should agree that we store R6, nothing else?
     deep_clone = function(name, value) {
@@ -82,17 +83,6 @@ Dictionary = R6Class("Dictionary",
     }
   )
 )
-
-
-# FIXME: summary does not work for empty reg, --> unit test
-#' @export
-summary.Dictionary= function(object, ...) {
-  ids = object$ids
-  gmessage("
-    Dictionary of {length(ids)} {object$eltype}
-    Ids: {convertToShortString(ids)}
-  ")
-}
 
 #' @export
 as.list.Dictionary = function(x, ...) {
@@ -111,8 +101,6 @@ as.data.table.Dictionary = function(x, keep.rownames = FALSE, ...) {
   setkeyv(tab, "id")[]
 }
 
-
-
 # class to define lazy objects, which can be expanded / allocated later
 # FIXME: dont we want to specify the type here that get returns?
 # then check class an get()
@@ -121,10 +109,15 @@ LazyElement = R6Class("LazyElement",
   public = list(
     id = NA_character_, # key (string)
     get = NULL,         # function() to construct
-    cl = NULL,
-    initialize = function(id, get, cl = NULL) {
+    initialize = function(id, get) {
       self$id = assertString(id, min.chars = 1L)
       self$get = assertFunction(get, args = character(0L))
     }
   )
 )
+
+assertContains = function(dict, keys) {
+  j = wf(!dict$contains(keys))
+  if (length(j) > 0L)
+    gstop("{dict$eltype} with id '{keys[j]}' not found!", .call = FALSE)
+}
