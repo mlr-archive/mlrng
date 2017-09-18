@@ -2,6 +2,12 @@ library(testthat)
 library(checkmate)
 library(stringi)
 
+private = function(x) {
+  if (!R6::is.R6(x))
+    stop("Expected R6 class")
+  x$.__enclos_env__[["private"]]
+}
+
 expect_task = function(task) {
   expect_is(task, "Task")
   expect_is(task$backend, "DataBackend")
@@ -50,19 +56,47 @@ expect_learner = function(lrn) {
   expect_subset(lrn$type, choices = mlrng$learner.types)
 }
 
-expect_resampling = function(r, task) {
+expect_split = function(s, len = NULL) {
+  expect_class(s, "Split")
+  expect_bit(private(s)$train.bit, len = len, min.1 = 1)
+  expect_bit(private(s)$test.bit, len = len, min.0 = 1)
+  l = length(private(s)$train.bit)
+  expect_equal(l, length(private(s)$test.bit))
+  expect_integer(s$train, any.missing = FALSE, min.len = 1L, max.len = l, lower = 1L, upper = l)
+  expect_integer(s$test, any.missing = FALSE, min.len = 1L, max.len = l, lower = 1L, upper = l)
+}
+
+# instantiated == NULL -> do not run tests for instance
+# instantiated == FALSE -> assert that r is not instantiated
+# instantiated == TRUE -> assert that r is instantiated
+# instantiated == [task] -> assert that r is instantiated with task
+expect_resampling = function(r, instantiated = NULL) {
   expect_is(r, "Resampling")
+  expect_string(r$id, min.chars = 1L)
+  expect_string(r$description, min.chars = 1L)
+  expect_list(r$pars, names = "unique")
+  expect_count(r$iters)
   expect_identical(length(r), r$iters)
-  expect_null(r$instance)
 
-  r$reset()
-  r$instantiate(task)
-  n = task$nrow
+  if (isFALSE(instantiated)) {
+    expect_scalar_na(r$checksum)
+    expect_null(r$instance)
+  }
 
-  expect_list(r$instance, types = "Split", len = r$iters, names = "unnamed")
-  for (i in seq_len(r$iters)) {
-    expect_integer(r$train(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
-    expect_integer(r$test(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
+  if (isTRUE(instantiated) || is.Task(instantiated)) {
+    expect_string(r$checksum)
+    expect_list(r$instance, types = "Split", len = r$iters, names = "unnamed")
+
+    if (is.Task(instantiated)) {
+      n = instantiated$nrow
+      for (i in seq_along(r)) {
+        expect_split(r$instance[[i]], len = n)
+        expect_integer(r$train(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
+        expect_integer(r$test(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
+      }
+    } else {
+      for (i in seq_along(r)) expect_split(r$instance[[i]])
+    }
   }
 }
 

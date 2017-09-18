@@ -49,6 +49,11 @@ Resampling = R6Class("Resampling",
 )
 
 #' @export
+is.Resampling = function(x) {
+  inherits(x, "Resampling")
+}
+
+#' @export
 length.Resampling = function(x) {
   x$iters
 }

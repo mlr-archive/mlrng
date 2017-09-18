@@ -50,6 +50,11 @@ Task = R6Class("Task",
 )
 
 #' @export
+is.Task = function(x) {
+  inherits(x, "Task")
+}
+
+#' @export
 `[.Task` = function(x, i, j, ...) {
   i = if (missing(i)) NULL else x$backend$ids(i)
   if (missing(j)) j = NULL

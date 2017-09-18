@@ -16,3 +16,8 @@ Measure = R6Class("Measure",
     }
   )
 )
+
+#' @export
+is.Measure = function(x) {
+  inherits(x, "Measure")
+}
