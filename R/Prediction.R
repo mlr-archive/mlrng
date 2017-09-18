@@ -28,4 +28,3 @@ Prediction = R6Class("Prediction",
 as.data.table.Prediction = function(x, keep.rownames = FALSE, ...) {
   return(x$data)
 }
-

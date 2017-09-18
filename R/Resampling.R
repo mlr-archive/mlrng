@@ -1,8 +1,4 @@
-#' @include Dictionary.R
-
-#' @export
-Resamplings = Dictionary$new("Resampling")
-
+#' @include Resamplings.R
 #' @export
 Resampling = R6Class("Resampling",
   public = list(
@@ -100,19 +96,6 @@ length.Resampling = function(x) {
 #     pars = list(inner = inner, outer = outer)
 #   )
 # }
-
-
-#' @export
-listResamplings = function() {
-  tab = rbindlist(eapply(Resamplings$storage, function(r) {
-    list(
-      id = r$id,
-      description = r$description,
-      pars = list(r$pars)
-    )
-  }, USE.NAMES = FALSE))
-  setkeyv(tab, "id")[]
-}
 
 #' @export
 `[[.Resampling` = function(x, i, ...) {

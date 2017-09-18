@@ -27,14 +27,3 @@ gstop = function(..., .sep = "", .envir = parent.frame(), .call = TRUE) {
 ids = function(x) {
   vcapply(x, function(x) x$id)
 }
-
-ensureList = function(x, type, constructor, ...) {
-  if (inherits(x, type)) {
-    x = list(constructor(x, ...))
-  } else if (is.character(x) || is.list(x)) {
-      x = lapply(x, constructor, ...)
-  } else {
-    gstop("Failed to construct list of {type}: provide a vector of ids, a single object or a list of {type}")
-  }
-  setNames(x, ids(x))
-}

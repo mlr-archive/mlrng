@@ -1,8 +1,4 @@
-#' @include Dictionary.R
-
-#' @export
-Measures = Dictionary$new("Measure")
-
+#' @include Measures.R
 #' @export
 Measure = R6Class("Measure",
   public = list(
@@ -20,15 +16,3 @@ Measure = R6Class("Measure",
     }
   )
 )
-
-
-#' @export
-listMeasures = function() {
-  tab = rbindlist(eapply(Measures$storage, function(x) {
-    list(
-      id = x$id,
-      requires = list(x$requires)
-    )
-  }, USE.NAMES = FALSE))
-  setkeyv(tab, "id")[]
-}

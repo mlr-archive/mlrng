@@ -1,23 +1,3 @@
-#' @include Dictionary.R
-
-#' @title Registered Tasks
-#' @docType class
-#' @format \code{\link{R6Class}} object
-#'
-#' @description
-#' A \code{\link[R6]{R6Class}} to manage tasks
-#'
-#' @field ids Returns the ids of registered tasks.
-#' @field storage Environment where all \code{\link{Task}} objects are stored.
-#' @section Methods:
-#' \describe{
-#'  \item{\code{exists(ids)}}{Returns \code{TRUE} if a \code{\link{Task}} with id \code{ids} is registered.}
-#'  \item{\code{get(id)}}{Returns \code{\link{Task} with corresponding \code{id}}.}
-#' }
-#' @return [\code{\link{Dictionary}}].
-#' @export
-Tasks = Dictionary$new("Task")
-
 #' @title Base Class for Tasks
 #' @format \code{\link{R6Class}} object
 #' @template params-task
@@ -29,6 +9,7 @@ Tasks = Dictionary$new("Task")
 #' @template fields-task
 #' @return [\code{\link{Task}}].
 #' @family Tasks
+#' @include Tasks.R
 #' @export
 Task = R6Class("Task",
   public = list(
@@ -67,58 +48,6 @@ Task = R6Class("Task",
     }
   )
 )
-
-#' @title Base Class for Supervised Tasks
-#'
-#' @template params-task
-#' @template params-supervisedtask
-#'
-#' @description
-#' A \code{\link[R6]{R6Class}} to construct supervised tasks.
-#' This is the abstract base class, do not use directly!
-#'
-#' @template fields-task
-#' @template fields-supervisedtask
-#' @return [\code{\link{SupervisedTask}}].
-#' @family Tasks
-#' @export
-SupervisedTask = R6Class("SupervisedTask",
-  inherit = Task,
-  public = list(
-    target = NA_character_,
-    initialize = function(data, target, cols = NULL, id.col = NULL, id = deparse(substitute(data))) {
-      super$initialize(data, cols = cols, id.col = id.col, id = id)
-      self$target = assertChoice(target, self$backend$cols)
-    }
-
-
-    ),
-  active = list(
-    # [formula]. target ~ x1 + ... + xp
-    formula = function() {
-      reformulate(setdiff(self$backend$cols, self$target), response = self$target)
-    },
-    # [charvec]. featurenames without targetnames
-    features = function() setdiff(self$backend$cols, self$target),
-    # [vec]. targetvalues
-    targets = function() self[[self$target]]
-  )
-)
-
-#' @export
-#' @rdname Tasks
-listTasks = function() {
-  tab = rbindlist(lapply(Tasks$ids, function(id) {
-    task = getTask(id)
-    list(
-      id = task$id,
-      type = task$type,
-      nrow = task$nrow,
-      ncol = task$ncol
-    )
-  }))
-  setkeyv(tab, "id")[]
-}
 
 #' @export
 `[.Task` = function(x, i, j, ...) {
