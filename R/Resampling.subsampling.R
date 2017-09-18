@@ -7,7 +7,7 @@ Resamplings$add(
     instantiate = function(x) {
       if (inherits(x, "Task"))
         x = x$nrow
-      private$setInstance(train = replicate(self$iters, replace(logical(x), sample(x, floor(self$pars$ratio * x)), TRUE), simplify = FALSE))
+      self$set(train = replicate(self$iters, replace(logical(x), sample(x, floor(self$pars$ratio * x)), TRUE), simplify = FALSE))
     },
     pars = list(ratio = 2/3)
   )

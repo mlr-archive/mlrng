@@ -1,20 +1,11 @@
 context("resample")
 
-test_that("Basic resampling", {
-  skip("wrappers not finished")
-  learner = Learners$get("classif.rpart", mtry = 2)
-  learner = downsampleWrapper(learner, ratio = 0.1)
-  rr = resample("iris", learner, "cv", "mmce")
-  expect_class(rr, "ResampleResult")
-  expect_list(rr$data, len = 10, names = "unnamed")
-  expect_data_table(as.data.table(rr), nrow = 10, ncol = 4)
-})
-
 test_that("resampling cv", {
   task = Tasks$get("iris")
   r = Resamplings$get("cv")
   expect_identical(r$iters, 10L)
   expect_resampling(r, task)
+
   expect_is(r[[1]], "Split")
   expect_equal(BBmisc::viapply(r$instance, function(x) length(x$train)), rep(135, r$iters))
   expect_equal(BBmisc::viapply(r$instance, function(x) length(x$test)), rep(15, r$iters))

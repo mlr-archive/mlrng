@@ -6,20 +6,20 @@ Resampling = R6Class("Resampling",
     description = NA_character_,
     instantiate = NULL,
     iters = NA_integer_,
+    checksum = NA_character_,
     pars = list(),
     instance = NULL,
 
     initialize = function(id, description, instantiate, iters, pars = list()) {
       self$id = assertString(id)
       self$description = assertString(description)
-      self$instantiate = assertFunction(instantiate, args = "x")
+      if (!is.null(instantiate)) {
+        self$instantiate = assertFunction(instantiate, args = "x")
+        environment(self$instantiate) = environment(self$initialize)
+      }
       self$iters = assertCount(iters)
       self$pars = assertList(pars, names = "unique")
-      environment(self$instantiate) = environment(self$initialize)
-    },
-
-    reset = function() {
-      self$instance = NULL
+      invisible(self)
     },
 
     train = function(i) {
@@ -32,12 +32,17 @@ Resampling = R6Class("Resampling",
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
       self$instance[[i]][["test"]]
-    }
-  ),
+    },
 
-  private = list(
-    setInstance = function(train, test = list(NULL)) {
+    set = function(train, test = list(NULL)) {
       self$instance = Map(Split$new, train = train, test = test)
+      self$checksum = digest(self$instance, algo = "murmur32")
+      invisible(self)
+    },
+
+    reset = function() {
+      self$instance = NULL
+      self$checksum = NA_character_
       invisible(self)
     }
   )
@@ -54,4 +59,12 @@ length.Resampling = function(x) {
     stop("Resampling has not been instantiated yet")
   assertInt(i, lower = 1L, upper = x$iters)
   x$instance[[i]]
+}
+
+#' @export
+as.data.table.Resampling = function(x, keep.rownames = FALSE, ...) {
+  data.table(
+    iter = seq_along(x),
+    split = x$instance
+  )
 }

@@ -2,13 +2,14 @@
 #' @import data.table
 #' @import stringi
 #' @import ParamHelpers
+#' @importFrom stats setNames
 #' @importFrom utils data hasName
-#' @importFrom bit as.bit as.which as.bitwhich
+#' @importFrom bit as.bit as.which as.bitwhich bit
 #' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col
 #' @importFrom parallelMap parallelMap parallelExport parallelLibrary
 #' @importFrom glue glue collapse single_quote
 #' @importFrom R6 R6Class
-#' @importFrom stats setNames
+#' @importFrom digest digest
 #' @keywords internal
 "_PACKAGE"
 

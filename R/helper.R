@@ -35,3 +35,14 @@ stri_peek = function(str, append = "...") {
     return(stri_join(stri_sub(str, 1L, width - stri_length(append)), append))
   return(str)
 }
+
+asSubset = function(x, subset = NULL) {
+  if (inherits(x, "Task"))
+    x = x$nrow
+  if (is.null(subset))
+    return(!bit(x))
+  if (is.logical(subset))
+    return(as.bit(assertLogical(subset, len = x, any.missing = FALSE)))
+  assertIntegerish(subset, any.missing = FALSE, lower = 1L, upper = x)
+  replace(bit(x), subset, TRUE)
+}

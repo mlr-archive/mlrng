@@ -14,5 +14,16 @@ trainWithHooks = function(task, learner, subset = NULL) {
 
 #' @export
 train = function(task, learner, subset = NULL) {
-  WrappedModel$new(task, learner, trainWithHooks(task = task, learner = learner, subset = subset))
+  resampling = makePseudoHoldout(task, asSubset(task, subset))
+  WrappedModel$new(task, learner, trainWithHooks(task = task, learner = learner, subset = subset), resampling)
+}
+
+makePseudoHoldout = function(task, subset = NULL) {
+  ph = Resampling$new(
+    id = "CustomHoldout",
+    description = "Custom holdout-like resampling",
+    iters = 1L,
+    instantiate = NULL
+  )
+  ph$set(train = list(subset))
 }

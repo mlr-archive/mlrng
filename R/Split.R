@@ -5,6 +5,10 @@ Split = R6Class("Split",
   ),
   public = list(
     initialize = function(train, test = NULL) {
+      if (!is.bit(train))
+        assertLogical(train, any.missing = FALSE)
+      if (!is.null(test) && !is.bit(test))
+        assertLogical(test, any.missing = FALSE)
       private$train.bit = as.bit(train)
       private$test.bit = as.bit(test %??% !private$train.bit)
     }
