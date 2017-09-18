@@ -23,4 +23,3 @@ test_that("Basic ops on Dictionary", {
   dd$restrict("y")
   expect_equal(as.list(dd), list(y = 2))
 })
-

@@ -67,7 +67,7 @@ expect_resampling = function(r, task) {
 }
 
 asDplyrTask = function(task) {
-  if (isScalarCharacter(task))
+  if (testString(task))
     task = Tasks$get(task)
 
   requireNamespace("dplyr")

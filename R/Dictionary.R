@@ -1,57 +1,37 @@
-#FIXME: PROPERLY document what cloning means here, deep and non-deep
-
 Dictionary = R6Class("Dictionary",
   cloneable = TRUE,
 
   public = list(
     env = NULL, # env where objects are stored
     eltype = NULL, # container<type>, might be NULL, then all types are OK
-    clone.on.get = NULL,
 
     # construct, set container type (string)
-    initialize = function(eltype, clone.on.get = FALSE) {
+    initialize = function(eltype) {
       assertString(eltype, null.ok = TRUE)
-      assertFlag(clone.on.get)
       self$env = new.env(parent = emptyenv())
       self$eltype = eltype
-      self$clone.on.get = clone.on.get
     },
 
     # register an new element, either take id (string) from object or set it manually
     # for the former we assume that obj$id works
-    # ids must be unique
-    # FIXME:  what happens if LazyElemet returns sometinh wrong and not of eltype?
-    add = function(obj, id = NULL) {
+    # FIXME: what happens if LazyElemet returns something wrong and not of eltype?
+    # FIXME: we need to deep copy obj if the user adds stuff to it.
+    add = function(obj, id = NULL, overwrite = FALSE) {
       if (!is.null(self$eltype) && !inherits(obj, "LazyElement")) # we cannot check type
         assertClass(obj, self$eltype)
       if (is.null(id)) id = obj$id else assertString(id)
-      if (id %in% self$ids)
+      if (!overwrite && id %chin% self$ids)
         gstop("Id '{id}' already present in dictionary!")
       assign(x = id, value = obj, envir = self$env)
     },
 
     # get object from dict by id
     # [string] x [bool] --> eltype
-    get = function(id, check = TRUE, deepclone = self$deepclone.on.get) {
+    get = function(id, check = TRUE, deep = FALSE) {
       assertString(id)
       if (check) private$checkIdsContained(id)
       obj = get0(id, envir = self$env, inherits = FALSE)
-      if (inherits(obj, "LazyElement")) obj = obj$get()
-      if (self$clone.on.get && inherits(obj, "R6"))
-        obj = obj$clone(deep = deepclone)
-      return(obj)
-    },
-
-    # subset dict with given ids
-    # FIXME: is the deepclone arg good here?
-    getSubset = function(ids, check = TRUE, deepclone = self$deepclone.on.get) {
-      assertCharacter(ids, any.missing = FALSE)
-      if (check) private$checkIdsContained(ids)
-      d = self$clone(deep = FALSE)
-      d$restrict(ids, check = FALSE)
-      if (deepclone)
-        d = d$clone(deep = TRUE)
-      return(d)
+      if (inherits(obj, "LazyElement")) obj$get() else obj$clone(deep = deep)
     },
 
     # are ids present in dic?
@@ -61,13 +41,7 @@ Dictionary = R6Class("Dictionary",
       ids %chin% self$ids
     },
 
-    # FIXME:
-    # containsObject = function(x)
-    # wie vergleicht man R objecte am besten auf equals?
-    # wie geht das in R6?
-
-
-    # [charvec] --> X. removes elements from the dict
+    # [charvec] --> X. Removes elements from the dict
     remove = function(ids, check = TRUE) {
       assertCharacter(ids, any.missing = FALSE)
       if (check) private$checkIdsContained(ids)
@@ -75,7 +49,7 @@ Dictionary = R6Class("Dictionary",
       invisible(self)
     },
 
-    # [charvec] --> X. restricts to some elements from the dict
+    # [charvec] --> X. Restricts to some elements from the dict
     restrict = function(ids, check = TRUE) {
       assertCharacter(ids, any.missing = FALSE)
       if (check) private$checkIdsContained(ids)
@@ -93,16 +67,16 @@ Dictionary = R6Class("Dictionary",
     # check that all ids are in dict, otherwise report error
     checkIdsContained = function(ids) {
       allids = self$ids
-      ok = ids %chin% allids
-      j = which.first(!ok)
+      j = wf(!(ids %chin% allids))
       if (length(j) > 0L)
         gstop("{self$eltype} with id '{ids[j]}' not found!")
     },
 
     # deep-clones each element in env
+    # FIXME: we should agree that we store R6, nothing else?
     deep_clone = function(name, value) {
       if (name == "env")
-        list2env(eapply(value, clone, deep = TRUE))
+        list2env(eapply(value, function(x) if (inherits(x, "R6")) x$clone(deep = TRUE) else x), parent = emptyenv())
       else
         value
     }

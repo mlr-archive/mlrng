@@ -63,6 +63,7 @@ Collate:
     'Resampling.cv.R'
     'Resampling.holdout.R'
     'Resampling.subsampling.R'
+    'Split.R'
     'SupervisedTask.R'
     'TuneControl.R'
     'TuneControlGrid.R'

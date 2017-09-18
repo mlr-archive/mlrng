@@ -1,9 +1,9 @@
 context("Backend")
 
 test_that("Basic data.table backend ops", {
-  task = Tasks$get("iris")
+  tasks = list(Tasks$get("iris"), asDplyrTask(Tasks$get("iris")))
 
-  for (task in list(task, asDplyrTask(task))) {
+  for (task in tasks) {
     b = task$backend
     expect_identical(b$nrow, 150L)
     expect_identical(b$ncol, 5L)
@@ -28,11 +28,11 @@ test_that("Tasks are cloned", {
   expect_true(!identical(address(task), address(Tasks$storage$bh)))
   expect_true(!identical(address(task$backend), address(Tasks$storage$bh$backend)))
 
-
   data = data.table(x = 1:30, y = factor(sample(letters[1:2], 30, replace = TRUE)))
   task = ClassifTask$new(data, target = "y", id = "testthat-example")
-  Tasks$add(task)
+  Tasks$add(task$clone(deep = TRUE), overwrite = TRUE)
   on.exit(Tasks$remove("testthat-example"))
+
   rtask = Tasks$get("testthat-example")
   expect_true(!identical(address(task), address(rtask)))
   expect_true(!identical(address(task$backend), address(rtask$backend)))
