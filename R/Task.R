@@ -9,7 +9,6 @@
 #' @template fields-task
 #' @return [\code{\link{Task}}].
 #' @family Tasks
-#' @include Tasks.R
 #' @export
 Task = R6Class("Task",
   public = list(

@@ -1,4 +1,3 @@
-#' @include Measures.R
 #' @export
 Measure = R6Class("Measure",
   public = list(

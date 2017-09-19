@@ -6,7 +6,6 @@
 #'
 #' @return [\code{\link{Learner}}].
 #' @family Learner
-#' @include Learners.R
 #' @export
 Learner = R6Class("Learner",
   public = list(

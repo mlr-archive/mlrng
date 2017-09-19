@@ -1,4 +1,3 @@
-#' @include Resamplings.R
 #' @export
 Resampling = R6Class("Resampling",
   public = list(
