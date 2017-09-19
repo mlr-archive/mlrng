@@ -1,4 +1,4 @@
-#' @include Measure.R
+#' @include Measures.R
 Measures$add(Measure$new(
   id = "mse",
   name = "Mean squared error",

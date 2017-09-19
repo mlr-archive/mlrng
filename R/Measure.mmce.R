@@ -1,4 +1,4 @@
-#' @include Measure.R
+#' @include Measures.R
 Measures$add(Measure$new(
   id = "mmce",
   name = "Mean misclassification error",

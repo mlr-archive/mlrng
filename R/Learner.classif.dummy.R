@@ -1,4 +1,4 @@
-#' @include Learner.R
+#' @include Learners.R
 Learners$add(Learner$new(
   type = "classif",
   name = "dummy",

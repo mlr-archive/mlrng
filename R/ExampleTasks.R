@@ -1,5 +1,4 @@
-#' @include Dictionary.R
-#' @include Task.R
+#' @include Tasks.R
 getDataSet = function(name, pkg = "mlrng") {
   if (length(find.package(pkg, quiet = TRUE)) == 0L)
     gstop("Please install package '{pkg}' for data set '{name}'")

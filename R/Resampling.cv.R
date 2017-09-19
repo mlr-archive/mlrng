@@ -1,4 +1,4 @@
-#' @include Resampling.R
+#' @include Resamplings.R
 Resamplings$add(
   Resampling$new(
     id = "cv",
