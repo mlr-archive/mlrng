@@ -29,6 +29,8 @@ ids = function(x) {
 }
 
 stri_peek = function(str, append = "...") {
+  if (length(str) == 0L)
+    return("")
   width = getOption("width", 80L)
   str = stri_flatten(str, ",")
   if (stri_length(str) > width)
