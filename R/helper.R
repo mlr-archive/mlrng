@@ -38,7 +38,7 @@ stri_peek = function(str, append = "...") {
 
 asSubset = function(x, subset = NULL) {
   if (inherits(x, "Task"))
-    x = x$nrow
+    x = x$backend$nrow
   if (is.null(subset))
     return(!bit(x))
   if (is.logical(subset))

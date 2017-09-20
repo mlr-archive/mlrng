@@ -11,19 +11,19 @@
 #' @template fields-supervisedtask
 #' @field type [\code{character(1)}]: Type of task (\dQuote{regr}).
 #'
-#' @return [\code{\link{ClassifTask}}].
+#' @return [\code{\link{TaskRegr}}].
 #' @family Tasks
 #' @export
 #' @examples
-#' task = RegrTask$new(iris, target = "Sepal.Length")
+#' task = TaskRegr$new(iris, target = "Sepal.Length")
 #' task$formula
-RegrTask = R6Class("RegrTask",
-  inherit = SupervisedTask,
+TaskRegr = R6Class("TaskRegr",
+  inherit = TaskSupervised,
   public = list(
     type = "regr",
-    initialize = function(data, target = NA_character_, cols = NULL, id.col = NULL, id = deparse(substitute(data))) {
-      super$initialize(data, target = target, cols = cols, id.col = id.col, id = id)
-      assertNumeric(self$backend[[target]], finite = TRUE, any.missing = FALSE)
+    initialize = function(id, backend, target) {
+      super$initialize(id, backend, target)
+      assertNumeric(self$targetcol, finite = TRUE, any.missing = FALSE)
     }
   )
 )

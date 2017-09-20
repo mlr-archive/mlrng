@@ -1,4 +1,4 @@
-context("resample")
+context("Resampling")
 
 test_that("resampling cv", {
   task = Tasks$get("iris")

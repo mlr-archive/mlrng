@@ -9,7 +9,7 @@ Prediction = R6Class("Prediction",
       self$data = data.table(
         id = task$backend$ids(subset),
         response = response,
-        truth = task$targets[subset]
+        truth = task$targetcol[subset]
       )
     }
   ),

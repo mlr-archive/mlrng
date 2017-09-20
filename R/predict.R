@@ -10,7 +10,7 @@ predictWithHooks = function(model, task, learner, subset) {
   # ee$predicted = do.call(ee$learner$predict, c(list(model = ee$model, task = ee$task, subset = ee$subset), ee$learner$par.vals))
   # runHook(ee, ee$learner$hooks, "post.predict")
 
-  subset = subset %??% seq_len(task$nrow)
+  subset = subset %??% seq_len(task$backend$nrow)
   predicted = do.call(learner$predict, c(list(model = model, task = task, subset = subset), learner$par.vals))
   Prediction$new(task = task, subset = subset, response = predicted)
 }

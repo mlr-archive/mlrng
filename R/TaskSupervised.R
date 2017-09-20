@@ -9,16 +9,16 @@
 #'
 #' @template fields-task
 #' @template fields-supervisedtask
-#' @return [\code{\link{SupervisedTask}}].
+#' @return [\code{\link{TaskSupervised}}].
 #' @family Tasks
 #' @include Task.R
 #' @export
-SupervisedTask = R6Class("SupervisedTask",
+TaskSupervised = R6Class("TaskSupervised",
   inherit = Task,
   public = list(
     target = NA_character_,
-    initialize = function(data, target, cols = NULL, id.col = NULL, id = deparse(substitute(data))) {
-      super$initialize(data, cols = cols, id.col = id.col, id = id)
+    initialize = function(id, backend, target) {
+      super$initialize(id, backend)
       self$target = assertChoice(target, self$backend$cols)
     }
   ),
@@ -30,6 +30,6 @@ SupervisedTask = R6Class("SupervisedTask",
     # [charvec]. featurenames without targetnames
     features = function() setdiff(self$backend$cols, self$target),
     # [vec]. targetvalues
-    targets = function() self[[self$target]]
+    targetcol = function() self$backend$getCol(self$target)
   )
 )

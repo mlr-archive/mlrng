@@ -13,32 +13,32 @@
 #' @field positive [\code{character(1)}]: Only for binary classification: Level of the positive class (\code{NA} otherwise).
 #' @field levels [\code{character()}]: Levels of class labels.
 #'
-#' @return [\code{\link{ClassifTask}}].
+#' @return [\code{\link{TaskClassif}}].
 #' @family Tasks
 #' @export
 #' @examples
-#' task = ClassifTask$new(iris, target = "Species")
+#' task = TaskClassif$new(iris, target = "Species")
 #' task$formula
-ClassifTask = R6Class("ClassifTask",
-  inherit = SupervisedTask,
+TaskClassif = R6Class("TaskClassif",
+  inherit = TaskSupervised,
   public = list(
     type = "classif",
     positive = NA_character_,
-    initialize = function(data, target, cols = NULL, id.col = NULL, positive = NULL, id = deparse(substitute(data))) {
-      super$initialize(data, target = target, cols = cols, id = id, id.col = id.col)
-      target = self$backend[[target]]
-      assertFactor(target, any.missing = FALSE)
+    initialize = function(id, backend, target, positive = NULL) {
+      super$initialize(id, backend, target)
+      targetcol = self$targetcol
+      assertFactor(targetcol, any.missing = FALSE)
       if (!is.null(positive)) {
-        nlevs = nlevels(target)
+        nlevs = nlevels(targetcol)
         if (nlevs > 2L)
-          gstop("Cannot set a positive class for multilabel classification with {nlevs} levels")
-        self$positive = assertChoice(positive, levels(target))
+          gstop("Cannot set a positive class for multiclass classification with {nlevs} levels")
+        self$positive = assertChoice(positive, levels(targetcol))
       }
     }
   ),
 
   active = list(
-    levels = function() levels(self$backend[[self$target]]),
-    nlevels = function() nlevels(self$backend[[self$target]])
+    classes = function() levels(self$targetcol),
+    nclasses = function() length(self$classes)
   )
 )

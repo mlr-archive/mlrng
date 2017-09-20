@@ -14,13 +14,13 @@ expect_task = function(task) {
   expect_string(task$id, min.chars = 1L)
   expect_class(task$formula, "formula")
   expect_list(task$hooks, names = "unique")
-  expect_count(task$nrow)
-  expect_count(task$ncol)
+  expect_count(task$backend$nrow)
+  expect_count(task$backend$ncol)
 }
 
 expect_supervisedtask = function(task) {
   expect_task(task)
-  expect_is(task, "SupervisedTask")
+  expect_is(task, "TaskSupervised")
   expect_choice(task$target, task$backend$cols)
 
   tf = terms(task$formula)
@@ -30,7 +30,7 @@ expect_supervisedtask = function(task) {
 
 expect_classiftask = function(task) {
   expect_supervisedtask(task)
-  expect_factor(task[[task$target]], any.missing = FALSE)
+  expect_factor(task$targetcol, any.missing = FALSE)
   expect_int(task$nlevels, lower = 2L)
   if (task$nlevels > 2L)
     expect_identical(task$positive, NA_character_)
@@ -40,7 +40,7 @@ expect_classiftask = function(task) {
 
 expect_regrtask = function(task) {
   expect_supervisedtask(task)
-  expect_numeric(task[[task$target]], any.missing = FALSE)
+  expect_numeric(task$targetcol, any.missing = FALSE)
 }
 
 expect_learner = function(lrn) {
@@ -76,19 +76,18 @@ expect_resampling = function(r, instantiated = NULL) {
   expect_string(r$description, min.chars = 1L)
   expect_list(r$pars, names = "unique")
   expect_count(r$iters)
-  expect_identical(length(r), r$iters)
 
   if (isFALSE(instantiated)) {
     expect_scalar_na(r$checksum)
     expect_null(r$instance)
   }
 
-  if (isTRUE(instantiated) || is.Task(instantiated)) {
+  if (isTRUE(instantiated) || inherits(instantiated, "Task")) {
     expect_string(r$checksum)
     expect_list(r$instance, types = "Split", len = r$iters, names = "unnamed")
 
-    if (is.Task(instantiated)) {
-      n = instantiated$nrow
+    if (inherits(instantiated, "Task")) {
+      n = instantiated$backend$nrow
       for (i in seq_along(r)) {
         expect_split(r$instance[[i]], len = n)
         expect_integer(r$train(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
@@ -100,6 +99,12 @@ expect_resampling = function(r, instantiated = NULL) {
   }
 }
 
+asDplyr = function(df) {
+  requireNamespace("dplyr")
+  con = dplyr::src_sqlite(":memory:", create = TRUE)
+  dplyr::copy_to(con, df)
+}
+
 asDplyrTask = function(task) {
   if (testString(task))
     task = Tasks$get(task)
@@ -109,6 +114,6 @@ asDplyrTask = function(task) {
   tab = dplyr::copy_to(con, task$backend$data)
 
   newtask = task$clone(deep = TRUE)
-  newtask$backend = DplyrBackend$new(tab, id.col = task$backend$id.col)
+  newtask$backend = DataBackendDplyr$new(tab, id.col = task$backend$id.col)
   newtask
 }

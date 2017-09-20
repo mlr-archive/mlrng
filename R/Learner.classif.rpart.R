@@ -9,9 +9,9 @@ Learners$add(Learner$new(
   par.vals = list(),
   properties = c("missings"),
   train = function(task, subset, ...) {
-    rpart::rpart(task$formula, task[subset])
+    rpart::rpart(task$formula, task$backend$get(subset))
   },
   predict = function(model, task, subset, ...) {
-    as.character(predict(model, newdata = task[subset], type = "class", ...))
+    as.character(predict(model, newdata = task$backend$get(subset), type = "class", ...))
   }
 ))

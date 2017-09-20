@@ -1,11 +1,11 @@
 #' @include DataBackend.R
-DplyrBackend = R6Class("DplyrBackend",
+DataBackendDplyr = R6Class("DataBackendDplyr",
   inherit = DataBackend,
   public = list(
     data = NULL,
     rows = NULL,
-    cols = NA_character_,
-    id.col = NA_character_,
+    cols = NULL,
+    id.col = NULL,
 
     initialize = function(data, id.col = NULL) {
       requireNS(c("dplyr", "lazyeval"))
@@ -28,8 +28,8 @@ DplyrBackend = R6Class("DplyrBackend",
     },
 
     get = function(ids = NULL, cols = NULL) {
-      ids = private$translate_ids(ids)
-      cols = private$translate_cols(cols)
+      ids = private$translateIds(ids)
+      cols = private$translateCols(cols)
 
       f = lazyeval::interp("id %in% ids", id = as.name(self$id.col), ids = ids[[self$id.col]])
       tab = dplyr::filter_(self$data, f)

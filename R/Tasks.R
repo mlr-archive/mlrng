@@ -25,8 +25,8 @@ listTasks = function() {
     list(
       id = task$id,
       type = task$type,
-      nrow = task$nrow,
-      ncol = task$ncol
+      nrow = task$backend$nrow,
+      ncol = task$backend$ncol
     )
   }))
   setkeyv(tab, "id")[]

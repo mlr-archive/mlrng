@@ -9,13 +9,14 @@ trainWithHooks = function(task, learner, subset = NULL) {
   # ee$model = ee$learner$train(ee$task, subset = ee$subset)
   # runHook(ee, learner$hooks, "post.train")
   # ee$model
-  learner$train(task, subset = subset %??% seq_len(task$nrow))
+  learner$train(task, subset = subset %??% seq_len(task$backend$nrow))
 }
 
 #' @export
 train = function(task, learner, subset = NULL) {
   resampling = makePseudoHoldout(task, asSubset(task, subset))
-  WrappedModel$new(task, learner, trainWithHooks(task = task, learner = learner, subset = subset), resampling)
+  mod = trainWithHooks(task = task, learner = learner, subset = subset)
+  WrappedModel$new(task, learner, mod, resampling)
 }
 
 makePseudoHoldout = function(task, subset = NULL) {

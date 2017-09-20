@@ -15,17 +15,11 @@ Task = R6Class("Task",
     backend = NULL,
     id = NULL,
     hooks = list(),
-    initialize = function(data, cols = NULL, id.col = NULL, id = deparse(substitute(data))) {
+    initialize = function(id, backend) {
       self$id = assertString(id, min.chars = 1L)
-
-      if (inherits(data, "DataBackend")) {
-        self$backend = copy(data)
-      } else if (inherits(data, "tbl_sql")) {
-        self$backend = DplyrBackend$new(data, cols = cols, id.col = id.col)
-      } else {
-        assertDataFrame(data)
-        self$backend = DataTableBackend$new(data, cols = cols, id.col = id.col)
-      }
+      assertClass(backend, "DataBackend")
+      # FIXME: wollen wir hier immer eine copy?
+      self$backend = copy(backend)
     },
 
     addHook = function(id, fun, ...) {
@@ -35,8 +29,6 @@ Task = R6Class("Task",
   ),
 
   active = list(
-    nrow = function() self$backend$nrow,
-    ncol = function() self$backend$ncol,
     features = function() self$backend$cols,
     formula = function() reformulate(self$backend$cols)
   ),
@@ -48,25 +40,3 @@ Task = R6Class("Task",
   )
 )
 
-#' @export
-is.Task = function(x) {
-  inherits(x, "Task")
-}
-
-#' @export
-`[.Task` = function(x, i, j, ...) {
-  i = if (missing(i)) NULL else x$backend$ids(i)
-  if (missing(j)) j = NULL
-  x$backend$get(ids = i, cols = j)
-}
-
-#' @export
-`[[.Task` = function(x, i, ...) {
-  assertString(i)
-  x$backend$get(ids = NULL, cols = i)[[1L]]
-}
-
-#' @export
-as.data.table.Task = function(x, keep.rownames = FALSE, ...) {
-  x$backend$get()
-}

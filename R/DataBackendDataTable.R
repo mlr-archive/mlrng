@@ -1,5 +1,5 @@
 #' @include DataBackend.R
-DataTableBackend = R6Class("DataTableBackend",
+DataBackendDataTable = R6Class("DataBackendDataTable",
   inherit = DataBackend,
   public = list(
     initialize = function(data, cols = NULL, id.col = NULL) {
@@ -33,13 +33,15 @@ DataTableBackend = R6Class("DataTableBackend",
     },
 
     get = function(ids = NULL, cols = NULL) {
-      ids = private$translate_ids(ids)
-      cols = private$translate_cols(cols)
+      ids = private$translateIds(ids)
+      cols = private$translateCols(cols)
       self$data[.(ids), cols, with = FALSE, on = self$id.col]
     }
   ),
 
+
   active = list(
+    # --> charvec, get datatypes of active cols
     types = function() vcapply(self$data[, self$cols, with = FALSE], class)
   ),
 

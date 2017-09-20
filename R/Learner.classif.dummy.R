@@ -9,7 +9,7 @@ Learners$add(Learner$new(
   properties = c("missings", "factors", "numerics"),
   train = function(task, subset, ...) {
     tn = task$target
-    mod = task[subset, tn][, .N, by = tn]
+    mod = task$backend$get(subset, tn)[, .N, by = tn]
     class(mod) = c("dummy.model", class(mod))
     mod
   },

@@ -6,7 +6,7 @@ Resamplings$add(
     iters = 1L,
     instantiate = function(x) {
       if (inherits(x, "Task"))
-        x = x$nrow
+        x = x$backend$nrow
       self$set(train = list(replace(logical(x), sample(x, floor(self$pars$ratio * x)), TRUE)))
     },
     pars = list(ratio = 2/3)

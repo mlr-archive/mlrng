@@ -48,24 +48,6 @@ Resampling = R6Class("Resampling",
 )
 
 #' @export
-is.Resampling = function(x) {
-  inherits(x, "Resampling")
-}
-
-#' @export
-length.Resampling = function(x) {
-  x$iters
-}
-
-#' @export
-`[[.Resampling` = function(x, i, ...) {
-  if (is.null(x$instance))
-    stop("Resampling has not been instantiated yet")
-  assertInt(i, lower = 1L, upper = x$iters)
-  x$instance[[i]]
-}
-
-#' @export
 as.data.table.Resampling = function(x, keep.rownames = FALSE, ...) {
   data.table(
     iter = seq_along(x),
