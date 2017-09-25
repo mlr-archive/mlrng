@@ -16,7 +16,7 @@ Imports:
     backports (>= 1.1.1),
     BBmisc,
     bit,
-    checkmate (>= 1.8.3),
+    checkmate (>= 1.8.4),
     digest,
     glue,
     parallelMap,
@@ -36,7 +36,7 @@ Suggests:
     RSQLite,
     testthat
 RoxygenNote: 6.0.1
-Collate: 
+Collate:
     'BenchmarkResult.R'
     'DataBackend.R'
     'DataBackendDataTable.R'

@@ -4,7 +4,7 @@ BenchmarkResult = R6Class("BenchmarkResult",
     data = NULL,
     initialize = function(tasks, learners, resamplings) {
       fun = function(resampling) {
-        CJ(task = names(tasks), learner = names(learners), resampling = resampling$id, iter = seq_along(resampling))
+        CJ(task = names(tasks), learner = names(learners), resampling = resampling$id, iter = seq_len(resampling$iters))
       }
       self$data = rbindlist(lapply(resamplings, fun))
     },

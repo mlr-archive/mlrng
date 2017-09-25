@@ -21,6 +21,11 @@ Resampling = R6Class("Resampling",
       invisible(self)
     },
 
+    split = function(i) {
+      assertInt(i, lower = 1L, upper = self$iters)
+      self$instance[[i]]
+    },
+
     train = function(i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")

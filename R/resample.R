@@ -12,7 +12,7 @@ resample = function(task, learner, resampling, measures) {
   parallelLibrary(packages = "mlrng", master = FALSE, level = pm.level)
   result = parallelMap(
     resampleIteration,
-    i = seq_along(resampling),
+    i = seq_len(resampling$iters),
     more.args = list(task = task, learner = learner, measures = measures, resampling = resampling),
     level = pm.level
   )
@@ -21,7 +21,7 @@ resample = function(task, learner, resampling, measures) {
 }
 
 resampleIteration = function(i, task, learner, resampling, measures, store.model = TRUE) {
-  split = resampling[[i]]
+  split = resampling$split(i)
   test = split$test
 
   gmessage("[Resample]: task={task$id} | learner={learner$id} | resampling={resampling$id}: {i}/{length(resampling)}")

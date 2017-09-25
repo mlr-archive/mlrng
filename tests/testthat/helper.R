@@ -88,7 +88,7 @@ expect_resampling = function(r, instantiated = NULL) {
 
     if (inherits(instantiated, "Task")) {
       n = instantiated$backend$nrow
-      for (i in seq_along(r)) {
+      for (i in seq_len(r$iters)) {
         expect_split(r$instance[[i]], len = n)
         expect_integer(r$train(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
         expect_integer(r$test(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")

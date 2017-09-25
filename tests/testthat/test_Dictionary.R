@@ -3,7 +3,7 @@ context("Dictionary")
 test_that("Basic ops on Dictionary, no R6 els", {
   d = Dictionary$new("numeric")
   expect_equal(d$length, 0L)
-  expect_message(print(d), "of 0 numeric")
+  expect_output(print(d), "of 0 numeric")
 
   d$add(1, id = "x")
   expect_equal(d$length, 1L)
@@ -27,7 +27,7 @@ test_that("Dictionary with R6 els", {
   Foo = R6Class("Foo", public = list(x=0, initialize = function(x) self$x = x), cloneable = TRUE)
   d = Dictionary$new("Foo")
   expect_equal(d$length, 0L)
-  expect_message(print(d), "of 0 Foo")
+  expect_output(print(d), "of 0 Foo")
   f1 = Foo$new(1)
   f2 = Foo$new(2)
 

@@ -58,7 +58,7 @@ Dictionary = R6Class("Dictionary",
 
     print = function(...) {
       ids = self$ids
-      gmessage("
+      gcat("
         Dictionary of {length(ids)} {self$eltype}
         Ids: {stri_peek(ids)}
       ")
