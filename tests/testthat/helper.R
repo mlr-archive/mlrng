@@ -30,7 +30,7 @@ expect_supervisedtask = function(task) {
 
 expect_classiftask = function(task) {
   expect_supervisedtask(task)
-  expect_factor(task$targetcol, any.missing = FALSE)
+  expect_factor(task$backend$get(cols = task$target)[[1L]], any.missing = FALSE)
   expect_int(task$nlevels, lower = 2L)
   if (task$nlevels > 2L)
     expect_identical(task$positive, NA_character_)
@@ -40,7 +40,7 @@ expect_classiftask = function(task) {
 
 expect_regrtask = function(task) {
   expect_supervisedtask(task)
-  expect_numeric(task$targetcol, any.missing = FALSE)
+  expect_numeric(task$backend$get(cols = task$target)[[1L]], any.missing = FALSE)
 }
 
 expect_learner = function(lrn) {
@@ -111,7 +111,7 @@ asDplyrTask = function(task) {
 
   requireNamespace("dplyr")
   con = dplyr::src_sqlite(":memory:", create = TRUE)
-  tab = dplyr::copy_to(con, task$backend$data)
+  tab = dplyr::copy_to(con, private(task$backend)$data)
 
   newtask = task$clone(deep = TRUE)
   newtask$backend = DataBackendDplyr$new(tab, id.col = task$backend$id.col)

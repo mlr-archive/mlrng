@@ -6,10 +6,11 @@ Prediction = R6Class("Prediction",
 
     initialize = function(task, subset, response) {
       self$task = task
+      ids = task$backend$active.rows[subset]
       self$data = data.table(
-        id = task$backend$ids(subset),
+        id = ids,
         response = response,
-        truth = task$targetcol[subset]
+        truth = task$backend$get(ids = ids, cols = task$target)
       )
     }
   ),

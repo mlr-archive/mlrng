@@ -13,7 +13,6 @@
   x$get(cols = i)[[1L]]
 }
 
-
 #' @export
 is.Task = function(x) {
   inherits(x, "Task")

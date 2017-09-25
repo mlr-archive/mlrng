@@ -21,7 +21,7 @@ Tasks = Dictionary$new("Task")
 #' @rdname Tasks
 listTasks = function() {
   tab = rbindlist(lapply(Tasks$ids, function(id) {
-    task = getTask(id)
+    task = Tasks$get(id)
     list(
       id = task$id,
       type = task$type,

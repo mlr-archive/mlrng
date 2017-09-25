@@ -23,7 +23,7 @@ TaskRegr = R6Class("TaskRegr",
     type = "regr",
     initialize = function(id, backend, target) {
       super$initialize(id, backend, target)
-      assertNumeric(self$targetcol, finite = TRUE, any.missing = FALSE)
+      assertNumeric(self$backend$get(cols = self$target)[[1L]], finite = TRUE, any.missing = FALSE)
     }
   )
 )

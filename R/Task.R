@@ -17,9 +17,12 @@ Task = R6Class("Task",
     hooks = list(),
     initialize = function(id, backend) {
       self$id = assertString(id, min.chars = 1L)
-      assertClass(backend, "DataBackend")
-      # FIXME: wollen wir hier immer eine copy?
-      self$backend = copy(backend)
+      if (inherits(backend, "DataBackend")) {
+        self$backend = backend$clone(deep = TRUE)
+      } else {
+        assertDataFrame(backend)
+        self$backend = DataBackendDataTable$new(backend)
+      }
     },
 
     addHook = function(id, fun, ...) {

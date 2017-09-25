@@ -7,20 +7,33 @@ getDataSet = function(name, pkg = "mlrng") {
   ee[[name]]
 }
 
-addExampleTask = function(taskcl, id, dsname, package, target, pos = NULL) {
-  Tasks$add(LazyElement$new(id, get = function() {
-    d = getDataSet(dsname, package)
-    dbe = DataBackendDataTable$new(data = d)
-    args = list(id = id, backend = dbe, target = target)
-    args$positive = pos # only add when not NULL
-    do.call(taskcl$new, args)
-  }))
-}
+Tasks$add(
+  LazyElement$new("iris", function() TaskClassif$new(id = "iris", getDataSet("iris", "datasets"), target = "Species"))
+)
 
-addExampleTask(TaskClassif, "iris", "iris", "datasets", "Species")
-addExampleTask(TaskClassif, "sonar", "Sonar", "mlbench", "Class", "M")
-addExampleTask(TaskClassif, "pima", "PimaIndiansDiabetes2", "mlbench", "diabetes", "pos")
-addExampleTask(TaskClassif, "spam", "spam", "kernlab", "type", "spam")
-addExampleTask(TaskRegr, "bh", "BostonHousing", "mlbench", "medv")
+Tasks$add(
+  LazyElement$new("bh", function() TaskRegr$new(id = "bh", getDataSet("BostonHousing", "mlbench"), target = "medv"))
+)
 
+Tasks$add(
+  LazyElement$new("sonar", function() TaskClassif$new(id = "sonar", getDataSet("Sonar", "mlbench"), target = "Class", positive = "M"))
+)
 
+Tasks$add(
+  LazyElement$new("pima", function() TaskClassif$new(id = "pima", getDataSet("PimaIndiansDiabetes2", "mlbench"), target = "diabetes", positive = "pos"))
+)
+
+Tasks$add(
+  LazyElement$new("spam", function() TaskClassif$new(id = "spam", getDataSet("spam", "kernlab"), target = "type", positive = "spam"))
+)
+
+Tasks$add(
+  LazyElement$new("breastcancer", function() {
+    data = getDataSet("BreastCancer", "mlbench")
+    i = vlapply(data, is.ordered)
+    data[i] = lapply(data[i], as.integer)
+    cols = setdiff(names(data), "Id")
+    b = DataBackendDataTable$new(data = data, cols = cols)
+    TaskClassif$new(id = "BreastCancer", backend = b, target = "Class", positive = "malignant")
+  })
+)

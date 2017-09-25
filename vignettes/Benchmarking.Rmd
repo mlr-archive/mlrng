@@ -20,12 +20,10 @@ library(mlrng)
 A classification task using the famous iris data set is predefined in the package:
 ```{r}
 listTasks()
-iris.task = getTask("iris")
+iris.task = Tasks$get("iris")
 ```
-Some simple task operations:
+Some simple task getters:
 ```{r}
-iris.task$nrow
-iris.task$ncol
 iris.task$target
 iris.task$features
 iris.task$formula
@@ -33,12 +31,12 @@ iris.task$formula
 The data is stored in an abstract class `DataBackend`.
 It is designed to transparently access in-memory data structures like `data.frame` or `data.table` as well as real DBMS via the `dplyr` package.
 Because most data bases can only be accessed read-only, the operations on these backends are limited.
-You can subset rows and columns though:
+You can query some basic information and subset rows and columns though:
 ```{r}
+iris.task$backend$nrow
+iris.task$backend$ncol
 iris.task$backend$drop("Sepal.Width")
 iris.task$backend$subsample(ratio = 0.9)
-iris.task$features
-iris.task$nrow
 ```
 
 ### Task `BreastCancer`

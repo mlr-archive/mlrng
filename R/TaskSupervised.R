@@ -28,8 +28,6 @@ TaskSupervised = R6Class("TaskSupervised",
       reformulate(setdiff(self$backend$cols, self$target), response = self$target)
     },
     # [charvec]. featurenames without targetnames
-    features = function() setdiff(self$backend$cols, self$target),
-    # [vec]. targetvalues
-    targetcol = function() self$backend$getCol(self$target)
+    features = function() setdiff(self$backend$cols, self$target)
   )
 )

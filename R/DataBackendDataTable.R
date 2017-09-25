@@ -3,46 +3,47 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
   inherit = DataBackend,
   public = list(
     initialize = function(data, cols = NULL, id.col = NULL) {
-      self$data = as.data.table(data)
+      data = as.data.table(data)
 
       if (is.null(cols)) {
-        cols = names(self$data)
+        cols = names(data)
       }
 
       if (is.null(id.col)) {
         id.col = "..id"
-        self$data[[id.col]] = seq_len(nrow(data))
+        data[[id.col]] = seq_len(nrow(data))
       } else {
-        assertChoice(id.col, names(self$data))
-        if (anyDuplicated(self$data[[id.col]]))
+        assertChoice(id.col, names(data))
+        if (anyDuplicated(data[[id.col]]))
           stop("Duplicated ids in ID column")
         cols = setdiff(cols, id.col)
       }
 
-      assertDataTable(self$data[1L, cols, with = FALSE], types = c("numeric", "factor"))
-      setkeyv(self$data, id.col)
+      assertDataTable(data[1L, cols, with = FALSE], types = c("numeric", "factor"))
+      setkeyv(data, id.col)
       self$cols = setdiff(cols, id.col)
       self$id.col = id.col
 
       self$rows = data.table(
-        ..id = self$data[[self$id.col]],
-        status = factor(rep("active", nrow(self$data)), levels = c("active", "inactive")),
+        ..id = data[[self$id.col]],
+        status = factor(rep("active", nrow(data)), levels = c("active", "inactive")),
         key = "..id"
       )
       setnames(self$rows, "..id", self$id.col)
+      private$data = data
     },
 
     get = function(ids = NULL, cols = NULL) {
       ids = private$translateIds(ids)
       cols = private$translateCols(cols)
-      self$data[.(ids), cols, with = FALSE, on = self$id.col]
+      private$data[.(ids), cols, with = FALSE, on = self$id.col]
     }
   ),
 
 
   active = list(
     # --> charvec, get datatypes of active cols
-    types = function() vcapply(self$data[, self$cols, with = FALSE], class)
+    types = function() vcapply(private$data[, self$cols, with = FALSE], class)
   ),
 
   private = list(

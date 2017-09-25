@@ -8,7 +8,7 @@ test_that("train", {
 })
 
 test_that("train on dplyr task", {
-  task = asDplyrTask("spam")
+  task = asDplyrTask(Tasks$get("spam"))
   lrn = Learners$get("classif.dummy")
   mod = train(task, lrn)
   expect_is(mod, "WrappedModel")

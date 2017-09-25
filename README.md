@@ -1,6 +1,7 @@
 # mlrng
 
+[![Build Status](https://travis-ci.org/mlr-org/mlrng.svg?branch=master)](https://travis-ci.org/mlr-org/mlrng)
 
-this is a rewrite of mlr in R6, cleaning up the design.
+This is a rewrite of `mlr` using `R6`, cleaning up the design.
 
-we are not done. you are allowed to look, but stuff is very much unfinished.
+We are not done. You are allowed to look, but stuff is very much unfinished.
