@@ -1,3 +1,11 @@
+#' @title ResampleResult
+#' @format \code{\link{R6Class}} object
+#'
+#' @description
+#' A \code{\link[R6]{R6Class}} containing data of a \code{\link{resample}}.
+#'
+#' @field aggr [\code{named numeric}]: Aggregated performance measures.
+#' @field data [\code{data.table}]: Data stored in a tabular format.
 ResampleResult = R6Class("ResampleResult",
   cloneable = FALSE,
   public = list(
@@ -6,9 +14,6 @@ ResampleResult = R6Class("ResampleResult",
     initialize = function(result, measure) {
       self$data = result
       self$measure = measure
-    },
-    performance = function(id) {
-      rbindlist(lapply(rr$data, function(x) as.list(x$performance)))
     }
   ),
   active = list(

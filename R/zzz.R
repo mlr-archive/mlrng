@@ -3,7 +3,7 @@
 #' @import stringi
 #' @import ParamHelpers
 #' @importFrom stats setNames
-#' @importFrom utils data hasName
+#' @importFrom utils data
 #' @importFrom bit as.bit as.which as.bitwhich bit is.bit
 #' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col isFALSE
 #' @importFrom parallelMap parallelMap parallelExport parallelLibrary

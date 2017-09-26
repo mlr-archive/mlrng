@@ -1,9 +1,6 @@
 #' @title Classification Tasks
 #' @format \code{\link{R6Class}} object
 #'
-#' @template params-task
-#' @template params-supervisedtask
-#'
 #' @description
 #' A \code{\link[R6]{R6Class}} to construct classification tasks.
 #'
@@ -17,7 +14,7 @@
 #' @family Tasks
 #' @export
 #' @examples
-#' task = TaskClassif$new(iris, target = "Species")
+#' task = TaskClassif$new(id = "iris", iris, target = "Species")
 #' task$formula
 TaskClassif = R6Class("TaskClassif",
   inherit = TaskSupervised,

@@ -1,3 +1,17 @@
+#' @title Resample a Learner on a Task
+#'
+#' @description
+#' Runs a resampling (possibly in parallel).
+#'
+#' @param task [\code{\link{Task}}]\cr
+#'   Object of type \code{\link{Task}}.
+#' @param learner [\code{\link{Learner}}]\cr
+#'   Object of type \code{\link{Learner}}.
+#' @param resampling [\code{\link{Resampling}}]\cr
+#'   Object of type \code{\link{Resampling}}.
+#' @param measures [\code{list} of \code{\link{Measure}}]\cr
+#'   List of objects of type \code{\link{Measure}}.
+#' @return \code{\link{ResampleResult}}.
 #' @export
 resample = function(task, learner, resampling, measures) {
   assertClass(task, "Task")
@@ -34,7 +48,7 @@ resampleIteration = function(i, task, learner, resampling, measures, store.model
     model = model,
     split = split,
     model = if (store.model) model else NULL,
-    predicted = predicted$predicted,
+    predicted = predicted$response,
     performance = setNames(performance, ids(measures))
   )
 }

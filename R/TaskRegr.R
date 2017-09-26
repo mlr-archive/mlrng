@@ -1,9 +1,6 @@
 #' @title Regression Tasks
 #' @format \code{\link{R6Class}} object
 #'
-#' @template params-task
-#' @template params-supervisedtask
-#'
 #' @description
 #' A \code{\link[R6]{R6Class}} to construct classification tasks.
 #'
@@ -15,7 +12,7 @@
 #' @family Tasks
 #' @export
 #' @examples
-#' task = TaskRegr$new(iris, target = "Sepal.Length")
+#' task = TaskRegr$new("iris", iris, target = "Sepal.Length")
 #' task$formula
 TaskRegr = R6Class("TaskRegr",
   inherit = TaskSupervised,

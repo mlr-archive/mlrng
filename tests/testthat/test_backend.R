@@ -26,8 +26,8 @@ test_that("Basic data.table backend ops", {
 
 test_that("Tasks are cloned", {
   task = Tasks$get("bh")
-  expect_true(!identical(address(task), address(Tasks$storage$bh)))
-  expect_true(!identical(address(task$backend), address(Tasks$storage$bh$backend)))
+  expect_true(!identical(address(task), address(Tasks$env$bh)))
+  expect_true(!identical(address(task$backend), address(Tasks$env$bh$backend)))
 
   data = data.table(x = 1:30, y = factor(sample(letters[1:2], 30, replace = TRUE)))
   task = TaskClassif$new(data, target = "y", id = "testthat-example")

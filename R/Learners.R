@@ -1,31 +1,21 @@
-#' @include Dictionary.R
-
 #' @title Registered Learners
 #' @docType class
 #' @format \code{\link{R6Class}} object
 #'
 #' @description
-#' A \code{\link[R6]{R6Class}} to manage learners.
+#' \code{Learners} is a \code{\link{Dictionary}} used to manage learners.
 #'
-#' @field ids Returns the ids of registered learners.
-#' @field storage Environment where all \code{\link{Learner}} objects are stored.
-#' @section Methods:
-#' \describe{
-#'  \item{\code{exists(ids)}}{Returns \code{TRUE} if a learner with id \code{ids} is registered.}
-#'  \item{\code{get(id)}}{Returns \code{\link{Learner} with corresponding \code{id}}.}
-#' }
-#' @return [\code{\link{Dictionary}}].
+#' @include Dictionary.R
 #' @export
 #' @examples
 #' Learners$ids
-#' Learners$exists("classif.dummy")
+#' Learners$contains("classif.dummy")
 #' Learners$get("classif.dummy")
-Learners = Dictionary$new("Learner")
+Learners = R6Class("Learners", inherit = Dictionary)$new("Learner")
 
 #' @export
-#' @rdname Learners
-listLearners = function() {
-  tab = rbindlist(eapply(Learners$env, function(lrn) {
+as.data.table.Learners = function(x, keep.rownames = FALSE, ...) {
+  tab = rbindlist(eapply(x$env, function(lrn) {
     list(
       id = lrn$id,
       name = lrn$name,

@@ -1,3 +1,10 @@
+#' @title BenchmarkResult
+#' @format \code{\link{R6Class}} object
+#'
+#' @description
+#' A \code{\link[R6]{R6Class}} containing data of a \code{\link{benchmark}}.
+#'
+#' @field data [\code{data.table}]: Data stored in a tabular format.
 BenchmarkResult = R6Class("BenchmarkResult",
   cloneable = FALSE,
   public = list(

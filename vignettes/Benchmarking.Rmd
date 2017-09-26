@@ -19,7 +19,7 @@ library(mlrng)
 
 A classification task using the famous iris data set is predefined in the package:
 ```{r}
-listTasks()
+as.data.table(Tasks)
 iris.task = Tasks$get("iris")
 ```
 Some simple task getters:
@@ -35,48 +35,25 @@ You can query some basic information and subset rows and columns though:
 ```{r}
 iris.task$backend$nrow
 iris.task$backend$ncol
-iris.task$backend$drop("Sepal.Width")
+iris.task$backend$active.rows
+iris.task$backend$active.cols
+iris.task$backend$active.cols = setdiff(iris.task$backend$active.cols, "Petal.Length")
 iris.task$backend$subsample(ratio = 0.9)
-```
-
-### Task `BreastCancer`
-
-```{r}
-data("BreastCancer", package = "mlbench")
-str(BreastCancer)
-```
-This task ordered factors which we need to convert to integers first:
-```{r}
-convert = function(x) if (is.ordered(x)) as.integer(x) else x
-BreastCancer = as.data.frame(lapply(BreastCancer, convert))
-```
-```{r}
-bc.task = ClassifTask$new(
-  data = BreastCancer,
-  target = "Class",         # name of target variable
-  cols = setdiff(names(BreastCancer), "Id"),
-  positive = "malignant"   # positive class
-)
-```
-Note that we can subset tasks to retrieve the data and also note that the id column is not passed to learner models:
-```{r}
-head(bc.task[["Class"]])
-bc.task[1:3, c("Mitoses", "Class")]
-bc.task$formula
+iris.task$backend$get()
 ```
 
 ## Create Learners
 
 All learners are stored in a register called `Learners` and can easily be listed:
 ```{r}
-listLearners()
+as.data.table(Learners)
 ```
 
 ### Dummy classification learner
 
-You can retrieve learners from the register `Learners` with the `getLearner()` function.
+You can retrieve learners from the dictionary `Learners`:
 ```{r}
-lrn.dummy = getLearner("classif.dummy")
+lrn.dummy = Learners$get("classif.dummy")
 ```
 
 The parameter set is stored in the slot `par.set` and parameters deviating from the default are stored in `par.vals`:
@@ -89,38 +66,39 @@ Now, we set the parameter `method` to `"sample"`, change the `id` and add the le
 ```{r}
 lrn.dummy$par.vals = list(method = "sample")
 lrn.dummy$id = "classif.dummy.sample"
-Learners$register(lrn.dummy)
-listLearners()
+Learners$add(lrn.dummy)
+as.data.table(Learners)
 ```
 From now on, we can just pass the id `"classif.dummy.sample"` to other functions to use this learner.
 
 ### CART
 
 ```{r}
-lrn.rpart = getLearner("classif.rpart")
+lrn.rpart = Learners$get("classif.rpart")
 ```
 
 ## Measures
 
 ```{r}
-listMeasures()
-measure = getMeasure("mmce")
+as.data.table(Measures)
+measure = Measures$get("mmce")
 ```
 
 ## Resampling
 
 ```{r}
-listResamplings()
-r = getResampling("cv")
-r$pars
+as.data.table(Resamplings)
+r = Resamplings$get("cv")
+print(r)
+
+# change to 3-fold cv
 r$iters = 3
 ```
 
 ## Resample
 
 ```{r}
-rr = resample(task = iris.task, learner = lrn.dummy, resampling = r, measure = measure)
-rr$performance()
+rr = resample(task = iris.task, learner = lrn.dummy, resampling = r, measures = list(measure))
 rr$aggr
 as.data.table(rr)
 ```
@@ -128,15 +106,16 @@ as.data.table(rr)
 ## Benchmark
 
 ```{r}
-tasks = list("iris", "breastcancer")
-learners = list("classif.dummy", "classif.rpart")
-resamplings = getResampling("cv")
-measures = getMeasure("mmce")
+tasks = lapply(c("iris", "breastcancer"), Tasks$get)
+learners = lapply(c("classif.dummy", "classif.rpart"), Learners$get)
+resamplings = lapply("cv", Resamplings$get)
+measures = lapply("mmce", Measures$get)
 
 bmr = benchmark(
   tasks = tasks,
   learners = learners,
-  resamplings = r,
-  measures = measure)
+  resamplings = resamplings,
+  measures = measures)
 bmr
+head(as.data.table(bmr))
 ```

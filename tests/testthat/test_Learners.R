@@ -1,7 +1,7 @@
-context("listLearners")
+context("Learners")
 
-test_that("listLearners", {
-  x = listLearners()
+test_that("as.data.table", {
+  x = as.data.table(Learners)
   expect_data_table(x, min.rows = 2, key = "id")
   expect_character(x$name, any.missing = FALSE)
   expect_character(x$type, any.missing = FALSE)

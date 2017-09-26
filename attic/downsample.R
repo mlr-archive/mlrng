@@ -1,5 +1,5 @@
 downsample = function(task, ratio) {
-  task = getTask(task)
+  assertR6(task, "Task")
   assertNumber(ratio, lower = 0, upper = 1)
 
   n = task$nrow

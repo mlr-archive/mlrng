@@ -52,8 +52,3 @@ Learner = R6Class("Learner",
     pv = NULL
   )
 )
-
-#' @export
-is.Learner = function(x) {
-  inherits(x, "Learner")
-}

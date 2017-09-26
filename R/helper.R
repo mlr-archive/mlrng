@@ -48,3 +48,8 @@ asSubset = function(x, subset = NULL) {
   assertIntegerish(subset, any.missing = FALSE, lower = 1L, upper = x)
   replace(bit(x), subset, TRUE)
 }
+
+hasName = function (x, name) {
+  # FIXME: ML: Find a working solution for backports which are not in base
+  match(name, names(x), nomatch = 0L) > 0L
+}

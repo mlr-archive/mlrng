@@ -1,8 +1,5 @@
 #' @title Base Class for Supervised Tasks
 #'
-#' @template params-task
-#' @template params-supervisedtask
-#'
 #' @description
 #' A \code{\link[R6]{R6Class}} to construct supervised tasks.
 #' This is the abstract base class, do not use directly!

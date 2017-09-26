@@ -1,6 +1,5 @@
 #' @title Base Class for Tasks
 #' @format \code{\link{R6Class}} object
-#' @template params-task
 #'
 #' @description
 #' A \code{\link[R6]{R6Class}} to construct tasks.
@@ -42,4 +41,3 @@ Task = R6Class("Task",
     }
   )
 )
-

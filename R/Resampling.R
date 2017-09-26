@@ -1,3 +1,17 @@
+#' @title Base Class for Resampling Measures
+#' @format \code{\link{R6Class}} object
+#'
+#' @description
+#' A \code{\link[R6]{R6Class}} to construct resampling measures.
+#' This is the abstract base class, do not use directly!
+#'
+#' Predefined resampling measures are stored in \code{\link{Resamplings}}.
+#'
+#' @field id [\code{character(1)}]: Identifier of the measure.
+#' @field description [\code{character(1)}]: Name of the measure.
+#' @field tasktypes [\code{character}]: Set of compatible task types.
+#' @field fun [\code{function(truth, predicted)}]: function to compute the measure.
+#' @return [\code{Measure}].
 #' @export
 Resampling = R6Class("Resampling",
   public = list(
@@ -18,7 +32,6 @@ Resampling = R6Class("Resampling",
       }
       self$iters = assertCount(iters)
       self$pars = assertList(pars, names = "unique")
-      invisible(self)
     },
 
     split = function(i) {
