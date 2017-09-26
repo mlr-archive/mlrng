@@ -70,7 +70,7 @@ Dictionary = R6Class("Dictionary",
     slice = function(ids) {
       assertCharacter(ids, any.missing = FALSE)
       assertContains(self, ids)
-      rm(list = setdiff(ls(self$env, all.names = TRUE, sorted = FALSE), ids), envir = self$env)
+      rm(list = setdiff(ls(self$env, all.names = TRUE), ids), envir = self$env) # FIXME: sorted = FALSE?
       invisible(self)
     },
 
@@ -86,7 +86,7 @@ Dictionary = R6Class("Dictionary",
   ),
 
   active = list(
-    ids = function() ls(self$env, all.names = TRUE, sorted = TRUE),
+    ids = function() ls(self$env, all.names = TRUE), # FIXME: sorted = FALSE?
     length = function() length(self$env)
   ),
 

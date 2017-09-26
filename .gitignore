@@ -2,6 +2,5 @@
 /src/*.so
 /src/*.o
 /inst/doc
-/man/*
 /vignettes/*.pdf
 /vignettes/*.R
