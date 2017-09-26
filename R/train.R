@@ -35,5 +35,10 @@ train = function(task, learner, subset = NULL) {
 }
 
 trainWorker = function(task, learner, split) {
-  learner$train(task, subset = split$train)
+  i = split$train
+  if (length(i) == 0L)
+    stop("Cannot train. Training set is empty.")
+
+  learner$train(task, subset = i,
+    data = task$backend$get(ids = task$backend$active.rows[i]))
 }

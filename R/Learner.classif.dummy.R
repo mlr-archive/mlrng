@@ -7,17 +7,17 @@ Learners$add(Learner$new(
   ),
   par.vals = list(),
   properties = c("missings", "factors", "numerics"),
-  train = function(task, subset, ...) {
+  train = function(task, subset, data, ...) {
     tn = task$target
-    mod = task$backend$get(subset, tn)[, .N, by = tn]
+    mod = data[, .N, by = tn]
     class(mod) = c("dummy.model", class(mod))
     mod
   },
 
-  predict = function(model, task, subset, method = "mode", ...) {
+  predict = function(model, task, subset, data, method = "mode", ...) {
     if (method == "mode")
-      rep.int(as.character(sample(model[N == max(N)][[task$target]], 1L)), length(subset))
+      rep.int(as.character(sample(model[N == max(N)][[task$target]], 1L)), nrow(data))
     else
-      as.character(sample(model[[task$target]], length(subset), replace = TRUE, prob = model[["N"]]))
+      as.character(sample(model[[task$target]], nrow(data), replace = TRUE, prob = model[["N"]]))
   }
 ))

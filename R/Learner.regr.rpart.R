@@ -8,10 +8,10 @@ Learners$add(Learner$new(
   ),
   par.vals = list(),
   properties = c("missings"),
-  train = function(task, subset, ...) {
-    rpart::rpart(task$formula, task$backend$get(subset))
+  train = function(task, subset, data, ...) {
+    rpart::rpart(task$formula, data)
   },
-  predict = function(model, task, subset, ...) {
-    unname(predict(model, newdata = task$backend$get(subset), type = "vector", ...))
+  predict = function(model, task, subset, data, ...) {
+    unname(predict(model, newdata = data, type = "vector", ...))
   }
 ))

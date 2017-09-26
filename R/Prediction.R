@@ -3,14 +3,18 @@ Prediction = R6Class("Prediction",
   public = list(
     task = NULL, # [Task]: ref to we trained on
     data = NULL, # [data.table]: prediction cols, (id, response, truth, ...)
+    wrapped.model = NULL,
+    split = NULL,
 
-    initialize = function(task, subset, response) {
-      self$task = task
-      ids = task$backend$active.rows[subset]
+    initialize = function(task, wrapped.model, split, response) {
+      self$task = assertR6(task, "Task")
+      self$wrapped.model = assertR6(wrapped.model, "WrappedModel")
+      self$split = assertR6(split, "Split")
+      ids = task$backend$active.rows[split$test]
       self$data = data.table(
         id = ids,
         response = response,
-        truth = task$backend$get(ids = ids, cols = task$target)
+        truth = task$backend$get(ids = ids, cols = task$target)[[1L]]
       )
     }
   ),

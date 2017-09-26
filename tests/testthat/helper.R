@@ -58,10 +58,10 @@ expect_learner = function(lrn) {
 
 expect_split = function(s, len = NULL) {
   expect_class(s, "Split")
-  expect_bit(private(s)$train.bit, len = len, min.1 = 1)
-  expect_bit(private(s)$test.bit, len = len, min.0 = 1)
-  l = length(private(s)$train.bit)
-  expect_equal(l, length(private(s)$test.bit))
+  expect_bit(s$train.bit, len = len, min.1 = 1)
+  expect_bit(s$test.bit, len = len, min.0 = 1)
+  l = length(s$train.bit)
+  expect_equal(l, length(s$test.bit))
   expect_integer(s$train, any.missing = FALSE, min.len = 1L, max.len = l, lower = 1L, upper = l)
   expect_integer(s$test, any.missing = FALSE, min.len = 1L, max.len = l, lower = 1L, upper = l)
 }

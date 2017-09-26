@@ -40,15 +40,15 @@ resampleIteration = function(i, task, learner, resampling, measures, store.model
 
   gmessage("[Resample]: task={task$id} | learner={learner$id} | resampling={resampling$id}: {i}/{length(resampling)}")
   model = trainWorker(task = task, learner = learner, split)
-  truth = task$backend$get(ids = task$backend$active.rows[test], task$target)
-  predicted = predictWithHooks(model, task, learner, subset = test)
-  performance = lapply(measures, function(x) x$fun(truth, predicted$response))
+  truth = task$backend$get(ids = task$backend$active.rows[test], task$target)[[1L]]
+  response = predictWorker(model = model, task = task, learner = learner, split = split)
+  performance = lapply(measures, function(x) x$fun(truth, response))
   list(
     task = task,
     model = model,
     split = split,
     model = if (store.model) model else NULL,
-    predicted = predicted$response,
+    predicted = response,
     performance = setNames(performance, ids(measures))
   )
 }
