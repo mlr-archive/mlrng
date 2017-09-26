@@ -39,7 +39,7 @@ resampleIteration = function(i, task, learner, resampling, measures, store.model
   test = split$test
 
   gmessage("[Resample]: task={task$id} | learner={learner$id} | resampling={resampling$id}: {i}/{length(resampling)}")
-  model = trainWithHooks(task = task, learner = learner, subset = split$train)
+  model = trainWorker(task = task, learner = learner, split)
   truth = task$backend$get(ids = task$backend$active.rows[test], task$target)
   predicted = predictWithHooks(model, task, learner, subset = test)
   performance = lapply(measures, function(x) x$fun(truth, predicted$response))

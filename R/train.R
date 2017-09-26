@@ -9,7 +9,6 @@ trainWithHooks = function(task, learner, subset = NULL) {
   # ee$model = ee$learner$train(ee$task, subset = ee$subset)
   # runHook(ee, learner$hooks, "post.train")
   # ee$model
-  learner$train(task, subset = subset %??% seq_len(task$backend$nrow))
 }
 
 #' @title Train a Learner on a Task
@@ -26,17 +25,15 @@ trainWithHooks = function(task, learner, subset = NULL) {
 #' @return \code{\link{WrappedModel}}.
 #' @export
 train = function(task, learner, subset = NULL) {
-  resampling = makePseudoHoldout(task, asSubset(task, subset))
-  mod = trainWithHooks(task = task, learner = learner, subset = subset)
-  WrappedModel$new(task, learner, mod, resampling)
+  assertR6(task, "Task")
+  assertR6(learner, "Learner")
+
+  subset = asSubset(task, subset)
+  split = Split$new(train = subset)
+  model = trainWorker(task, learner, split)
+  WrappedModel$new(task, learner, model, split)
 }
 
-makePseudoHoldout = function(task, subset = NULL) {
-  ph = Resampling$new(
-    id = "CustomHoldout",
-    description = "Custom holdout-like resampling",
-    iters = 1L,
-    instantiate = NULL
-  )
-  ph$set(train = list(subset))
+trainWorker = function(task, learner, split) {
+  learner$train(task, subset = split$train)
 }

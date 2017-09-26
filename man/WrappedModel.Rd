@@ -18,7 +18,7 @@ A \code{\link[R6]{R6Class}} containing data of a \code{\link{train}}.
 
 \item{\code{learner}}{[\code{\link{Learner}}]: Learner used to fit the model.}
 
-\item{\code{resampling}}{[\code{\link{Resampling}}]: Resampling used to fit the model.}
+\item{\code{split}}{[\code{\link{Split}}]: Split into training/test used to fit the model.}
 
 \item{\code{model}}{[any]: Result of the model fit as returned by third party packages.}
 }}

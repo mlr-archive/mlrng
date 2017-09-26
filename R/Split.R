@@ -16,8 +16,8 @@ Split = R6Class("Split",
   ),
 
   active = list(
-    train = function() as.which(private$train.bit),
-    test = function() as.which(private$test.bit),
+    train = function() as.integer(as.which(private$train.bit)),
+    test = function() as.integer(as.which(private$test.bit)),
     inds = function() length(private$train.bit)
   )
 )
