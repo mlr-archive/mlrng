@@ -24,27 +24,41 @@ benchmark = function(tasks, learners, resamplings, measures) {
   names(measures) = assertNames(ids(measures), "unique")
 
   # instantiate resamplings for each task
-  rr = setNames(vector("list", length(tasks)), names(tasks))
+  instances = setNames(vector("list", length(tasks)), names(tasks))
   for (tn in names(tasks)) {
-    rr[[tn]] = setNames(vector("list", length(resamplings)), names(resamplings))
+    instances[[tn]] = setNames(vector("list", length(resamplings)), names(resamplings))
     for (rn in names(resamplings)) {
-      rr[[tn]][[rn]] = resamplings[[rn]]$clone()$instantiate(tasks[[tn]])
+      instances[[tn]][[rn]] = resamplings[[rn]]$clone()$instantiate(tasks[[tn]])
     }
   }
-  rr = unlist(rr, recursive = FALSE)
+  instances = unlist(instances, recursive = FALSE)
 
-  bmr = BenchmarkResult$new(tasks, learners, resamplings)
+  fun = function(resampling) CJ(task = names(tasks), learner = names(learners), resampling = resampling$id, iter = seq_len(resampling$iters))
+  grid = rbindlist(lapply(resamplings, fun))
+
   pm.level = "mlrng.resample"
   parallelLibrary(packages = "mlrng", master = FALSE, level = pm.level)
-  result = parallelMap(
+  results = parallelMap(
     fun = resampleIteration,
-    task = tasks[bmr$data$task],
-    learner = learners[bmr$data$learner],
-    resampling = rr[sprintf("%s.%s", bmr$data$task, bmr$data$resampling)],
-    i = bmr$data$iter,
+    task = tasks[grid$task],
+    learner = learners[grid$learner],
+    resampling = instances[sprintf("%s.%s", grid$task, grid$resampling)],
+    i = grid$iter,
     more.args = list(measures = measures, store.model = FALSE),
     level = pm.level
   )
-  bmr$store(result)
-  bmr
+
+  extract = function(x) {
+      list(
+        split = list(x$split),
+        model = list(x$model),
+        predicted = list(x$predicted),
+        performance = list(x$performance)
+      )
+  }
+  # FIXME: BMR object not finished yet
+  results = cbind(grid, rbindlist(lapply(results, extract)))
+
+  bmr = BenchmarkResult$new()
+  bmr$add(results)
 }

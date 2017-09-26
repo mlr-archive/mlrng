@@ -6,7 +6,6 @@ test_that("Step by step modeling", {
   model = train(task, learner, subset = sample(150, 120))
   expect_is(model, "WrappedModel")
   pred = predict(model, task)
-  expect_integer(pred$ids, len = 30, any.missing = FALSE)
   expect_character(pred$response, len = 30, any.missing = FALSE)
   expect_subset(pred$response, levels(iris$Species))
 
@@ -16,7 +15,6 @@ test_that("Step by step modeling", {
   model = train(task, learner, subset = train)
   expect_is(model, "WrappedModel")
   pred = predict(model, task, subset = test)
-  expect_integer(pred$ids, len = length(test), any.missing = FALSE)
   expect_character(pred$response, len = length(test), any.missing = FALSE)
   expect_subset(pred$response, levels(iris$Species))
 })

@@ -9,21 +9,20 @@ BenchmarkResult = R6Class("BenchmarkResult",
   cloneable = FALSE,
   public = list(
     data = NULL,
-    initialize = function(tasks, learners, resamplings) {
-      fun = function(resampling) {
-        CJ(task = names(tasks), learner = names(learners), resampling = resampling$id, iter = seq_len(resampling$iters))
-      }
-      self$data = rbindlist(lapply(resamplings, fun))
+    initialize = function() {
+      self$data = data.table(
+        task = character(0L),
+        learner = character(0L),
+        resampling.id = character(0L),
+        resampling.iter = integer(0L),
+        model = list(),
+        response = list()
+      )
     },
 
-    store = function(res) {
-      self$data = cbind(self$data, rbindlist(lapply(res, function(x) {
-        c(list(
-          split = list(x$split),
-          model = list(x$model),
-          predicted = list(x$predicted)),
-        unlist(x$performance))
-      })))
+    add = function(results) {
+      self$data = rbind(self$data, results, fill = TRUE)
+      invisible(self)
     }
   )
 )
