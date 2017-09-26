@@ -19,7 +19,7 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
         cols = setdiff(cols, id.col)
       }
 
-      assertDataTable(data[1L, cols, with = FALSE], types = c("numeric", "factor"))
+      assertDataTable(data[1L, cols, with = FALSE], types = c("logical", "numeric", "factor"))
       setkeyv(data, id.col)
       self$cols = setdiff(cols, id.col)
       self$id.col = id.col

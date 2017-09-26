@@ -28,6 +28,15 @@ Tasks$add(
 )
 
 Tasks$add(
+  LazyElement$new("zoo", function() {
+    data = getDataSet("Zoo", "mlbench")
+    data$animal = factor(rownames(data))
+    b = DataBackendDataTable$new(data = data, id.col = "animal")
+    TaskClassif$new(id = "zoo", backend = data, target = "type")
+  })
+)
+
+Tasks$add(
   LazyElement$new("breastcancer", function() {
     data = getDataSet("BreastCancer", "mlbench")
     i = vlapply(data, is.ordered)
