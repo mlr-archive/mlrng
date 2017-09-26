@@ -1,3 +1,11 @@
+#' @title Split
+#' @format \code{\link{R6Class}} object
+#'
+#' @description
+#' A \code{\link[R6]{R6Class}} containing data of a split into training and test set.
+#'
+#' @field train [\code{integer}]: Training indices
+#' @field test [\code{integer}]: Test indices
 Split = R6Class("Split",
   public = list(
     train.bit = NULL,
@@ -15,12 +23,6 @@ Split = R6Class("Split",
 
   active = list(
     train = function() as.integer(as.which(self$train.bit)),
-    test = function() as.integer(as.which(self$test.bit)),
-    inds = function() length(self$train.bit)
+    test = function() as.integer(as.which(self$test.bit))
   )
 )
-
-#' @export
-length.Split = function(x) {
-  x$inds
-}
