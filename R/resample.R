@@ -14,9 +14,9 @@
 #' @return \code{\link{ResampleResult}}.
 #' @export
 resample = function(task, learner, resampling, measures) {
-  assertClass(task, "Task")
-  assertClass(learner, "Learner")
-  assertClass(resampling, "Resampling")
+  assertR6(task, "Task")
+  assertR6(learner, "Learner")
+  assertR6(resampling, "Resampling")
   assertList(measures, "Measure")
 
   if (is.null(resampling$instance))

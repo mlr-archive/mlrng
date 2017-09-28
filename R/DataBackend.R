@@ -1,13 +1,3 @@
-if (FALSE) {
-  x = Tasks$get("iris")
-  x$backend$active.cols
-  x$backend$active.rows
-
-  x$backend$active.rows = 1:50
-  x$backend$active.rows
-}
-
-
 DataBackend = R6Class("DataBackend",
   public = list(
     rows = NULL,   # [dt], cols = (..id, status), (???, logical)
