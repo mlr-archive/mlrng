@@ -15,6 +15,7 @@ expect_task = function(task) {
   expect_class(task$formula, "formula")
   expect_count(task$backend$nrow)
   expect_count(task$backend$ncol)
+  expect_subset(names(task$features), names(task$backend$get(task$backend$active.rows[1])))
 }
 
 expect_supervisedtask = function(task) {

@@ -1,9 +1,13 @@
 context("Task")
 
 test_that("Task Construction", {
-  dbe = DataBackendDataTable$new(data = iris)
-  task = Task$new(id = "foo", data = dbe)
+  task = Task$new(id = "foo", data = iris)
   expect_task(task)
+})
+
+test_that("TaskSupervised Construction", {
+  task = TaskSupervised$new(id = "foo", data = iris, target = "Species")
+  expect_supervisedtask(task)
 })
 
 test_that("Example Tasks", {
