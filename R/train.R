@@ -30,15 +30,12 @@ train = function(task, learner, subset = NULL) {
 
   subset = asSubset(task, subset)
   split = Split$new(train = subset)
-  model = trainWorker(task, learner, split)
+  model = trainWorker(task, learner, split$train)
   WrappedModel$new(task, learner, model, split)
 }
 
-trainWorker = function(task, learner, split) {
-  i = split$train
-  if (length(i) == 0L)
-    stop("Cannot train. Training set is empty.")
-
-  learner$train(task, subset = i,
-    data = task$backend$get(ids = task$backend$active.rows[i]))
+trainWorker = function(task, learner, subset) {
+  assertInteger(subset, lower = 1L, upper = task$backend$nrow, any.missing = FALSE)
+  learner$train(task, subset = subset,
+    data = task$backend$get(ids = task$backend$active.rows[subset]))
 }

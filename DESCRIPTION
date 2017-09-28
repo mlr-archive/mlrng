@@ -36,7 +36,7 @@ Suggests:
     RSQLite,
     testthat
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'BenchmarkResult.R'
     'DataBackend.R'
     'DataBackendDataTable.R'
@@ -74,6 +74,7 @@ Collate:
     'performance.R'
     'predict.R'
     'resample.R'
+    'runExperiment.R'
     'train.R'
     'tune.R'
     'zzz.R'
