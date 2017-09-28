@@ -38,27 +38,15 @@ benchmark = function(tasks, learners, resamplings, measures) {
 
   pm.level = "mlrng.resample"
   parallelLibrary(packages = "mlrng", master = FALSE, level = pm.level)
-  results = parallelMap(
-    fun = resampleIteration,
+  experiments = parallelMap(
+    fun = runExperiment,
     task = tasks[grid$task],
     learner = learners[grid$learner],
     resampling = instances[sprintf("%s.%s", grid$task, grid$resampling)],
-    i = grid$iter,
+    resampling.iter = grid$iter,
     more.args = list(measures = measures, store.model = FALSE),
     level = pm.level
   )
 
-  extract = function(x) {
-      list(
-        split = list(x$split),
-        model = list(x$model),
-        predicted = list(x$predicted),
-        performance = list(x$performance)
-      )
-  }
-  # FIXME: BMR object not finished yet
-  results = cbind(grid, rbindlist(lapply(results, extract)))
-
-  bmr = BenchmarkResult$new()
-  bmr$add(results)
+  bmr = BenchmarkResult$new(experiments)
 }

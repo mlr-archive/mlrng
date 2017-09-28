@@ -1,4 +1,4 @@
-runExperiment = function(task, learner, resampling, resampling.iter, measures) {
+runExperiment = function(task, learner, resampling, resampling.iter, measures, store.model = TRUE) {
   if (is.null(resampling$instance))
     stop("Resampling has not been instantiated yet")
   split = resampling$split(resampling.iter)
@@ -11,13 +11,14 @@ runExperiment = function(task, learner, resampling, resampling.iter, measures) {
   response = predictWorker(model = model, task = task, learner = learner, subset = test)
   truth = task$backend$get(ids = task$backend$active.rows[test], task$target)[[1L]]
   performance = lapply(measures, function(x) x$fun(truth, response))
+  names(performance) = ids(measures)
 
   data.table(
     task = list(task),
     learner = list(learner),
     resampling = list(resampling),
     split = list(split),
-    model = list(model),
+    model = if (store.model) list(model) else list(NULL),
     response = list(response),
     truth = list(truth),
     performance = list(performance)

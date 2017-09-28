@@ -9,25 +9,26 @@ BenchmarkResult = R6Class("BenchmarkResult",
   cloneable = FALSE,
   public = list(
     data = NULL,
-    initialize = function() {
-      self$data = data.table(
-        task = character(0L),
-        learner = character(0L),
-        resampling.id = character(0L),
-        resampling.iter = integer(0L),
-        model = list(),
-        response = list()
-      )
+    initialize = function(experiments) {
+      self$data = rbindlist(experiments)
+    }
+  ),
+  active = list(
+    flat = function() {
+      getFlatData(self$data)[, !"chksum"]
     },
-
-    add = function(results) {
-      self$data = rbind(self$data, results, fill = TRUE)
-      invisible(self)
+    aggr = function() {
+      getFlatData(self$data)[, list(mmce = mean(mmce)), by = list(task.id, learner.id, chksum)][, "!chksum"]
     }
   )
 )
 
-#' @export
-as.data.table.BenchmarkResult = function(x, keep.rownames = FALSE, ...) {
-  copy(x$data)
+getFlatData = function(x) {
+  res = data.table(
+    task.id = ids(x$task),
+    learner.id = ids(x$learner),
+    resampling.id = ids(x$resampling),
+    chksum = vcapply(x$resampling, "[[", "checksum")
+  )
+  cbind(res, rbindlist(x$performance))
 }
