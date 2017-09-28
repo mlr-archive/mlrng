@@ -24,14 +24,14 @@ resample = function(task, learner, resampling, measures) {
 
   pm.level = "mlrng.resample"
   parallelLibrary(packages = "mlrng", master = FALSE, level = pm.level)
-  result = parallelMap(
-    resampleIteration,
-    i = seq_len(resampling$iters),
+  experiments = parallelMap(
+    runExperiment,
+    resampling.iter = seq_len(resampling$iters),
     more.args = list(task = task, learner = learner, measures = measures, resampling = resampling),
     level = pm.level
   )
 
-  ResampleResult$new(result, measures)
+  ResampleResult$new(experiments)
 }
 
 resampleIteration = function(i, task, learner, resampling, measures, store.model = TRUE) {

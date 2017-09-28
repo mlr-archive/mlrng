@@ -10,10 +10,8 @@ ResampleResult = R6Class("ResampleResult",
   cloneable = FALSE,
   public = list(
     data = NULL,
-    measure = NULL,
-    initialize = function(result, measure) {
-      self$data = result
-      self$measure = measure
+    initialize = function(experiments) {
+      self$data = rbindlist(experiments)
     }
   ),
   active = list(
@@ -22,13 +20,3 @@ ResampleResult = R6Class("ResampleResult",
     }
   )
 )
-
-#' @export
-as.data.table.ResampleResult = function(x, keep.rownames = FALSE, ...) {
-  rbindlist(lapply(x$data, function(x) {
-    c(list(
-      predicted = list(x$predicted),
-      model = list(x$model)
-    ), unlist(x$performance))
-  }), idcol = "iter")
-}

@@ -20,9 +20,11 @@ test_that("runExperiment worker", {
 test_that("Basic resampling", {
   task = Tasks$get("iris")
   learner = Learners$get("classif.rpart")
-  resampling = Resamplings$get("holdout")
+  resampling = Resamplings$get("cv")
+  resampling$iters = 3
   measures = list(Measures$get("mmce"))
-
-  res = resample(task, learner, resampling, measures)
-  expect_is(res, "ResampleResult")
+  rr = resample(task, learner, resampling, measures)
+  rr$data
+  expect_is(rr, "ResampleResult")
+  expect_data_table(rr$data, ncol = 8, nrow = 3)
 })
