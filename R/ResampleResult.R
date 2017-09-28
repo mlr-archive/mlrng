@@ -16,7 +16,7 @@ ResampleResult = R6Class("ResampleResult",
   ),
   active = list(
     aggr = function() {
-      mean(unlist(lapply(self$data, "[[", "performance")))
+      vnapply(rbindlist(self$data$performance), mean)
     }
   )
 )

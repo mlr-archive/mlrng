@@ -17,4 +17,13 @@ test_that("Step by step modeling", {
   pred = predict(model, task, subset = test)
   expect_character(pred$response, len = length(test), any.missing = FALSE)
   expect_subset(pred$response, levels(iris$Species))
+
+  train = 1:150
+  test = integer(0)
+  learner = Learners$get("classif.rpart")
+  model = train(task, learner, subset = train)
+  expect_is(model, "WrappedModel")
+  pred = predict(model, task, subset = test)
+  expect_character(pred$response, len = length(test), any.missing = FALSE)
+  expect_subset(pred$response, levels(iris$Species))
 })
