@@ -99,8 +99,8 @@ r$iters = 3
 
 ```{r}
 rr = resample(task = iris.task, learner = lrn.dummy, resampling = r, measures = list(measure))
-rr$aggr
-as.data.table(rr)
+rr$data
+# rr$aggr
 ```
 
 ## Benchmark
@@ -116,6 +116,5 @@ bmr = benchmark(
   learners = learners,
   resamplings = resamplings,
   measures = measures)
-bmr
-head(as.data.table(bmr))
+bmr$data
 ```
