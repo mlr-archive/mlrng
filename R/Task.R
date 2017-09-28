@@ -13,13 +13,13 @@ Task = R6Class("Task",
   public = list(
     backend = NULL,
     id = NULL,
-    initialize = function(id, backend) {
+    initialize = function(id, data) {
       self$id = assertString(id, min.chars = 1L)
-      if (inherits(backend, "DataBackend")) {
-        self$backend = backend$clone(deep = TRUE)
+      if (inherits(data, "DataBackend")) {
+        self$backend = data$clone(deep = TRUE)
       } else {
-        assertDataFrame(backend)
-        self$backend = DataBackendDataTable$new(backend)
+        assertDataFrame(data)
+        self$backend = DataBackendDataTable$new(data)
       }
     }
   ),

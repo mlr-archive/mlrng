@@ -14,8 +14,8 @@ TaskSupervised = R6Class("TaskSupervised",
   inherit = Task,
   public = list(
     target = NA_character_,
-    initialize = function(id, backend, target) {
-      super$initialize(id, backend)
+    initialize = function(id, data, target) {
+      super$initialize(id, data)
       self$target = assertChoice(target, self$backend$cols)
     }
   ),

@@ -2,7 +2,7 @@ context("Task")
 
 test_that("Task Construction", {
   dbe = DataBackendDataTable$new(data = iris)
-  task = Task$new(id = "foo", backend = dbe)
+  task = Task$new(id = "foo", data = dbe)
   expect_task(task)
 })
 

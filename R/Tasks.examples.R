@@ -32,7 +32,7 @@ Tasks$add(
     data = getDataSet("Zoo", "mlbench")
     data$animal = factor(rownames(data))
     b = DataBackendDataTable$new(data = data, id.col = "animal")
-    TaskClassif$new(id = "zoo", backend = data, target = "type")
+    TaskClassif$new(id = "zoo", data, target = "type")
   })
 )
 
@@ -43,6 +43,6 @@ Tasks$add(
     data[i] = lapply(data[i], as.integer)
     cols = setdiff(names(data), "Id")
     b = DataBackendDataTable$new(data = data, cols = cols)
-    TaskClassif$new(id = "BreastCancer", backend = b, target = "Class", positive = "malignant")
+    TaskClassif$new(id = "BreastCancer", data = b, target = "Class", positive = "malignant")
   })
 )

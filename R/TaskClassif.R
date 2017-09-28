@@ -21,8 +21,8 @@ TaskClassif = R6Class("TaskClassif",
   public = list(
     type = "classif",
     positive = NA_character_,
-    initialize = function(id, backend, target, positive = NULL) {
-      super$initialize(id, backend, target)
+    initialize = function(id, data, target, positive = NULL) {
+      super$initialize(id, data, target)
       target = self$backend$get(cols = self$target)[[1L]]
       assertFactor(target, any.missing = FALSE)
       if (!is.null(positive)) {
