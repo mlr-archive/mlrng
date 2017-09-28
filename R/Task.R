@@ -13,7 +13,6 @@ Task = R6Class("Task",
   public = list(
     backend = NULL,
     id = NULL,
-    hooks = list(),
     initialize = function(id, backend) {
       self$id = assertString(id, min.chars = 1L)
       if (inherits(backend, "DataBackend")) {
@@ -22,11 +21,6 @@ Task = R6Class("Task",
         assertDataFrame(backend)
         self$backend = DataBackendDataTable$new(backend)
       }
-    },
-
-    addHook = function(id, fun, ...) {
-      hook = list(list(fun = fun, pars = list(...)))
-      self$hooks = c(self$hooks, setNames(hook, id))
     }
   ),
 

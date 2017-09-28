@@ -17,7 +17,6 @@ Learner = R6Class("Learner",
     properties = character(0L),
     train = NULL,
     predict = NULL,
-    hooks = list(),
 
     initialize = function(type, name, par.set, par.vals = list(), packages = character(0L), properties = character(0L), train, predict) {
       self$type = assertString(type)
@@ -30,13 +29,6 @@ Learner = R6Class("Learner",
       self$train = assertFunction(train, args = c("task", "subset", "data"), ordered = TRUE)
       self$predict = assertFunction(predict, args = c("model", "task", "subset", "data"), ordered = TRUE)
       environment(self$train) = environment(self$predict) = environment(self$initialize)
-    },
-
-    addHook = function(id, hooks) {
-      assertString(id)
-      assertList(hooks, names = "unique")
-      assertSubset(names(hooks), c("pre.train", "post.train", "pre.predict", "post.predict", "pars"))
-      self$hooks = c(self$hooks, setNames(list(hooks), id))
     }
   ),
   active = list(

@@ -13,7 +13,6 @@ expect_task = function(task) {
   expect_is(task$backend, "DataBackend")
   expect_string(task$id, min.chars = 1L)
   expect_class(task$formula, "formula")
-  expect_list(task$hooks, names = "unique")
   expect_count(task$backend$nrow)
   expect_count(task$backend$ncol)
 }
@@ -45,7 +44,6 @@ expect_regrtask = function(task) {
 
 expect_learner = function(lrn) {
   expect_is(lrn, "Learner")
-  expect_list(lrn$hooks, names = "unique")
   expect_string(lrn$id, min.chars = 1L)
   expect_character(lrn$packages, min.chars = 1L)
   expect_is(lrn$par.set, "ParamSet")
