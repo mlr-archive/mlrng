@@ -4,25 +4,25 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
   public = list(
     rows = NULL,
     cols = NULL,
-    id.col = NULL,
+    rowid.col = NULL,
 
-    initialize = function(data, id.col = NULL) {
+    initialize = function(data, rowid.col = NULL) {
       requireNS(c("dplyr", "lazyeval"))
 
       assertClass(data, "tbl_sql")
       cn = colnames(data)
-      assertSubset(id.col, cn)
-      ids = dplyr::collect(dplyr::select(data, id.col))[[1L]]
+      assertSubset(rowid.col, cn)
+      ids = dplyr::collect(dplyr::select(data, rowid.col))[[1L]]
       if (anyDuplicated(ids))
-        stop("Duplicated ids in ID column")
+        stop("Duplicated ids in rowid.column")
 
-      self$id.col = id.col
-      private$cols = setdiff(cn, id.col)
+      self$rowid.col = rowid.col
+      private$cols = setdiff(cn, rowid.col)
       private$rows = data.table(
         ..id = ids,
         status = factor(rep("active", length(ids)), levels = c("active", "inactive")),
         key = "..id")
-      setnames(private$rows, "..id", id.col)
+      setnames(private$rows, "..id", rowid.col)
       private$data = data
     },
 
@@ -30,7 +30,7 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
       ids = private$translateIds(ids)
       cols = private$translateCols(cols)
 
-      f = lazyeval::interp("id %in% ids", id = as.name(self$id.col), ids = ids[[self$id.col]])
+      f = lazyeval::interp("id %in% ids", id = as.name(self$rowid.col), ids = ids[[self$rowid.col]])
       tab = dplyr::filter_(private$data, f)
       tab = dplyr::select(tab, dplyr::one_of(cols))
       tab = dplyr::collect(tab)
@@ -42,7 +42,7 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
   active = list(
     types = function() vcapply(self$get(1L), class),
     all.cols = function() colnames(private$data),
-    all.rows = function() dplyr::collect(dplyr::select(private$data, self$id.col))[[1L]]
+    all.rows = function() dplyr::collect(dplyr::select(private$data, self$rowid.col))[[1L]]
   ),
 
   private = list(

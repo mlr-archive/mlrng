@@ -31,7 +31,7 @@ Tasks$add(
   LazyElement$new("zoo", function() {
     data = getDataSet("Zoo", "mlbench")
     data$animal = factor(rownames(data))
-    b = DataBackendDataTable$new(data = data, id.col = "animal")
+    b = DataBackendDataTable$new(data = data, rowid.col = "animal")
     TaskClassif$new(id = "zoo", data, target = "type")
   })
 )

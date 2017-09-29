@@ -1,6 +1,6 @@
 DataBackend = R6Class("DataBackend",
   public = list(
-    id.col = NULL, # [string], col in data that stores row ids
+    rowid.col = NULL, # [string], col in data that stores row ids
 
     subsample = function(n = NULL, ratio = NULL) {
       if (is.null(n) + is.null(ratio) != 1L)
@@ -35,9 +35,9 @@ DataBackend = R6Class("DataBackend",
     # get or set active rows
     active.rows = function(row.names) {
       if (missing(row.names)) {
-        private$rows[status == "active"][[self$id.col]]
+        private$rows[status == "active"][[self$rowid.col]]
       } else {
-        assertSubset(row.names, private$rows[[self$id.col]])
+        assertSubset(row.names, private$rows[[self$rowid.col]])
         private$rows[.(row.names), status := "active"]
         private$rows[!.(row.names), status := "inactive"]
         invisible(self)
@@ -52,10 +52,10 @@ DataBackend = R6Class("DataBackend",
 
     translateIds = function(ids) {
       if (is.null(ids)) {
-        private$rows[status == "active", self$id.col, with = FALSE]
+        private$rows[status == "active", self$rowid.col, with = FALSE]
       } else {
         assertAtomicVector(ids, any.missing = FALSE)
-        private$rows[status == "active"][.(ids), self$id.col, on = self$id.col, with = FALSE, nomatch = 0L]
+        private$rows[status == "active"][.(ids), self$rowid.col, on = self$rowid.col, with = FALSE, nomatch = 0L]
       }
     },
 

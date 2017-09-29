@@ -113,6 +113,6 @@ asDplyrTask = function(task) {
   tab = dplyr::copy_to(con, private(task$backend)$data)
 
   newtask = task$clone(deep = TRUE)
-  newtask$backend = DataBackendDplyr$new(tab, id.col = task$backend$id.col)
+  newtask$backend = DataBackendDplyr$new(tab, rowid.col = task$backend$rowid.col)
   newtask
 }
