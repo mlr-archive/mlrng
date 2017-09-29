@@ -5,10 +5,16 @@ DataBackend = R6Class("DataBackend",
 
   active = list(
     # --> int, get active nr of active rows
-    nrow = function() private$rows[status == "active", .N],
+    nrow = function() {
+      if (is.na(private$cache$nrow))
+        private$cache$nrow = private$rows[status == "active", .N]
+      private$cache$nrow
+    },
 
     # --> int, get active nr of active cols
-    ncol = function() length(private$cols),
+    ncol = function() {
+      length(private$cols)
+    },
 
     # get or set active cols
     active.cols = function(col.names) {
@@ -28,18 +34,23 @@ DataBackend = R6Class("DataBackend",
         assertSubset(row.names, private$rows[[self$rowid.col]])
         private$rows[.(row.names), status := "active"]
         private$rows[!.(row.names), status := "inactive"]
+        private$cache$nrow = NA_integer_
         invisible(self)
       }
     }
   ),
 
   private = list(
-    data = NULL,   # data slot, either dplyr or datatable
-    rows = NULL,   # [dt], cols = (..id, status), (???, logical)
-    cols = NULL,   # [charvec], active cols
+    # data slot, either dplyr or datatable
+    data = NULL,
+    # [dt], cols = (..id, status), (???, logical)
+    rows = NULL,
+    # [charvec], active cols
+    cols = NULL,
+    # [list] local cache
+    cache = list(nrow = NA_integer_),
 
     translateRowIds = function(i = NULL, ids = NULL, active = TRUE) {
-
       switch(is.null(i) + 2L * is.null(ids) + 1L,
         { # 1: i != NULL, ids != NULL
           stop("Cannot filter backend data with index and ids simultaneously")
