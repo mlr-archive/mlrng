@@ -33,9 +33,9 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
       private$data = data
     },
 
-    get = function(ids = NULL, cols = NULL) {
-      ids = private$translateIds(ids)
-      cols = private$translateCols(cols)
+    get = function(ids = NULL, cols = NULL, active = TRUE) {
+      ids = private$translateRowIds(ids, active)
+      cols = private$translateCols(cols, active)
       private$data[.(ids), cols, with = FALSE, on = self$rowid.col]
     }
   ),

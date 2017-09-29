@@ -26,9 +26,9 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
       private$data = data
     },
 
-    get = function(ids = NULL, cols = NULL) {
-      ids = private$translateIds(ids)
-      cols = private$translateCols(cols)
+    get = function(ids = NULL, cols = NULL, active = TRUE) {
+      ids = private$translateRowIds(ids, active)
+      cols = private$translateCols(cols, active)
 
       f = lazyeval::interp("id %in% ids", id = as.name(self$rowid.col), ids = ids[[self$rowid.col]])
       tab = dplyr::filter_(private$data, f)

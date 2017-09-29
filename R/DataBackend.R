@@ -50,22 +50,31 @@ DataBackend = R6Class("DataBackend",
     rows = NULL,   # [dt], cols = (..id, status), (???, logical)
     cols = NULL,   # [charvec], active cols
 
-    translateIds = function(ids) {
+    translateRowIds = function(ids, active = TRUE) {
+      # This looks ugly, but speed is important here and chaining dt ops is important
       if (is.null(ids)) {
-        private$rows[status == "active", self$rowid.col, with = FALSE]
-      } else {
-        assertAtomicVector(ids, any.missing = FALSE)
-        private$rows[status == "active"][.(ids), self$rowid.col, on = self$rowid.col, with = FALSE, nomatch = 0L]
+        if (active)
+          return(private$rows[status == "active", self$rowid.col, with = FALSE])
+        return(private$rows[, self$rowid.col, with = FALSE])
       }
+
+      assertAtomicVector(ids, any.missing = FALSE)
+      tab = (if (active) private$rows[status == "active"] else private$rows)[.(ids), self$rowid.col, on = self$rowid.col, with = FALSE, nomatch = 0L]
+      if (nrow(tab) != length(ids))
+        gstop("Invalid ids requested from backend. Expected {length(ids)} rows, query resulted in {nrow(tab)} rows.")
+      return(tab)
     },
 
-    translateCols = function(cols) {
-      if (is.null(cols)) {
-        private$cols
-      } else {
-        assertCharacter(cols, any.missing = FALSE)
-        assertSubset(cols, private$cols)
-      }
+    translateCols = function(cols, active = TRUE) {
+      all.cols = if (active) private$cols else self$all.cols
+      if (is.null(cols))
+        return(all.cols)
+      assertCharacter(cols, any.missing = FALSE)
+
+      found = cols %chin% all.cols
+      if (!all(found))
+        gstop("Invalid columns requested from backend: {stri_peek(cols[!found])}")
+      return(cols)
     }
   )
 )

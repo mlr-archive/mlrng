@@ -9,6 +9,8 @@ test_that("Basic backend ops", {
     DataBackendDplyr$new(data = asDplyr(data), rowid.col = rowid.col)
   )
 
+  b = backends[[2]]
+
   for (b in backends) {
     expect_identical(b$nrow, 150L)
     expect_identical(b$ncol, 5L)
@@ -26,6 +28,11 @@ test_that("Basic backend ops", {
     expect_set_equal(b$active.rows, data[[rowid.col]][1:49])
     expect_set_equal(b$all.cols, names(data))
     expect_set_equal(b$all.rows, data[[rowid.col]])
+
+    expect_data_table(b$get(c("a049", "a050"), active = FALSE), nrow = 2)
+    expect_data_table(b$get(cols = c("Species", "Sepal.Length"), active = FALSE), ncol = 2)
+    expect_error(b$get("a050", active = TRUE), "Invalid ids")
+    expect_error(b$get(cols = "Sepal.Length", active = TRUE), "Invalid columns")
   }
 
   task = Tasks$get("iris")
