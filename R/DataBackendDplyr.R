@@ -14,7 +14,7 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
       if (anyDuplicated(ids))
         stop("Duplicated ids in rowid.col")
       private$cols = setdiff(cn, rowid.col)
-      private$rows = getRowsTable(ids, rowid.col)
+      private$setRowsTable(ids)
     },
 
     get = function(i = NULL, ids = NULL, cols = NULL, active = TRUE) {

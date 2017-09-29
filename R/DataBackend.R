@@ -91,18 +91,18 @@ DataBackend = R6Class("DataBackend",
       return(cols)
     },
 
+    setRowsTable = function(ids) {
+      private$rows = data.table(
+        ..id = ids,
+        status = factor(rep("active", length(ids)), levels = c("active", "inactive")),
+        key = "..id"
+      )
+      setnames(private$rows, "..id", self$rowid.col)
+      private$cache$nrow = length(ids)
+    },
+
     deep_clone = function(name, value) {
       if (name == "rows") copy(value) else value
     }
   )
 )
-
-
-getRowsTable = function(ids, rowid.col) {
-  rows = data.table(
-    ..id = ids,
-    status = factor(rep("active", length(ids)), levels = c("active", "inactive")),
-    key = "..id"
-    )
-  setnames(rows, "..id", rowid.col)
-}

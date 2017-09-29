@@ -20,8 +20,7 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
         private$cols = setdiff(cols, rowid.col)
       }
 
-      private$rows = getRowsTable(data[[self$rowid.col]], self$rowid.col)
-
+      private$setRowsTable(data[[self$rowid.col]])
       assertDataTable(data[1L, private$cols, with = FALSE], types = c("logical", "numeric", "factor"))
       private$data = setkeyv(data, self$rowid.col)
     },
