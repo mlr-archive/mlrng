@@ -35,6 +35,11 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
   active = list(
     # --> charvec, get datatypes of active cols
     types = function() vcapply(private$data[, private$cols, with = FALSE], class),
+    nas = function() {
+      if (is.null(private$cache$nas))
+        private$cache$nas = viapply(private$data[, private$cols, with = FALSE], function(x) sum(is.na(x)))
+      private$cache$nas
+    },
     all.rows = function() private$data[[self$rowid.col]],
     all.cols = function() colnames(private$data)
   )

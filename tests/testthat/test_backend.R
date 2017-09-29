@@ -8,7 +8,6 @@ test_that("Basic backend ops", {
     DataBackendDataTable$new(data = data, rowid.col = rowid.col),
     DataBackendDplyr$new(data = asDplyr(data), rowid.col = rowid.col)
   )
-  b = backends[[2]]
 
   for (b in backends) {
     expect_identical(b$nrow, 150L)
@@ -40,6 +39,10 @@ test_that("Basic backend ops", {
     nn = c("Sepal.Width", "Petal.Length", "Petal.Width", "Species")
     expect_set_equal(names(types), nn)
     expect_equal(types[nn], setNames(c("numeric", "numeric", "numeric", "factor"), nn))
+
+    nas = b$nas
+    expect_integer(nas, len = 4, lower = 0L, upper = 0L, any.missing = FALSE, names = "unique")
+    expect_set_equal(names(nas), b$active.cols)
   }
 
   task = Tasks$get("iris")

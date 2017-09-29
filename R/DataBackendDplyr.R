@@ -32,6 +32,13 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
 
   active = list(
     types = function() vcapply(self$get(i = 1L), class),
+    nas = function() {
+      if (is.null(private$cache$nas)) {
+        tab = dplyr::summarize_at(private$data, private$cols, dplyr::funs(sum(is.na(.))))
+        private$cache$nas = unlist(as.list(dplyr::collect(tab)))
+      }
+      private$cache$nas
+    },
     all.cols = function() colnames(private$data),
     all.rows = function() dplyr::collect(dplyr::select(private$data, self$rowid.col))[[1L]]
   )

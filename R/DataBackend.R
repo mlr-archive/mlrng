@@ -6,7 +6,7 @@ DataBackend = R6Class("DataBackend",
   active = list(
     # --> int, get active nr of active rows
     nrow = function() {
-      if (is.na(private$cache$nrow))
+      if (is.null(private$cache$nrow))
         private$cache$nrow = private$rows[status == "active", .N]
       private$cache$nrow
     },
@@ -22,6 +22,7 @@ DataBackend = R6Class("DataBackend",
         return(private$cols)
       } else {
         private$cols = assertCharacter(col.names, any.missing = FALSE, min.chars = 1L)
+        private$cache$nas = NULL
         invisible(self)
       }
     },
@@ -34,7 +35,7 @@ DataBackend = R6Class("DataBackend",
         assertSubset(row.names, private$rows[[self$rowid.col]])
         private$rows[.(row.names), status := "active"]
         private$rows[!.(row.names), status := "inactive"]
-        private$cache$nrow = NA_integer_
+        private$cache$nrow = private$cache$nas = NULL
         invisible(self)
       }
     }
@@ -48,7 +49,7 @@ DataBackend = R6Class("DataBackend",
     # [charvec], active cols
     cols = NULL,
     # [list] local cache
-    cache = list(nrow = NA_integer_),
+    cache = list(),
 
     translateRowIds = function(i = NULL, ids = NULL, active = TRUE) {
       switch(is.null(i) + 2L * is.null(ids) + 1L,
