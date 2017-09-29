@@ -50,19 +50,33 @@ DataBackend = R6Class("DataBackend",
     rows = NULL,   # [dt], cols = (..id, status), (???, logical)
     cols = NULL,   # [charvec], active cols
 
-    translateRowIds = function(ids, active = TRUE) {
-      # This looks ugly, but speed is important here and chaining dt ops is important
-      if (is.null(ids)) {
-        if (active)
-          return(private$rows[status == "active", self$rowid.col, with = FALSE])
-        return(private$rows[, self$rowid.col, with = FALSE])
-      }
-
-      assertAtomicVector(ids, any.missing = FALSE)
-      tab = (if (active) private$rows[status == "active"] else private$rows)[.(ids), self$rowid.col, on = self$rowid.col, with = FALSE, nomatch = 0L]
-      if (nrow(tab) != length(ids))
-        gstop("Invalid ids requested from backend. Expected {length(ids)} rows, query resulted in {nrow(tab)} rows.")
-      return(tab)
+    translateRowIds = function(i = NULL, ids = NULL, active = TRUE) {
+      switch(is.null(i) + 2L * is.null(ids) + 1L,
+        { # 1: i != NULL, ids != NULL
+          stop("Cannot filter backend data with index and ids simultaneously")
+        },
+        { # 2: i == NULL, ids != NULL
+          assertAtomicVector(ids, any.missing = FALSE)
+          x = private$rows
+          tab = (if (active) x[status == "active"] else x)[.(ids), self$rowid.col, on = self$rowid.col, with = FALSE, nomatch = 0L]
+          if (nrow(tab) != length(ids))
+            gstop("Invalid ids requested from backend. Expected {length(ids)} rows, query resulted in {nrow(tab)} rows.")
+          return(tab)
+        },
+        { # 3: i != NULL, ids == NULL
+          assertIntegerish(i, lower = 0L, upper = self$nrow, any.missing = FALSE)
+          x = private$rows
+          tab = (if (active) x[status == "active"] else x)[i, self$rowid.col, with = FALSE]
+          if (nrow(tab) != length(i))
+            gstop("Invalid ids requested from backend. Expected {length(i)} rows, query resulted in {nrow(tab)} rows.")
+          return(tab)
+        },
+        { # 4: i == NULL, ids == NULL
+          if (active)
+            return(private$rows[status == "active", self$rowid.col, with = FALSE])
+          return(private$rows[, self$rowid.col, with = FALSE])
+        }
+      )
     },
 
     translateCols = function(cols, active = TRUE) {

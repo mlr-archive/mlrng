@@ -14,7 +14,7 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
       assertSubset(rowid.col, cn)
       ids = dplyr::collect(dplyr::select(data, rowid.col))[[1L]]
       if (anyDuplicated(ids))
-        stop("Duplicated ids in rowid.column")
+        stop("Duplicated ids in rowid.col")
 
       self$rowid.col = rowid.col
       private$cols = setdiff(cn, rowid.col)
@@ -26,8 +26,8 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
       private$data = data
     },
 
-    get = function(ids = NULL, cols = NULL, active = TRUE) {
-      ids = private$translateRowIds(ids, active)
+    get = function(i = NULL, ids = NULL, cols = NULL, active = TRUE) {
+      ids = private$translateRowIds(i, ids, active)
       cols = private$translateCols(cols, active)
 
       f = lazyeval::interp("id %in% ids", id = as.name(self$rowid.col), ids = ids[[self$rowid.col]])
@@ -40,7 +40,7 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
   ),
 
   active = list(
-    types = function() vcapply(self$get(self$active.rows[1L]), class),
+    types = function() vcapply(self$get(i = 1L), class),
     all.cols = function() colnames(private$data),
     all.rows = function() dplyr::collect(dplyr::select(private$data, self$rowid.col))[[1L]]
   ),

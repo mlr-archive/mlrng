@@ -24,5 +24,5 @@ train = function(task, learner, subset = NULL) {
 trainWorker = function(task, learner, subset) {
   assertInteger(subset, lower = 1L, upper = task$backend$nrow, any.missing = FALSE)
   learner$train(task, subset = subset,
-    data = task$backend$get(ids = task$backend$active.rows[subset]))
+    data = task$backend$get(i = subset))
 }

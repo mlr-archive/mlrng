@@ -15,7 +15,7 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
       } else {
         assertChoice(rowid.col, names(data))
         if (anyDuplicated(data[[rowid.col]]))
-          stop("Duplicated ids in rowid.column")
+          stop("Duplicated ids in rowid.col")
         cols = setdiff(cols, rowid.col)
       }
 
@@ -33,8 +33,8 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
       private$data = data
     },
 
-    get = function(ids = NULL, cols = NULL, active = TRUE) {
-      ids = private$translateRowIds(ids, active)
+    get = function(i = NULL, ids = NULL, cols = NULL, active = TRUE) {
+      ids = private$translateRowIds(i, ids, active)
       cols = private$translateCols(cols, active)
       private$data[.(ids), cols, with = FALSE, on = self$rowid.col]
     }
