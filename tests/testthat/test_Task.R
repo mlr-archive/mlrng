@@ -31,11 +31,4 @@ test_that("Tasks are cloned", {
   rtask = Tasks$get("testthat-example")
   expect_true(!identical(address(task), address(rtask)))
   expect_true(!identical(address(task$backend), address(rtask$backend)))
-
-  task$backend$subsample(ratio = 0.5)
-  expect_identical(rtask$backend$nrow, 30L)
-
-  task = Tasks$get("sonar")
-  task$backend$subsample(ratio = 0.5)
-  expect_identical(Tasks$get("sonar")$backend$nrow, 208L)
 })

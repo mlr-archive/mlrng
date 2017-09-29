@@ -1,18 +1,6 @@
 DataBackend = R6Class("DataBackend",
   public = list(
-    rowid.col = NULL, # [string], col in data that stores row ids
-
-    subsample = function(n = NULL, ratio = NULL) {
-      if (is.null(n) + is.null(ratio) != 1L)
-        stop("Either 'n' or 'ratio' must be not NULL")
-      nr = self$nrow
-      if (!is.null(n)) {
-        self$active.rows = self$active.rows[sample(seq_len(nr), min(n, nr))]
-      } else {
-        self$active.rows = self$active.rows[sample(seq_len(nr), ratio * nr)]
-      }
-      invisible(self)
-    }
+    rowid.col = NULL # [string], col in data that stores row ids
   ),
 
   active = list(
@@ -51,6 +39,7 @@ DataBackend = R6Class("DataBackend",
     cols = NULL,   # [charvec], active cols
 
     translateRowIds = function(i = NULL, ids = NULL, active = TRUE) {
+
       switch(is.null(i) + 2L * is.null(ids) + 1L,
         { # 1: i != NULL, ids != NULL
           stop("Cannot filter backend data with index and ids simultaneously")
