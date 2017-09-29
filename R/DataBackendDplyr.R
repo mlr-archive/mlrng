@@ -17,12 +17,12 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
         stop("Duplicated ids in ID column")
 
       self$id.col = id.col
-      self$cols = setdiff(cn, id.col)
-      self$rows = data.table(
+      private$cols = setdiff(cn, id.col)
+      private$rows = data.table(
         ..id = ids,
         status = factor(rep("active", length(ids)), levels = c("active", "inactive")),
         key = "..id")
-      setnames(self$rows, "..id", id.col)
+      setnames(private$rows, "..id", id.col)
       private$data = data
     },
 

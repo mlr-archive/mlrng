@@ -16,15 +16,15 @@ TaskSupervised = R6Class("TaskSupervised",
     target = NA_character_,
     initialize = function(id, data, target) {
       super$initialize(id, data)
-      self$target = assertChoice(target, self$backend$cols)
+      self$target = assertChoice(target, self$backend$active.cols)
     }
   ),
   active = list(
     # [formula]. target ~ x1 + ... + xp
     formula = function() {
-      reformulate(setdiff(self$backend$cols, self$target), response = self$target)
+      reformulate(setdiff(self$backend$active.cols, self$target), response = self$target)
     },
     # [charvec]. featurenames without targetnames
-    features = function() setdiff(self$backend$cols, self$target)
+    features = function() setdiff(self$backend$active.cols, self$target)
   )
 )

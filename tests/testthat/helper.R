@@ -21,7 +21,7 @@ expect_task = function(task) {
 expect_supervisedtask = function(task) {
   expect_task(task)
   expect_is(task, "TaskSupervised")
-  expect_choice(task$target, task$backend$cols)
+  expect_choice(task$target, task$backend$active.cols)
 
   tf = terms(task$formula)
   expect_set_equal(labels(tf), task$features) # rhs

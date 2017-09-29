@@ -1,7 +1,5 @@
 DataBackend = R6Class("DataBackend",
   public = list(
-    rows = NULL,   # [dt], cols = (..id, status), (???, logical)
-    cols = NULL,   # [charvec], active cols
     id.col = NULL, # [string], col in data that stores row ids
 
     subsample = function(n = NULL, ratio = NULL) {
@@ -19,17 +17,17 @@ DataBackend = R6Class("DataBackend",
 
   active = list(
     # --> int, get active nr of active rows
-    nrow = function() self$rows[status == "active", .N],
+    nrow = function() private$rows[status == "active", .N],
 
     # --> int, get active nr of active cols
-    ncol = function() length(self$cols),
+    ncol = function() length(private$cols),
 
     # get or set active cols
     active.cols = function(col.names) {
       if (missing(col.names)) {
-        return(self$cols)
+        return(private$cols)
       } else {
-        self$cols = assertCharacter(col.names, any.missing = FALSE, min.chars = 1L)
+        private$cols = assertCharacter(col.names, any.missing = FALSE, min.chars = 1L)
         invisible(self)
       }
     },
@@ -37,11 +35,11 @@ DataBackend = R6Class("DataBackend",
     # get or set active rows
     active.rows = function(row.names) {
       if (missing(row.names)) {
-        self$rows[status == "active"][[self$id.col]]
+        private$rows[status == "active"][[self$id.col]]
       } else {
-        assertSubset(row.names, self$rows[[self$id.col]])
-        self$rows[.(row.names), status := "active"]
-        self$rows[!.(row.names), status := "inactive"]
+        assertSubset(row.names, private$rows[[self$id.col]])
+        private$rows[.(row.names), status := "active"]
+        private$rows[!.(row.names), status := "inactive"]
         invisible(self)
       }
     }
@@ -49,22 +47,24 @@ DataBackend = R6Class("DataBackend",
 
   private = list(
     data = NULL,   # data slot, either dplyr or datatable
+    rows = NULL,   # [dt], cols = (..id, status), (???, logical)
+    cols = NULL,   # [charvec], active cols
 
     translateIds = function(ids) {
       if (is.null(ids)) {
-        self$rows[status == "active", self$id.col, with = FALSE]
+        private$rows[status == "active", self$id.col, with = FALSE]
       } else {
         assertAtomicVector(ids, any.missing = FALSE)
-        self$rows[status == "active"][.(ids), self$id.col, on = self$id.col, with = FALSE, nomatch = 0L]
+        private$rows[status == "active"][.(ids), self$id.col, on = self$id.col, with = FALSE, nomatch = 0L]
       }
     },
 
     translateCols = function(cols) {
       if (is.null(cols)) {
-        self$cols
+        private$cols
       } else {
         assertCharacter(cols, any.missing = FALSE)
-        assertSubset(cols, self$cols)
+        assertSubset(cols, private$cols)
       }
     }
   )

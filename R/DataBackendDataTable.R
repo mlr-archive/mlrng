@@ -21,15 +21,15 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
 
       assertDataTable(data[1L, cols, with = FALSE], types = c("logical", "numeric", "factor"))
       setkeyv(data, id.col)
-      self$cols = setdiff(cols, id.col)
+      private$cols = setdiff(cols, id.col)
       self$id.col = id.col
 
-      self$rows = data.table(
+      private$rows = data.table(
         ..id = data[[self$id.col]],
         status = factor(rep("active", nrow(data)), levels = c("active", "inactive")),
         key = "..id"
       )
-      setnames(self$rows, "..id", self$id.col)
+      setnames(private$rows, "..id", self$id.col)
       private$data = data
     },
 
@@ -43,7 +43,7 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
 
   active = list(
     # --> charvec, get datatypes of active cols
-    types = function() vcapply(private$data[, self$cols, with = FALSE], class)
+    types = function() vcapply(private$data[, private$cols, with = FALSE], class)
   ),
 
   private = list(

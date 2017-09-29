@@ -25,8 +25,8 @@ Task = R6Class("Task",
   ),
 
   active = list(
-    features = function() self$backend$cols,
-    formula = function() reformulate(self$backend$cols)
+    features = function() self$backend$active.cols,
+    formula = function() reformulate(self$backend$active.cols)
   ),
 
   private = list(
