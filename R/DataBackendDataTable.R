@@ -43,7 +43,9 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
 
   active = list(
     # --> charvec, get datatypes of active cols
-    types = function() vcapply(private$data[, private$cols, with = FALSE], class)
+    types = function() vcapply(private$data[, private$cols, with = FALSE], class),
+    all.rows = function() private$data[[self$id.col]],
+    all.cols = function() colnames(private$data)
   ),
 
   private = list(
