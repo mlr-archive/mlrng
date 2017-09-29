@@ -40,7 +40,7 @@ DataBackendDplyr = R6Class("DataBackendDplyr",
   ),
 
   active = list(
-    types = function() vcapply(self$get(1L), class),
+    types = function() vcapply(self$get(self$active.rows[1L]), class),
     all.cols = function() colnames(private$data),
     all.rows = function() dplyr::collect(dplyr::select(private$data, self$rowid.col))[[1L]]
   ),

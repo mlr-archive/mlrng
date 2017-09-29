@@ -8,7 +8,6 @@ test_that("Basic backend ops", {
     DataBackendDataTable$new(data = data, rowid.col = rowid.col),
     DataBackendDplyr$new(data = asDplyr(data), rowid.col = rowid.col)
   )
-
   b = backends[[2]]
 
   for (b in backends) {
@@ -33,6 +32,11 @@ test_that("Basic backend ops", {
     expect_data_table(b$get(cols = c("Species", "Sepal.Length"), active = FALSE), ncol = 2)
     expect_error(b$get("a050", active = TRUE), "Invalid ids")
     expect_error(b$get(cols = "Sepal.Length", active = TRUE), "Invalid columns")
+
+    types = b$types
+    nn = c("Sepal.Width", "Petal.Length", "Petal.Width", "Species")
+    expect_set_equal(names(types), nn)
+    expect_equal(types[nn], setNames(c("numeric", "numeric", "numeric", "factor"), nn))
   }
 
   task = Tasks$get("iris")
