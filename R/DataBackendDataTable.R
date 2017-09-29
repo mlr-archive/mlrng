@@ -10,27 +10,20 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
       }
 
       if (is.null(rowid.col)) {
-        rowid.col = "..id"
-        data[[rowid.col]] = seq_len(nrow(data))
+        self$rowid.col = "..id"
+        data[["..id"]] = seq_len(nrow(data))
+        private$cols = cols
       } else {
-        assertChoice(rowid.col, names(data))
+        self$rowid.col = assertChoice(rowid.col, names(data))
         if (anyDuplicated(data[[rowid.col]]))
           stop("Duplicated ids in rowid.col")
-        cols = setdiff(cols, rowid.col)
+        private$cols = setdiff(cols, rowid.col)
       }
 
-      assertDataTable(data[1L, cols, with = FALSE], types = c("logical", "numeric", "factor"))
-      setkeyv(data, rowid.col)
-      private$cols = setdiff(cols, rowid.col)
-      self$rowid.col = rowid.col
+      private$rows = getRowsTable(data[[self$rowid.col]], self$rowid.col)
 
-      private$rows = data.table(
-        ..id = data[[self$rowid.col]],
-        status = factor(rep("active", nrow(data)), levels = c("active", "inactive")),
-        key = "..id"
-      )
-      setnames(private$rows, "..id", self$rowid.col)
-      private$data = data
+      assertDataTable(data[1L, private$cols, with = FALSE], types = c("logical", "numeric", "factor"))
+      private$data = setkeyv(data, self$rowid.col)
     },
 
     get = function(i = NULL, ids = NULL, cols = NULL, active = TRUE) {
@@ -40,18 +33,10 @@ DataBackendDataTable = R6Class("DataBackendDataTable",
     }
   ),
 
-
   active = list(
     # --> charvec, get datatypes of active cols
     types = function() vcapply(private$data[, private$cols, with = FALSE], class),
     all.rows = function() private$data[[self$rowid.col]],
     all.cols = function() colnames(private$data)
-  ),
-
-  private = list(
-    deep_clone = function(name, value) {
-      if (name == "rows") copy(value) else value
-    }
   )
 )
-

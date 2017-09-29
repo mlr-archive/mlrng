@@ -78,6 +78,20 @@ DataBackend = R6Class("DataBackend",
       if (!all(found))
         gstop("Invalid columns requested from backend: {stri_peek(cols[!found])}")
       return(cols)
+    },
+
+    deep_clone = function(name, value) {
+      if (name == "rows") copy(value) else value
     }
   )
 )
+
+
+getRowsTable = function(ids, rowid.col) {
+  rows = data.table(
+    ..id = ids,
+    status = factor(rep("active", length(ids)), levels = c("active", "inactive")),
+    key = "..id"
+    )
+  setnames(rows, "..id", rowid.col)
+}
