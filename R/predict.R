@@ -1,12 +1,8 @@
 #' @export
 predict.WrappedModel = function(object, task, subset = NULL, ...) {
   assertR6(task, "Task")
-  if (is.null(subset)) {
-    split = object$split
-  } else {
-    subset = asSubset(task, subset)
-    split = Split$new(train = object$split$train.bit, test = subset)
-  }
+  subset = asSubset(task, subset)
+  split = Split$new(train = object$train, test = subset)
 
   response = predictWorker(object$model, task, object$learner, subset = split$test)
   Prediction$new(task, object, split, response)

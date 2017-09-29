@@ -15,14 +15,12 @@ train = function(task, learner, subset = NULL) {
   assertR6(task, "Task")
   assertR6(learner, "Learner")
 
-  subset = asSubset(task, subset)
-  split = Split$new(train = subset)
-  model = trainWorker(task, learner, split$train)
-  WrappedModel$new(task, learner, model, split)
+  train = asSubset(task, subset)
+  model = trainWorker(task, learner, as.which(train))
+  WrappedModel$new(task, learner, model, train)
 }
 
 trainWorker = function(task, learner, subset) {
   assertInteger(subset, lower = 1L, upper = task$backend$nrow, any.missing = FALSE)
-  learner$train(task, subset = subset,
-    data = task$backend$get(i = subset))
+  learner$train(task, subset = subset, data = task$backend$get(i = subset))
 }

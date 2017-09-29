@@ -6,20 +6,20 @@
 #'
 #' @field task [\code{\link{Task}}]: Task used to fit the model.
 #' @field learner [\code{\link{Learner}}]: Learner used to fit the model.
-#' @field split [\code{\link{Split}}]: Split into training/test used to fit the model.
 #' @field model [any]: Result of the model fit as returned by third party packages.
+#' @field train [\code{integer}]: Indices of training data used to fit the model.
 WrappedModel = R6Class("WrappedModel",
   cloneable = FALSE,
   public = list(
     task = NULL,
     learner = NULL,
     model = NULL,
-    split = NULL,
-    initialize = function(task, learner, model, split) {
+    train = NULL,
+    initialize = function(task, learner, model, train) {
       self$task = assertR6(task, "Task")
       self$learner = assertR6(learner, "Learner")
       self$model = model
-      self$split = assertR6(split, "Split")
+      self$train = assertBit(train)
     }
   )
 )
