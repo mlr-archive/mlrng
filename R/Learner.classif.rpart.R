@@ -21,8 +21,7 @@ Learners$add(Learner$new(
     rpart::rpart(task$formula, data)
   },
   predict = function(model, task, subset, data, ...) {
-    learner = model$learner
-    pt = learner$predict.type
+    pt = self$predict.type
     if (pt == "response")
       as.character(predict(model, newdata = data, type = "class", ...)) else
         predict(model, newdata = data, type = "prob", ...)

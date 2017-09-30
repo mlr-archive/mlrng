@@ -46,7 +46,10 @@ Learner = R6Class("Learner",
     predict.type = function(rhs) {
       if (missing(rhs))
         return(private$pt)
-      assertChoice(rhs, choices = c("response", "prob", "se"))
+      assertChoice(rhs, choices = switch(self$type, classif = c("response",
+        "prob"), multilabel = c("response", "prob"), regr = c("response",
+          "se"), surv = c("response", "prob"), costsens = "response",
+        cluster = c("response", "prob")))
       private$pt = rhs
     }
   ),
