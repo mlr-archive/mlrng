@@ -16,8 +16,8 @@ as.data.table.Tasks = function(x, keep.rownames = FALSE, ...) {
     list(
       id = task$id,
       type = task$type,
-      nrow = task$backend$nrow,
-      ncol = task$backend$ncol
+      nrow = task$nrow,
+      ncol = task$ncol
     )
   }))
   setkeyv(tab, "id")[]

@@ -37,3 +37,14 @@ stri_peek = function(str, append = "...") {
     return(stri_join(stri_sub(str, 1L, width - stri_length(append)), append))
   return(str)
 }
+
+translateSubset = function(task, subset = NULL) {
+  if (is.null(subset))
+    return(task$active.rows)
+  if (is.logical(subset)) {
+    assertLogical(subset, len = task$nrow, any.missing = FALSE)
+  } else {
+    assertIntegerish(subset, any.missing = FALSE, lower = 1L, upper = task$nrow)
+  }
+  task$active.rows[subset]
+}

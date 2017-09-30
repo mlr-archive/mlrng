@@ -21,21 +21,15 @@ TaskClassif = R6Class("TaskClassif",
   public = list(
     type = "classif",
     positive = NA_character_,
-    initialize = function(id, data, target, positive = NULL) {
-      super$initialize(id, data, target)
-      target = self$backend$get(cols = self$target)[[1L]]
-      assertFactor(target, any.missing = FALSE)
-      if (!is.null(positive)) {
-        nlevs = nlevels(target)
-        if (nlevs > 2L)
-          gstop("Cannot set a positive class for multiclass classification with {nlevs} levels")
-        self$positive = assertChoice(positive, levels(target))
-      }
+    initialize = function(id, connection, target, positive) {
+      super$initialize(id, connection, target)
+      target = self$data(cols = self$target)[[1L]]
+      qassert(target, c("S", "F"))
     }
   ),
 
   active = list(
-    classes = function() levels(self$backend$get(cols = self$target)[[1L]]),
+    classes = function() levels(self$data(cols = self$target)[[1L]]),
     nclasses = function() length(self$classes)
   )
 )

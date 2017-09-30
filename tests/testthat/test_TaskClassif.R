@@ -9,5 +9,4 @@ test_that("Basic ops on iris task", {
   f = task$formula
   expect_class(f, "formula")
   expect_set_equal(attr(terms(f), "term.labels"), setdiff(names(dd), "Species"))
-  }
-)
+})

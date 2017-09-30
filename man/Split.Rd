@@ -14,9 +14,9 @@ A \code{\link[R6]{R6Class}} containing data of a split into training and test se
 \section{Fields}{
 
 \describe{
-\item{\code{train}}{[\code{integer}]: Training indices}
+\item{\code{train}}{[\code{integer}]: Training row ids}
 
-\item{\code{test}}{[\code{integer}]: Test indices}
+\item{\code{test}}{[\code{integer}]: Test row ids}
 }}
 
 \keyword{datasets}
