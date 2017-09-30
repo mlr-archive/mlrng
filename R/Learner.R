@@ -18,11 +18,15 @@ Learner = R6Class("Learner",
     train = NULL,
     predict = NULL,
 
-    initialize = function(type, name, par.set, par.vals = list(), packages = character(0L), properties = character(0L), train, predict) {
+    initialize = function(type, name, par.set, par.vals = list(), predict.type = "response", packages = character(0L), properties = character(0L), train, predict) {
       self$type = assertString(type)
       self$name = assertString(name)
       self$id = stri_paste(type, ".", name)
       self$par.set = assertClass(par.set, "ParamSet")
+      private$pt = assertChoice(predict.type, choices = switch(self$type, classif = c("response",
+        "prob"), multilabel = c("response", "prob"), regr = c("response",
+          "se"), surv = c("response", "prob"), costsens = "response",
+        cluster = c("response", "prob")))
       private$pv = assertList(par.vals, names = "unique")
       self$packages = assertCharacter(packages, any.missing = FALSE, unique = TRUE)
       self$properties = assertCharacter(properties, any.missing = FALSE, unique = TRUE)
@@ -38,9 +42,16 @@ Learner = R6Class("Learner",
       assertList(rhs, names = "unique")
       assertSubset(names(rhs), getParamIds(self$par.set))
       private$pv[names(rhs)] = rhs
+    },
+    predict.type = function(rhs) {
+      if (missing(rhs))
+        return(private$pt)
+      assertChoice(rhs, choices = c("response", "prob", "se"))
+      private$pt = rhs
     }
   ),
   private = list(
-    pv = NULL
+    pv = NULL,
+    pt = NULL
   )
 )
