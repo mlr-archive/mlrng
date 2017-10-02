@@ -56,12 +56,8 @@ expect_learner = function(lrn) {
 
 expect_split = function(s, len = NULL) {
   expect_class(s, "Split")
-  expect_bit(s$train.bit, len = len, min.1 = 1)
-  expect_bit(s$test.bit, len = len, min.0 = 1)
-  l = length(s$train.bit)
-  expect_equal(l, length(s$test.bit))
-  expect_integer(s$train, any.missing = FALSE, min.len = 1L, max.len = l, lower = 1L, upper = l)
-  expect_integer(s$test, any.missing = FALSE, min.len = 1L, max.len = l, lower = 1L, upper = l)
+  expect_atomic_vector(s$train, min.len = 1)
+  expect_atomic_vector(s$test, min.len = 1L)
 }
 
 # instantiated == NULL -> do not run tests for instance

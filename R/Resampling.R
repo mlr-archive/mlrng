@@ -27,7 +27,7 @@ Resampling = R6Class("Resampling",
       self$id = assertString(id)
       self$description = assertString(description)
       if (!is.null(instantiate)) {
-        self$instantiate = assertFunction(instantiate, args = "x")
+        self$instantiate = assertFunction(instantiate, args = "task")
         environment(self$instantiate) = environment(self$initialize)
       }
       self$iters = assertCount(iters)
@@ -51,7 +51,13 @@ Resampling = R6Class("Resampling",
       self$instance[[i]][["test"]]
     },
 
-    set = function(train, test = list(NULL)) {
+    set = function(task, train, test = NULL) {
+      if (is.null(test))
+        test = lapply(train, function(x) !x)
+      ids = task$active.rows
+      train = lapply(train, function(x) ids[x])
+      test = lapply(test, function(x) ids[x])
+
       self$instance = Map(Split$new, train = train, test = test)
       self$checksum = digest(self$instance, algo = "murmur32")
       invisible(self)

@@ -2,7 +2,8 @@ context("Resampling")
 
 test_that("resampling cv", {
   task = Tasks$get("iris")
-  r = Resamplings$get("cv")$instantiate(task)
+  r = Resamplings$get("cv")
+  r$instantiate(task)
   expect_identical(r$iters, 10L)
   expect_resampling(r, task)
   expect_equal(BBmisc::viapply(r$instance, function(x) length(x$train)), rep(135, r$iters))

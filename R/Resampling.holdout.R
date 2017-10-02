@@ -4,10 +4,11 @@ Resamplings$add(
     id = "holdout",
     description = "holdout",
     iters = 1L,
-    instantiate = function(x) {
-      if (inherits(x, "Task"))
-        x = x$nrow
-      self$set(train = list(replace(logical(x), sample(x, floor(self$pars$ratio * x)), TRUE)))
+    instantiate = function(task) {
+      assertR6(task, "Task")
+      n = task$nrow
+      train = replace(logical(n), sample(n, floor(self$pars$ratio * n)), TRUE)
+      self$set(task = task, train = list(train))
     },
     pars = list(ratio = 2/3)
   )
