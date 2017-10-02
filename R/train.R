@@ -24,10 +24,14 @@ train = function(task, learner, subset = NULL) {
 
 
   if (is.null(model) || train.log$n.errors > 0)
-    gstop("Training {learner$id} on {task$id} failed with {train.log$nErrors} errors!")
+    gstop("Training {learner$id} on {task$id} failed with {train.log$n.errors} errors!")
 
   if (train.log$n.warnings > 0)
-    gwarn("Training {learner$id} on {task$id} produced {train.log$nWarnings} warnings!")
+    gwarn("Training {learner$id} on {task$id} produced {train.log$n.warnings} warnings!")
+
+  if (getOption("mlrng.verbose", FALSE)) {
+    gcat("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
+  }
 
   MlrModel$new(task, learner, model, train, train.log)
 }
