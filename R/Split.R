@@ -11,7 +11,7 @@ Split = R6Class("Split",
     train = NULL,
     test = NULL,
     initialize = function(train, test = NULL) {
-      assertAtomicVector(train, any.missing = FALSE)
+      assertAtomicVector(train, min.len = 1L, any.missing = FALSE)
       self$train = train
       self$test = test %??% vector(typeof(train), 0L)
     }

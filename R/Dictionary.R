@@ -92,7 +92,6 @@ Dictionary = R6Class("Dictionary",
 
   private = list(
     # deep-clones each element in env
-    # FIXME: we should agree that we store R6, nothing else?
     deep_clone = function(name, value) {
       if (name == "env")
         list2env(eapply(value, function(x) if (inherits(x, "R6")) x$clone(deep = TRUE) else x), parent = emptyenv())

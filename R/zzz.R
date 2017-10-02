@@ -31,8 +31,3 @@
   pm.opts$mlrng = NULL
   options(parallelMap.registered.levels = pm.opts)
 } #nocov end
-
-
-mlrng = new.env(parent = emptyenv())
-mlrng$learner.properties = c("missings", "factors", "numerics")
-mlrng$learner.types = c("classif", "regr")

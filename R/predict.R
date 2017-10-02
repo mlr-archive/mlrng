@@ -11,6 +11,6 @@ predict.WrappedModel = function(object, task, subset = NULL, ...) {
 predictWorker = function(model, task, learner, subset) {
   assertInteger(subset, lower = 1L, upper = task$nrow, any.missing = FALSE)
 
-  pars = c(list(model = model, task = task, subset = subset, data = task$data(subset, task$features)), learner$par.vals)
+  pars = c(list(model = model, task = task, subset = subset), learner$par.vals)
   do.call(learner$predict, pars)
 }

@@ -7,7 +7,7 @@ Learners$add(Learner$new(
   ),
   par.vals = list(),
   properties = c("missings", "factors", "numerics"),
-  train = function(task, subset, data, method = "mean", ...) {
+  train = function(task, subset, method = "mean", ...) {
     tn = task$target
     mod = switch(method,
       "mean" = mean(x),
@@ -17,7 +17,7 @@ Learners$add(Learner$new(
     mod
   },
 
-  predict = function(model, task, subset, data, ...) {
+  predict = function(model, task, subset, ...) {
     as.numeric(model)
   }
 ))

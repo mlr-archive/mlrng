@@ -20,6 +20,8 @@ Connection = R6Class("Connection",
   )
 )
 
+# FIXME: We might just want functions to construct the backend?
+# FIXME: -> discuss with BB
 ConnectionCustom = R6Class("ConnectionCustom",
   inherit = Connection,
   public = list(
@@ -56,8 +58,3 @@ ConnectionMem = R6Class("ConnectionMem",
     }
   )
 )
-
-if (FALSE) {
-  con = ConnectionMem$new("iris", iris)
-  con$tbl
-}

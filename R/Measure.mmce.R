@@ -2,6 +2,6 @@
 Measures$add(Measure$new(
   id = "mmce",
   description = "Mean misclassification error",
-  tasktypes = c("classif"),
+  task.types = c("classif"),
   fun = function(truth, predicted) mean(truth != predicted)
 ))

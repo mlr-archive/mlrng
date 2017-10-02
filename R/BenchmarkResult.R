@@ -15,20 +15,16 @@ BenchmarkResult = R6Class("BenchmarkResult",
   ),
   active = list(
     flat = function() {
-      getFlatData(self$data)[, !"chksum"]
+      res = data.table(
+        task.id = ids(x$task),
+        learner.id = ids(x$learner),
+        resampling.id = ids(x$resampling),
+        chksum = vcapply(x$resampling, "[[", "checksum")
+        )
+      cbind(res, rbindlist(x$performance))
     },
     aggr = function() {
-      getFlatData(self$data)[, list(mmce = mean(mmce)), by = list(task.id, learner.id, chksum)][, "!chksum"]
+      self$flat[, list(mmce = mean(mmce)), by = list(task.id, learner.id, chksum)][, "!chksum"]
     }
   )
 )
-
-getFlatData = function(x) {
-  res = data.table(
-    task.id = ids(x$task),
-    learner.id = ids(x$learner),
-    resampling.id = ids(x$resampling),
-    chksum = vcapply(x$resampling, "[[", "checksum")
-  )
-  cbind(res, rbindlist(x$performance))
-}

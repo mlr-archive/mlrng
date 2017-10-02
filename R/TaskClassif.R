@@ -14,7 +14,8 @@
 #' @family Tasks
 #' @export
 #' @examples
-#' task = TaskClassif$new(id = "iris", iris, target = "Species")
+#' con = ConnectionMem$new("iris", iris)
+#' task = TaskClassif$new(id = "iris", con, target = "Species")
 #' task$formula
 TaskClassif = R6Class("TaskClassif",
   inherit = TaskSupervised,
@@ -29,7 +30,7 @@ TaskClassif = R6Class("TaskClassif",
   ),
 
   active = list(
-    classes = function() levels(self$data(cols = self$target)[[1L]]),
+    classes = function() self$levels(self$target),
     nclasses = function() length(self$classes)
   )
 )
