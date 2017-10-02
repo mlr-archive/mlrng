@@ -1,4 +1,4 @@
-#' @title WrappedModel
+#' @title MlrModel
 #' @format \code{\link{R6Class}} object
 #'
 #' @description
@@ -8,7 +8,7 @@
 #' @field learner [\code{\link{Learner}}]: Learner used to fit the model.
 #' @field model [any]: Result of the model fit as returned by third party packages.
 #' @field train [\code{integer}]: Indices of training data used to fit the model.
-WrappedModel = R6Class("WrappedModel",
+MlrModel = R6Class("MlrModel",
   cloneable = FALSE,
   public = list(
     task = NULL,

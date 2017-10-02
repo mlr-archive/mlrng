@@ -9,7 +9,7 @@
 #'   Object of type \code{\link{Learner}}.
 #' @param subset [\code{integer} | \code{logical}]\cr
 #'   Subset of \code{task} to train the data on.
-#' @return \code{\link{WrappedModel}}.
+#' @return \code{\link{MlrModel}}.
 #' @export
 train = function(task, learner, subset = NULL) {
   assertR6(task, "Task")
@@ -17,7 +17,7 @@ train = function(task, learner, subset = NULL) {
 
   train = translateSubset(task, subset)
   model = trainWorker(task, learner, train)
-  WrappedModel$new(task, learner, model, train)
+  MlrModel$new(task, learner, model, train)
 }
 
 trainWorker = function(task, learner, subset) {

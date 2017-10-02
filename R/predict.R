@@ -1,5 +1,5 @@
 #' @export
-predict.WrappedModel = function(object, task, subset = NULL, ...) {
+predict.MlrModel = function(object, task, subset = NULL, ...) {
   assertR6(task, "Task")
   subset = translateSubset(task, subset)
   split = Split$new(train = object$train, test = subset)
