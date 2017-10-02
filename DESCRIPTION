@@ -15,6 +15,7 @@ Depends:
 Imports:
     BBmisc,
     DBI,
+    evaluate,
     ParamHelpers,
     R6,
     RSQLite,
@@ -49,6 +50,7 @@ Collate:
     'Measures.R'
     'Measure.mmce.R'
     'Measure.mse.R'
+    'MlrModel.R'
     'Prediction.R'
     'ResampleResult.R'
     'Resampling.R'
@@ -63,9 +65,9 @@ Collate:
     'TaskSupervised.R'
     'Tasks.R'
     'Tasks.examples.R'
+    'TrainLog.R'
     'TuneControl.R'
     'TuneControlGrid.R'
-    'WrappedModel.R'
     'benchmark.R'
     'helper.R'
     'performance.R'
