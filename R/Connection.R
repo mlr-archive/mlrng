@@ -1,3 +1,4 @@
+#' @export
 Connection = R6Class("Connection",
   public = list(
     connector = NULL,
@@ -22,6 +23,7 @@ Connection = R6Class("Connection",
 
 # FIXME: We might just want functions to construct the backend?
 # FIXME: -> discuss with BB
+#' @export
 ConnectionCustom = R6Class("ConnectionCustom",
   inherit = Connection,
   public = list(
@@ -34,6 +36,7 @@ ConnectionCustom = R6Class("ConnectionCustom",
   )
 )
 
+#' @export
 ConnectionMem = R6Class("ConnectionMem",
   inherit = Connection,
   public = list(
