@@ -16,8 +16,12 @@ train = function(task, learner, subset = NULL) {
   assertR6(learner, "Learner")
 
   train = translateSubset(task, subset)
-  model = trainWorker(task, learner, train)
-  MlrModel$new(task, learner, model, train)
+  model = NULL
+  raw.log = evaluate::evaluate("model = trainWorker(task, learner, train)", include_timing = TRUE)
+  if (is.null(model) || any(vlapply(raw.log, is.error)))
+    stop("Model fit failed")
+
+  MlrModel$new(task, learner, model, train, raw.log)
 }
 
 trainWorker = function(task, learner, subset) {
