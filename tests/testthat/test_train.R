@@ -11,5 +11,11 @@ test_that("train", {
 
 
 test_that("warnings/messages are caught", {
-
+  task = Tasks$get("bh")
+  lrn.mock.regr$par.vals = list(warning = TRUE, message = TRUE)
+  mod = train(task, lrn.mock.regr)
+  expect_equal(mod$log$n.messages, 1)
+  expect_equal(mod$log$n.warnings, 1)
+  expect_equal(mod$log$messages[[1]]$message, "dummy message\n")
+  expect_equal(mod$log$warnings[[1]]$message, "dummy warning")
 })

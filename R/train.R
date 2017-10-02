@@ -23,7 +23,7 @@ train = function(task, learner, subset = NULL) {
   train.log = TrainLog$new(raw.log)
 
   if (is.null(model) || train.log$n.errors > 0)
-    gstop("Training {learner$id} on {task$id} failed with {train.log$n.errors} errors!")
+    gstop("Training {learner$id} on {task$id} failed with {train.log$errors[[1]]}")
     #FIXME: add Dummy learner and option to continue on error
 
   gVerboseMessage("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")

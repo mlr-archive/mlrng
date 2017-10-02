@@ -93,9 +93,9 @@ expect_resampling = function(r, instantiated = NULL) {
 
 
 # Dummy learner that can produce warnings/errors/messages
-Learners$add(Learner$new(
+lrn.mock.regr = Learner$new(
   type = "regr",
-  name = "dummyerror",
+  name = "mock",
   par.set = ParamHelpers::makeParamSet(
     ParamHelpers::makeDiscreteParam("method", values = c("mean", "median"), default = "mean"),
     ParamHelpers::makeLogicalParam("message", default = FALSE),
@@ -105,19 +105,18 @@ Learners$add(Learner$new(
   par.vals = list(),
   properties = c("missings", "factors", "numerics"),
   train = function(task, subset, method = "mean", message = FALSE, warning = FALSE, error = FALSE, ...) {
-    tn = task$target
+    tn = unlist(task$data(subset, task$target))
     mod = switch(method,
-      "mean" = mean(x),
-      "median" = median(x),
+      "mean" = mean(tn),
+      "median" = median(tn),
       stop("Illegal value for 'method'"))
     class(mod) = c("dummy.model", class(mod))
-
     if (message)
-      gmessage("dummy message")
+      message("dummy message")
     if (warning)
-      qwarn("dummy warning")
+      warning("dummy warning")
     if (error)
-      qstop("dummy error")
+      Simpleerror("dummy error")
 
     mod
   },
@@ -125,5 +124,5 @@ Learners$add(Learner$new(
   predict = function(model, task, subset, ...) {
     as.numeric(model)
   }
-))
+)
 
