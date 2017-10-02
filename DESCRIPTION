@@ -13,34 +13,31 @@ NeedsCompilation: no
 Depends:
     data.table
 Imports:
-    backports (>= 1.1.1),
     BBmisc,
-    bit,
-    checkmate (>= 1.8.4),
-    digest,
-    glue,
-    parallelMap,
+    DBI,
     ParamHelpers,
     R6,
+    RSQLite,
+    backports (>= 1.1.1),
+    checkmate (>= 1.8.4),
+    dbplyr,
+    digest,
+    dplyr,
+    glue,
+    parallelMap,
     stringi
 Suggests:
-    dbplyr,
     devtools,
-    dplyr,
     kernlab,
     knitr,
-    lazyeval,
     mlbench,
     rmarkdown,
     rpart,
-    RSQLite,
     testthat
 RoxygenNote: 6.0.1
-Collate: 
+Collate:
     'BenchmarkResult.R'
-    'DataBackend.R'
-    'DataBackendDataTable.R'
-    'DataBackendDplyr.R'
+    'Connection.R'
     'Dictionary.R'
     'Learner.R'
     'Learners.R'

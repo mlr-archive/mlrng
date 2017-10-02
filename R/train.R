@@ -15,12 +15,13 @@ train = function(task, learner, subset = NULL) {
   assertR6(task, "Task")
   assertR6(learner, "Learner")
 
-  train = asSubset(task, subset)
-  model = trainWorker(task, learner, as.which(train))
+  train = translateSubset(task, subset)
+  model = trainWorker(task, learner, train)
   WrappedModel$new(task, learner, model, train)
 }
 
 trainWorker = function(task, learner, subset) {
-  assertInteger(subset, lower = 1L, upper = task$backend$nrow, any.missing = FALSE)
-  learner$train(task, subset = subset, data = task$backend$get(i = subset))
+  assertInteger(subset, lower = 1L, upper = task$nrow, any.missing = FALSE)
+  pars = c(list(task = task, subset = subset), learner$par.vals)
+  do.call(learner$train, pars)
 }

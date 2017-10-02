@@ -1,7 +1,7 @@
 #' @export
 predict.WrappedModel = function(object, task, subset = NULL, ...) {
   assertR6(task, "Task")
-  subset = asSubset(task, subset)
+  subset = translateSubset(task, subset)
   split = Split$new(train = object$train, test = subset)
 
   response = predictWorker(object$model, task, object$learner, subset = split$test)
@@ -9,8 +9,8 @@ predict.WrappedModel = function(object, task, subset = NULL, ...) {
 }
 
 predictWorker = function(model, task, learner, subset) {
-  assertInteger(subset, lower = 1L, upper = task$backend$nrow, any.missing = FALSE)
+  assertInteger(subset, lower = 1L, upper = task$nrow, any.missing = FALSE)
 
-  pars = c(list(model = model, task = task, subset = subset, data = task$backend$get(i = subset, cols = task$features)), learner$par.vals)
+  pars = c(list(model = model, task = task, subset = subset), learner$par.vals)
   do.call(learner$predict, pars)
 }

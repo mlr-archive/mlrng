@@ -1,5 +1,6 @@
-#' @include Learners.R
-Learners$add(Learner$new(
+#' @include Dictionaries.R
+
+mlr.learners$add(Learner$new(
   type = "regr",
   name = "dummy",
   par.set = makeParamSet(
@@ -7,7 +8,7 @@ Learners$add(Learner$new(
   ),
   par.vals = list(),
   properties = c("missings", "factors", "numerics"),
-  train = function(task, subset, data, method = "mean", ...) {
+  train = function(task, subset, method = "mean", ...) {
     tn = task$target
     mod = switch(method,
       "mean" = mean(x),
@@ -17,7 +18,7 @@ Learners$add(Learner$new(
     mod
   },
 
-  predict = function(model, task, subset, data, ...) {
+  predict = function(model, task, subset, ...) {
     as.numeric(model)
   }
 ))

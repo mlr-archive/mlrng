@@ -24,7 +24,7 @@ Predefined resampling measures are stored in \code{\link{Resamplings}}.
 
 \item{\code{description}}{[\code{character(1)}]: Name of the measure.}
 
-\item{\code{tasktypes}}{[\code{character}]: Set of compatible task types.}
+\item{\code{task.types}}{[\code{character}]: Set of compatible task types.}
 
 \item{\code{fun}}{[\code{function(truth, predicted)}]: function to compute the measure.}
 }}

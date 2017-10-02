@@ -14,28 +14,23 @@
 #' @family Tasks
 #' @export
 #' @examples
-#' task = TaskClassif$new(id = "iris", iris, target = "Species")
+#' con = ConnectionMem$new("iris", iris)
+#' task = TaskClassif$new(id = "iris", con, target = "Species")
 #' task$formula
 TaskClassif = R6Class("TaskClassif",
   inherit = TaskSupervised,
   public = list(
     type = "classif",
     positive = NA_character_,
-    initialize = function(id, data, target, positive = NULL) {
-      super$initialize(id, data, target)
-      target = self$backend$get(cols = self$target)[[1L]]
-      assertFactor(target, any.missing = FALSE)
-      if (!is.null(positive)) {
-        nlevs = nlevels(target)
-        if (nlevs > 2L)
-          gstop("Cannot set a positive class for multiclass classification with {nlevs} levels")
-        self$positive = assertChoice(positive, levels(target))
-      }
+    initialize = function(id, connection, target, positive) {
+      super$initialize(id, connection, target)
+      target = self$data(cols = self$target)[[1L]]
+      qassert(target, c("S", "F"))
     }
   ),
 
   active = list(
-    classes = function() levels(self$backend$get(cols = self$target)[[1L]]),
+    classes = function() self$levels(self$target),
     nclasses = function() length(self$classes)
   )
 )

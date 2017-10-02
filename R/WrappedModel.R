@@ -19,7 +19,7 @@ WrappedModel = R6Class("WrappedModel",
       self$task = assertR6(task, "Task")
       self$learner = assertR6(learner, "Learner")
       self$model = model
-      self$train = assertBit(train)
+      self$train = train
     }
   )
 )

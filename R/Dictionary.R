@@ -74,6 +74,10 @@ Dictionary = R6Class("Dictionary",
       invisible(self)
     },
 
+    getElementSummary = function(x) {
+      list(x)
+    },
+
     print = function(...) {
       ids = self$ids
       gcat("
@@ -92,7 +96,6 @@ Dictionary = R6Class("Dictionary",
 
   private = list(
     # deep-clones each element in env
-    # FIXME: we should agree that we store R6, nothing else?
     deep_clone = function(name, value) {
       if (name == "env")
         list2env(eapply(value, function(x) if (inherits(x, "R6")) x$clone(deep = TRUE) else x), parent = emptyenv())
@@ -110,12 +113,9 @@ as.list.Dictionary = function(x, ...) {
 #' @export
 as.data.table.Dictionary = function(x, keep.rownames = FALSE, ...) {
   tab = rbindlist(eapply(x$env, function(e) {
-    x = if (inherits(e, "LazyElement")) e$get() else e$clone()
-    list(
-      id = e$id,
-      obj = list(x)
-    )
-  }, USE.NAMES = FALSE))
+    ee = if (inherits(e, "LazyElement")) e$get() else e$clone()
+    data.table(id = e$id, x$getElementSummary(ee))
+  }, USE.NAMES = FALSE), fill = TRUE)
   setkeyv(tab, "id")[]
 }
 

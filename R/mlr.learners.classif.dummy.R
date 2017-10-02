@@ -1,5 +1,6 @@
-#' @include Learners.R
-Learners$add(Learner$new(
+#' @include Dictionaries.R
+
+mlr.learners$add(Learner$new(
   type = "classif",
   name = "dummy",
   par.set = makeParamSet(
@@ -7,14 +8,16 @@ Learners$add(Learner$new(
   ),
   par.vals = list(),
   properties = c("missings", "factors", "numerics"),
-  train = function(task, subset, data, ...) {
+  train = function(task, subset, ...) {
+    data = task$data(subset)
     tn = task$target
     mod = data[, .N, by = tn]
     class(mod) = c("dummy.model", class(mod))
     mod
   },
 
-  predict = function(model, task, subset, data, method = "mode", ...) {
+  predict = function(model, task, subset, method = "mode", ...) {
+    data = task$data(subset, setdiff(task$active.cols, task$target))
     if (method == "mode")
       rep.int(as.character(sample(model[N == max(N)][[task$target]], 1L)), nrow(data))
     else

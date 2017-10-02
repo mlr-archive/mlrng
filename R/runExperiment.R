@@ -9,7 +9,7 @@ runExperiment = function(task, learner, resampling, resampling.iter, measures, s
 
   model = trainWorker(task = task, learner = learner, subset = train)
   response = predictWorker(model = model, task = task, learner = learner, subset = test)
-  truth = task$backend$get(i = test, cols = task$target)[[1L]]
+  truth = task$data(test, task$target)[[1L]]
   performance = lapply(measures, function(x) x$fun(truth, response))
   names(performance) = ids(measures)
 
