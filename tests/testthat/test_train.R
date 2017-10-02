@@ -8,3 +8,8 @@ test_that("train", {
   p = predict(mod, task, subset = seq_len(task$nrow))
   expect_subset(p$predicted, task$levels(task$target))
 })
+
+
+test_that("warnings/messages are caught", {
+
+})
