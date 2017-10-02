@@ -74,6 +74,10 @@ Dictionary = R6Class("Dictionary",
       invisible(self)
     },
 
+    getElementSummary = function(x) {
+      list(x)
+    },
+
     print = function(...) {
       ids = self$ids
       gcat("
@@ -109,12 +113,9 @@ as.list.Dictionary = function(x, ...) {
 #' @export
 as.data.table.Dictionary = function(x, keep.rownames = FALSE, ...) {
   tab = rbindlist(eapply(x$env, function(e) {
-    x = if (inherits(e, "LazyElement")) e$get() else e$clone()
-    list(
-      id = e$id,
-      obj = list(x)
-    )
-  }, USE.NAMES = FALSE))
+    ee = if (inherits(e, "LazyElement")) e$get() else e$clone()
+    data.table(id = e$id, x$getElementSummary(ee))
+  }, USE.NAMES = FALSE), fill = TRUE)
   setkeyv(tab, "id")[]
 }
 
