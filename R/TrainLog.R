@@ -3,8 +3,12 @@
 #'
 #' @description
 #' A \code{\link[R6]{R6Class}} containing logging information of a \code{\link{train}} call.
-#'
-#' @field raw.log [\code{list}]: List of output, messages, warnings and errors occured in training.
+#' Constructor is called with raw.log [\code{list}]: List of output, messages, warnings and errors occured in training.
+#' @field train.time [\code{numeric(1)}]: Training time.
+#' @field messages [\code{list}]: List of messages encountered while training the model.
+#' @field warnings [\code{list}]: List of warnings encountered while training the model.
+#' @field errors [\code{list}]: List of errors encountered while training the model.
+#' @field output [\code{list}]: Remaining output from model fit, only saved if \code{mlrng.keep.train.output} option is set to \code{TRUE}.
 TrainLog = R6Class("TrainLog",
   public = list(
     train.time = NULL,
@@ -33,5 +37,5 @@ TrainLog = R6Class("TrainLog",
     n.messages = function() {
       length(self$messages)
     }
-    )
+  )
 )

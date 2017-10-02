@@ -8,6 +8,7 @@
 #' @field learner [\code{\link{Learner}}]: Learner used to fit the model.
 #' @field model [any]: Result of the model fit as returned by third party packages.
 #' @field train [\code{integer}]: Indices of training data used to fit the model.
+#' @field log [\code{\link{TrainLog}}]: Logging information from model fit.
 MlrModel = R6Class("MlrModel",
   cloneable = FALSE,
   public = list(
