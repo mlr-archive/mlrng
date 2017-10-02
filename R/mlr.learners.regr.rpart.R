@@ -5,16 +5,27 @@ mlr.learners$add(Learner$new(
   name = "rpart",
   package = "rpart",
   par.set = makeParamSet(
-    makeIntegerParam("mtry", lower = 1)
+    makeIntegerLearnerParam(id = "minsplit", default = 20L, lower = 1L),
+    makeNumericLearnerParam(id = "cp", default = 0.01, lower = 0, upper = 1),
+    makeIntegerLearnerParam(id = "maxcompete", default = 4L, lower = 0L),
+    makeIntegerLearnerParam(id = "maxsurrogate", default = 5L, lower = 0L),
+    makeDiscreteLearnerParam(id = "usesurrogate", default = 2L, values = 0:2),
+    makeDiscreteLearnerParam(id = "surrogatestyle", default = 0L, values = 0:1),
+    # we use 30 as upper limit, see docs of rpart.control
+    makeIntegerLearnerParam(id = "maxdepth", default = 30L, lower = 1L, upper = 30L),
+    makeIntegerLearnerParam(id = "xval", default = 10L, lower = 0L, tunable = FALSE)
   ),
   par.vals = list(),
   properties = c("missings"),
   train = function(task, subset, ...) {
     data = task$data(subset)
-    rpart::rpart(task$formula, data)
+    rpart::rpart(task$formula, data, ...)
   },
   predict = function(model, task, subset, ...) {
     data = task$data(subset, setdiff(task$active.cols, task$target))
-    unname(predict(model, newdata = data, type = "vector", ...))
+    pt = self$predict.type
+    if (pt == "response")
+      as.character(predict(model, newdata = data, type = "class", ...)) else
+        predict(model, newdata = data, type = "prob", ...)
   }
 ))
