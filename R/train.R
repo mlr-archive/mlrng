@@ -23,10 +23,10 @@ train = function(task, learner, subset = NULL) {
   train.log = TrainLog$new(raw.log)
 
 
-  if (is.null(model) || train.log$nErrors > 0)
+  if (is.null(model) || train.log$n.errors > 0)
     gstop("Training {learner$id} on {task$id} failed with {train.log$nErrors} errors!")
 
-  if (train.log$nWarnings > 0)
+  if (train.log$n.warnings > 0)
     gwarn("Training {learner$id} on {task$id} produced {train.log$nWarnings} warnings!")
 
   MlrModel$new(task, learner, model, train, train.log)

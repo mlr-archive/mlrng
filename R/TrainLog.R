@@ -24,13 +24,13 @@ TrainLog = R6Class("TrainLog",
         self$train.time = attr(raw.log[[1]]$src, "timing")[3]
     }),
   active = list(
-    nErrors = function() {
+    n.errors = function() {
       length(self$errors)
     },
-    nWarnings = function() {
+    n.warnings = function() {
       length(self$warnings)
     },
-    nMessages = function() {
+    n.messages = function() {
       length(self$messages)
     }
     )
