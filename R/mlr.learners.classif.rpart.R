@@ -21,7 +21,7 @@ mlr.learners$add(Learner$new(
   properties = c("missings"),
   train = function(task, subset, ...) {
     data = task$data(subset)
-    rpart::rpart(task$formula, data)
+    rpart::rpart(task$formula, data, ...)
   },
   predict = function(model, task, subset, ...) {
     data = task$data(subset, setdiff(task$active.cols, task$target))
