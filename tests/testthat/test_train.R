@@ -1,8 +1,8 @@
 context("train")
 
 test_that("train", {
-  task = Tasks$get("spam")
-  lrn = Learners$get("classif.dummy")
+  task = mlr.tasks$get("spam")
+  lrn = mlr.learners$get("classif.dummy")
   mod = train(task, lrn)
   expect_is(mod, "WrappedModel")
   p = predict(mod, task, subset = seq_len(task$nrow))
