@@ -40,13 +40,13 @@ Task = R6Class("Task",
       cols = if (is.null(cols)) private$view.cols else intersect(cols, private$view.cols)
       cols = setdiff(cols, self$con$rowid.col)
       res = dplyr::select(res, dplyr::one_of(cols))
-      setDT(dplyr::collect(res))
+      setDT(dplyr::collect(res))[]
     },
 
     head = function(n) {
       res = dplyr::select(self$con$tbl, setdiff(private$view.cols, self$con$rowid.col))
       res = head(res, assertCount(n))
-      setDT(dplyr::collect(res))
+      setDT(dplyr::collect(res))[]
     },
 
     all.rows = function() {
@@ -119,21 +119,3 @@ Task = R6Class("Task",
     cache = NULL
   )
 )
-
-if (FALSE) {
-  con = Connection$new(dplyr::src_sqlite, list(path = ":memory:", create = TRUE))
-  con$write(iris, "iris")
-  id = "iris"
-  target = "Species"
-  TaskSupervised$new(id, con, target)
-  task = TaskClassif$new(id, con, target)
-  task$formula
-  task$classes
-
-  TaskClassif$new("iris", con, "Species")
-  task = Task$new(id = "iris", data = iris)
-  task$data()
-  task$data(20:30)
-  task$nrow
-  task$levels("Species")
-}

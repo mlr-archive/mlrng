@@ -13,7 +13,7 @@ Split = R6Class("Split",
     initialize = function(train, test = NULL) {
       assertAtomicVector(train, any.missing = FALSE)
       self$train = train
-      self$test = vector(typeof(train), 0L)
+      self$test = test %??% vector(typeof(train), 0L)
     }
   )
 )

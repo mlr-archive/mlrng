@@ -4,10 +4,10 @@ Resamplings$add(
     id = "subsampling",
     description = "subsampling",
     iters = 30L,
-    instantiate = function(x) {
-      if (inherits(x, "Task"))
-        x = x$nrow
-      self$set(train = replicate(self$iters, replace(logical(x), sample(x, floor(self$pars$ratio * x)), TRUE), simplify = FALSE))
+    instantiate = function(task) {
+      assertR6(task, "Task")
+      n = task$nrow
+      self$set(task, train = replicate(self$iters, replace(logical(n), sample(n, floor(self$pars$ratio * n)), TRUE), simplify = FALSE))
     },
     pars = list(ratio = 2/3)
   )
