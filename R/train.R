@@ -17,11 +17,19 @@ train = function(task, learner, subset = NULL) {
 
   train = translateSubset(task, subset)
   model = NULL
-  raw.log = evaluate::evaluate("model = trainWorker(task, learner, train)", include_timing = TRUE)
-  if (is.null(model) || any(vlapply(raw.log, is.error)))
-    stop("Model fit failed")
+  raw.log = evaluate::evaluate("model = trainWorker(task, learner, train)",
+    include_timing = TRUE, new_device = FALSE)
 
-  MlrModel$new(task, learner, model, train, raw.log)
+  train.log = TrainLog$new(raw.log)
+
+
+  if (is.null(model) || train.log$nErrors > 0)
+    gstop("Training {learner$id} on {task$id} failed with {train.log$nErrors} errors!")
+
+  if (train.log$nWarnings > 0)
+    gwarn("Training {learner$id} on {task$id} produced {train.log$nWarnings} warnings!")
+
+  MlrModel$new(task, learner, model, train, train.log)
 }
 
 trainWorker = function(task, learner, subset) {

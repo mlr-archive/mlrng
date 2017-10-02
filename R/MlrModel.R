@@ -16,12 +16,12 @@ MlrModel = R6Class("MlrModel",
     model = NULL,
     train = NULL,
     log = NULL,
-    initialize = function(task, learner, model, train) {
+    initialize = function(task, learner, model, train, log) {
       self$task = assertR6(task, "Task")
       self$learner = assertR6(learner, "Learner")
       self$model = model
       self$train = assertInteger(train)
-      self$log = assertList(log)
+      self$log = assertR6(log, "TrainLog")
     }
   )
 )
