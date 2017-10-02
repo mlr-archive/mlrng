@@ -13,7 +13,7 @@ Tasks$add(
 )
 
 Tasks$add(
-  LazyElement$new("sonar", function() TaskClassif$new(id = "sonar", getExampleConnection("Sonar"), target = "Class", positive = "M"))
+  LazyElement$new("sonar", function() TaskClassif$new(id = "sonar", getExampleConnection("sonar"), target = "Class", positive = "M"))
 )
 
 Tasks$add(

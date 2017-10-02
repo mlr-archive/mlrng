@@ -12,7 +12,8 @@
 #' @family Tasks
 #' @export
 #' @examples
-#' task = TaskRegr$new("iris", iris, target = "Sepal.Length")
+#' con = ConnectionMem$new("iris", iris)
+#' task = TaskRegr$new("iris", con, target = "Sepal.Length")
 #' task$formula
 TaskRegr = R6Class("TaskRegr",
   inherit = TaskSupervised,

@@ -50,8 +50,6 @@ expect_learner = function(lrn) {
   expect_list(lrn$par.vals, names = "unique")
   expect_function(lrn$predict, args = c("model", "task", "subset"), ordered = TRUE)
   expect_function(lrn$train, args = c("task", "subset"), ordered = TRUE)
-  expect_subset(lrn$properties, choices = mlrng$learner.properties)
-  expect_subset(lrn$type, choices = mlrng$learner.types)
 }
 
 expect_split = function(s, len = NULL) {

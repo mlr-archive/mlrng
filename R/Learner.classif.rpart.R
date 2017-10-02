@@ -8,10 +8,12 @@ Learners$add(Learner$new(
   ),
   par.vals = list(),
   properties = c("missings"),
-  train = function(task, subset, data, ...) {
+  train = function(task, subset, ...) {
+    data = task$data(subset)
     rpart::rpart(task$formula, data)
   },
-  predict = function(model, task, subset, data, ...) {
+  predict = function(model, task, subset, ...) {
+    data = task$data(subset, setdiff(task$active.cols, task$target))
     as.character(predict(model, newdata = data, type = "class", ...))
   }
 ))

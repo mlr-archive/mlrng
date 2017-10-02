@@ -48,5 +48,5 @@ benchmark = function(tasks, learners, resamplings, measures) {
     level = pm.level
   )
 
-  bmr = BenchmarkResult$new(experiments)
+  BenchmarkResult$new(experiments)
 }

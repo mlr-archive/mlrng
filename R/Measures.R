@@ -14,7 +14,7 @@ as.data.table.Measures = function(x, keep.rownames = FALSE, ...) {
   tab = rbindlist(eapply(x$env, function(x) {
     list(
       id = x$id,
-      tasktypes = list(x$tasktypes)
+      task.types = list(x$task.types)
     )
   }, USE.NAMES = FALSE))
   setkeyv(tab, "id")[]

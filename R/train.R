@@ -38,5 +38,6 @@ train = function(task, learner, subset = NULL) {
 
 trainWorker = function(task, learner, subset) {
   assertInteger(subset, lower = 1L, upper = task$nrow, any.missing = FALSE)
-  learner$train(task, subset = subset, data = task$data(subset))
+  pars = c(list(task = task, subset = subset), learner$par.vals)
+  do.call(learner$train, pars)
 }

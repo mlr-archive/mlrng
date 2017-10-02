@@ -26,8 +26,8 @@ Learner = R6Class("Learner",
       private$pv = assertList(par.vals, names = "unique")
       self$packages = assertCharacter(packages, any.missing = FALSE, unique = TRUE)
       self$properties = assertCharacter(properties, any.missing = FALSE, unique = TRUE)
-      self$train = assertFunction(train, args = c("task", "subset", "data"), ordered = TRUE)
-      self$predict = assertFunction(predict, args = c("model", "task", "subset", "data"), ordered = TRUE)
+      self$train = assertFunction(train, args = c("task", "subset"), ordered = TRUE)
+      self$predict = assertFunction(predict, args = c("model", "task", "subset"), ordered = TRUE)
       environment(self$train) = environment(self$predict) = environment(self$initialize)
     }
   ),

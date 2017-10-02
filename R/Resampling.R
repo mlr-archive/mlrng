@@ -9,7 +9,7 @@
 #'
 #' @field id [\code{character(1)}]: Identifier of the measure.
 #' @field description [\code{character(1)}]: Name of the measure.
-#' @field tasktypes [\code{character}]: Set of compatible task types.
+#' @field task.types [\code{character}]: Set of compatible task types.
 #' @field fun [\code{function(truth, predicted)}]: function to compute the measure.
 #' @return [\code{Measure}].
 #' @export
