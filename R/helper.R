@@ -68,3 +68,6 @@ asListOfRows = function(x) {
   }
 }
 
+createFallbackLearner = function(task) {
+ mlr.learners$get(stri_paste(task$type, ".dummy"))
+}

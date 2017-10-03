@@ -1,7 +1,8 @@
+
 #' @include Dictionaries.R
 
-mlr.learners$add(LearnerRegr$new(
-  type = "regr",
+mlr.learners$add(Learner$new(
+  type = "classif",
   name = "rpart",
   package = "rpart",
   par.set = makeParamSet(
@@ -16,6 +17,7 @@ mlr.learners$add(LearnerRegr$new(
     makeIntegerLearnerParam(id = "xval", default = 10L, lower = 0L, tunable = FALSE)
   ),
   par.vals = list(),
+  predict.type = "response",
   properties = c("missings"),
   train = function(task, subset, ...) {
     data = task$data(subset)
