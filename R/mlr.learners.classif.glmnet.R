@@ -1,0 +1,77 @@
+#' @include Dictionaries.R
+
+mlr.learners$add(
+  LearnerClassif$new(
+    type = "classif",
+    name = "glmnet",
+    package = "glmnet",
+    par.set = makeParamSet(
+      makeNumericLearnerParam(id = "alpha", default = 1, lower = 0, upper = 1),
+      makeNumericLearnerParam(id = "s", lower = 0, when = "predict"),
+      makeLogicalLearnerParam(id = "exact", default = FALSE, when = "predict"),
+      makeIntegerLearnerParam(id = "nlambda", default = 100L, lower = 1L),
+      makeNumericLearnerParam(id = "lambda.min.ratio", lower = 0, upper = 1),
+      makeNumericVectorLearnerParam(id = "lambda", lower = 0),
+      makeLogicalLearnerParam(id = "standardize", default = TRUE),
+      makeLogicalLearnerParam(id = "intercept", default = TRUE),
+      makeNumericLearnerParam(id = "thresh", default = 1e-07, lower = 0),
+      makeIntegerLearnerParam(id = "dfmax", lower = 0L),
+      makeIntegerLearnerParam(id = "pmax", lower = 0L),
+      makeIntegerVectorLearnerParam(id = "exclude", lower = 1L),
+      makeNumericVectorLearnerParam(id = "penalty.factor", lower = 0, upper = 1),
+      makeNumericVectorLearnerParam(id = "lower.limits", upper = 0),
+      makeNumericVectorLearnerParam(id = "upper.limits", lower = 0),
+      makeIntegerLearnerParam(id = "maxit", default = 100000L, lower = 1L),
+      makeDiscreteLearnerParam(id = "type.logistic", values = c("Newton", "modified.Newton")),
+      makeDiscreteLearnerParam(id = "type.multinomial", values = c("ungrouped", "grouped")),
+      makeNumericLearnerParam(id = "fdev", default = 1.0e-5, lower = 0, upper = 1),
+      makeNumericLearnerParam(id = "devmax", default = 0.999, lower = 0, upper = 1),
+      makeNumericLearnerParam(id = "eps", default = 1.0e-6, lower = 0, upper = 1),
+      makeNumericLearnerParam(id = "big", default = 9.9e35),
+      makeIntegerLearnerParam(id = "mnlam", default = 5, lower = 1),
+      makeNumericLearnerParam(id = "pmin", default = 1.0e-9, lower = 0, upper = 1),
+      makeNumericLearnerParam(id = "exmx", default = 250.0),
+      makeNumericLearnerParam(id = "prec", default = 1e-10),
+      makeIntegerLearnerParam(id = "mxit", default = 100L, lower = 1L)
+    ),
+    par.vals = list(s = 0.01),
+    properties = c("numerics", "factors", "prob", "twoclass", "multiclass", "weights"),
+    train = function(task, subset, weights = NULL, ...) {
+      d = getTaskData(task, subset, target.extra = TRUE) #FIXME recode.target = "drop.levels")
+      info = getFixDataInfo(d$data, factors.to.dummies = TRUE, ordered.to.int = TRUE)
+      args = c(list(x = as.matrix(fixDataForLearner(d$data, info)), y = d$target), list(...))
+      rm(d)
+      if (!is.null(weights))
+        args$weights = weights
+      
+      args$family = ifelse(task$nclasses == 2L, "binomial", "multinomial")
+      
+      glmnet::glmnet.control(factory = TRUE)
+      saved.ctrl = glmnet::glmnet.control()
+      is.ctrl.arg = names(args) %in% names(saved.ctrl)
+      if (any(is.ctrl.arg)) {
+        on.exit(glmnet::glmnet.control(factory = TRUE))
+        do.call(glmnet::glmnet.control, args[is.ctrl.arg])
+        args = args[!is.ctrl.arg]
+      }
+      
+      attachTrainingInfo(do.call(glmnet::glmnet, args), info)
+    },
+    predict = function(model, task, subset, ...) { #FIXME: not working right now
+      info = getTrainingInfo(model)
+      newdata = as.data.frame(task$data(subset, setdiff(task$active.cols, task$target)))
+      newdata = as.matrix(fixDataForLearner(newdata, info))
+      if (self$predict.type == "prob") {
+        p = as.character(predict(model, newx = newdata, type = "response", ...))
+        if (task$nclasses == 2L) {
+          p = setColNames(cbind(1 - p, p), task$classes)
+        } else {
+          p = p[, , 1]
+        }
+      } else {
+        p = drop(predict(model, newx = newdata, type = "class", ...))
+        p = as.character(p)
+      }
+      p
+    }
+  ))
