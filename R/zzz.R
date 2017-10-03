@@ -21,7 +21,8 @@
   opts.mlrng = list(
     mlrng.verbose = TRUE,
     mlrng.debug   = TRUE,
-    mlrng.keep.train.output = FALSE
+    mlrng.keep.train.output = FALSE,
+    mlrng.continue.on.learner.error = FALSE
   )
   unset = !(names(opts.mlrng) %in% names(opts))
   if (any(unset)) options(opts.mlrng[unset])
