@@ -1,11 +1,11 @@
 # if (FALSE) {
 #   library(ParamHelpers)
 #   task = Tasks$get("iris")
-#   learner = Learners$get("classif.rpart")
+#   learner = mlr.learners$get("classif.rpart")
 #   resampling = Resamplings$get("cv")
 #   resampling$instantiate(task)
 #   inner = Resamplings$get("holdout")
-#   measures = Measures$get("mmce")
+#   measures = mlr.measures$get("mmce")
 #   par.set = makeParamSet(
 #     makeIntegerParam("mtry", lower = 1, upper = 10)
 #   )

@@ -1,8 +1,8 @@
 context("Resampling")
 
 test_that("resampling cv", {
-  task = Tasks$get("iris")
-  r = Resamplings$get("cv")
+  task = mlr.tasks$get("iris")
+  r = mlr.resamplings$get("cv")
   r$instantiate(task)
   expect_identical(r$iters, 10L)
   expect_resampling(r, task)
@@ -12,8 +12,8 @@ test_that("resampling cv", {
 })
 
 test_that("resampling holdout", {
-  task = Tasks$get("sonar")
-  r = Resamplings$get("holdout")$instantiate(task)
+  task = mlr.tasks$get("sonar")
+  r = mlr.resamplings$get("holdout")$instantiate(task)
   expect_identical(r$iters, 1L)
   expect_equal(r$pars, list(ratio = 2/3))
   expect_resampling(r, task)
@@ -23,8 +23,8 @@ test_that("resampling holdout", {
 })
 
 test_that("resampling subsample", {
-  task = Tasks$get("pima")
-  r = Resamplings$get("subsampling")$instantiate(task)
+  task = mlr.tasks$get("pima")
+  r = mlr.resamplings$get("subsampling")$instantiate(task)
   expect_identical(r$iters, 30L)
   expect_equal(r$pars, list(ratio = 2/3))
   expect_resampling(r, task)

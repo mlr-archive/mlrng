@@ -29,7 +29,8 @@ A \code{\link[R6]{R6Class}} to construct classification tasks.
 }}
 
 \examples{
-task = TaskRegr$new("iris", iris, target = "Sepal.Length")
+con = ConnectionMem$new("iris", iris)
+task = TaskRegr$new("iris", con, target = "Sepal.Length")
 task$formula
 }
 \seealso{

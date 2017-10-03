@@ -11,13 +11,13 @@
 DictionaryTasks = R6Class("DictionaryTasks", inherit = Dictionary,
   public = list(
     initialize = function() {
-      super$initialize("Measure")
+      super$initialize("Task")
     },
-    getElementSummary = function() {
+    getElementSummary = function(x) {
       data.table(
-        type = task$type,
-        nrow = task$nrow,
-        ncol = task$ncol
+        type = x$type,
+        nrow = x$nrow,
+        ncol = x$ncol
       )
     }
   )
@@ -29,25 +29,24 @@ mlr.tasks = DictionaryTasks$new()
 #' @format \code{\link{R6Class}} object
 #'
 #' @description
-#' \code{Learners} is a \code{\link{Dictionary}} used to manage learners.
+#' \code{mlr.learners} is a \code{\link{Dictionary}} used to manage learners.
 #'
 #' @export
 #' @examples
-#' Learners$ids
-#' Learners$contains("classif.dummy")
-#' Learners$get("classif.dummy")
+#' mlr.learners$ids
+#' mlr.learners$contains("classif.dummy")
+#' mlr.learners$get("classif.dummy")
 DictionaryLearners = R6Class("DictionaryLearners", inherit = Dictionary,
   public = list(
     initialize = function() {
       super$initialize("Learner")
     },
-    getElementSummary = function() {
+    getElementSummary = function(x) {
       data.table(
-        id = self$id,
-        name = self$name,
-        type = self$type,
-        properties = list(self$properties),
-        packages = list(self$packages)
+        name = x$name,
+        type = x$type,
+        properties = list(x$properties),
+        packages = list(x$packages)
       )
     }
   )
@@ -59,7 +58,7 @@ mlr.learners = DictionaryLearners$new()
 #' @format \code{\link{R6Class}} object
 #'
 #' @description
-#' \code{Measures} is a \code{\link{Dictionary}} used to manage performance measures.
+#' \code{mlr.measures} is a \code{\link{Dictionary}} used to manage performance measures.
 #'
 #' @export
 DictionaryMeasures = R6Class("DictionaryMeasures", inherit = Dictionary,
@@ -90,9 +89,9 @@ DictionaryResamplings = R6Class("Resamplings", inherit = Dictionary,
     },
     getElementSummary = function(x) {
       data.table(
-        id = r$id,
-        description = r$description,
-        pars = list(r$pars)
+        id = x$id,
+        description = x$description,
+        pars = list(x$pars)
       )
     }
   )

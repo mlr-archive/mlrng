@@ -1,12 +1,12 @@
 context("resample")
 
 test_that("runExperiment worker", {
-  task = Tasks$get("iris")
-  learner = Learners$get("classif.rpart")
-  resampling = Resamplings$get("cv")
+  task = mlr.tasks$get("iris")
+  learner = mlr.learners$get("classif.rpart")
+  resampling = mlr.resamplings$get("cv")
   resampling$instantiate(task)
   resampling.iter = 1L
-  measures = list(Measures$get("mmce"))
+  measures = list(mlr.measures$get("mmce"))
 
   res = list()
   for (i in 1:10) {
@@ -18,11 +18,11 @@ test_that("runExperiment worker", {
 })
 
 test_that("Basic resampling", {
-  task = Tasks$get("iris")
-  learner = Learners$get("classif.rpart")
-  resampling = Resamplings$get("cv")
+  task = mlr.tasks$get("iris")
+  learner = mlr.learners$get("classif.rpart")
+  resampling = mlr.resamplings$get("cv")
   resampling$iters = 3
-  measures = list(Measures$get("mmce"))
+  measures = list(mlr.measures$get("mmce"))
   rr = resample(task, learner, resampling, measures)
   rr$data
   expect_is(rr, "ResampleResult")
