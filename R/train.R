@@ -38,8 +38,8 @@ train = function(task, learner, subset = NULL) {
     train.time = NA
   }
 
-  train.log = NULL # TrainLog$new(raw.log, train.time)
-  train.success = TRUE #!is.null(wrapped.model) && train.log$n.errors == 0
+  train.log = TrainLog$new(raw.log, train.time)
+  train.success = !is.null(wrapped.model) && train.log$n.errors == 0
 
   if (!train.success) {
    if (getOption("mlrng.continue.on.learner.error", FALSE)) {
