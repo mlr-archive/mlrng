@@ -41,8 +41,10 @@ PredictionRegr = R6Class("PredictionRegr",
 dispatchPrediction = function(task, model, rowids, poutput) {
   if (inherits(task, "TaskClassif"))
     PredictionClassif$new(model, rowids, poutput)
-  if (inherits(task, "TaskRegr"))
+  else if (inherits(task, "TaskRegr"))
     PredictionRegr$new(model, rowids, poutput)
+  else
+    stop("bam")
 }
 
 
