@@ -9,6 +9,11 @@ View = R6Class("View",
       self$pars = assertList(pars, names = "unique")
       self$name = assertString(name)
       self$rowid.col = assertString(rowid.col)
+    },
+
+    distinct = function(col) {
+      assertChoice(col, self$active.cols)
+      dplyr::collect(dplyr::distinct(dplyr::select(self$raw.tbl, col)))[[1L]]
     }
   ),
 
@@ -49,6 +54,7 @@ View = R6Class("View",
       res = dplyr::collect(res)
       if (res$n != length(rows))
         stop("Invalid row ids provided")
+      private$cache$nrow = length(rows)
       private$view.rows = rows
     },
 
@@ -59,12 +65,29 @@ View = R6Class("View",
         return(private$view.cols)
       }
       private$view.cols = assertSubset(cols, setdiff(colnames(self$raw.tbl), self$rowid.col))
+    },
+
+    nrow = function() {
+      if (!is.null(private$view.rows))
+        return(length(private$view.rows))
+      if (!is.null(private$cache$nrow))
+        return(private$cache$nrow)
+      private$cache$nrow = dplyr::collect(dplyr::tally(self$tbl))[[1L]]
+    },
+
+    ncol = function() {
+      length(private$view.cols)
+    },
+
+    types = function() {
+      vcapply(dplyr::collect(head(self$tbl, 1L)), class)
     }
   ),
 
   private = list(
     view.rows = NULL,
-    view.cols = NULL
+    view.cols = NULL,
+    cache = list()
   )
 )
 

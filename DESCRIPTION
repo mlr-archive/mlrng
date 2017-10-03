@@ -55,6 +55,7 @@ Collate:
     'TrainLog.R'
     'TuneControl.R'
     'TuneControlGrid.R'
+    'View.R'
     'benchmark.R'
     'helper.R'
     'mlr.learners.classif.dummy.R'
