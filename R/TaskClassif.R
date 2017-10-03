@@ -14,14 +14,14 @@
 #' @family Tasks
 #' @export
 #' @examples
-#' task = TaskClassif$new(data = iris, target = "Species")
+#' task = TaskClassif$new("iris", data = iris, target = "Species")
 #' task$formula
 TaskClassif = R6Class("TaskClassif",
   inherit = TaskSupervised,
   public = list(
     type = "classif",
     positive = NA_character_,
-    initialize = function(id, data, target, positive) {
+    initialize = function(id = deparse(substitute(data)), data, target, positive) {
       super$initialize(id, data, target)
       # FIXME: we can do this efficiently with dplyr
       target = self$data(cols = self$target)[[1L]]

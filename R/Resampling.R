@@ -5,7 +5,7 @@
 #' A \code{\link[R6]{R6Class}} to construct resampling measures.
 #' This is the abstract base class, do not use directly!
 #'
-#' Predefined resampling measures are stored in \code{\link{Resamplings}}.
+#' Predefined resampling measures are stored in \code{\link{mlr.resamplings}}.
 #'
 #' @field id [\code{character(1)}]: Identifier of the measure.
 #' @field description [\code{character(1)}]: Name of the measure.

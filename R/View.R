@@ -1,10 +1,9 @@
 intersect_if_not_null = function(x, y) {
-  if (!is.null(x)) {
-    if (!is.null(y))
-      return(intersect(x, y))
+  if (is.null(x))
+    return(y)
+  if (is.null(y))
     return(x)
-  }
-  return(y)
+  return(intersect(x, y))
 }
 
 View = R6Class("View",

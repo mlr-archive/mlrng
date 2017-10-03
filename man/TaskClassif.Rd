@@ -33,7 +33,7 @@ A \code{\link[R6]{R6Class}} to construct classification tasks.
 }}
 
 \examples{
-task = TaskClassif$new(data = iris, target = "Species")
+task = TaskClassif$new("iris", data = iris, target = "Species")
 task$formula
 }
 \seealso{
