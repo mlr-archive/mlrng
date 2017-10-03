@@ -6,8 +6,8 @@ propVectorToMatrix = function(p, levs) {
   return(y)
 }
 
-# FIXME: do we want to keep the recode.target stuff from the old mlr?
-getTaskData = function(task, subset = task$all.rows(), target.extra = FALSE) {
+# FIXME: do we want to keep the recode.target stuf task$all.rows()f from the old mlr?
+getTaskData = function(task, subset = task$view$active.rows, target.extra = FALSE) {
   if (target.extra) {
     # FIXME: If we allow user-defined formula, we might want to use task$formula to create data
     data = task$data(subset, task$features)
