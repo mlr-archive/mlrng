@@ -9,10 +9,10 @@ mlr.learners$add(Learner$new(
   par.vals = list(),
   properties = c("missings", "factors", "numerics"),
   train = function(task, subset, method = "mean", ...) {
-    tn = task$target
+    tn = unlist(task$data(subset, task$target))
     mod = switch(method,
-      "mean" = mean(x),
-      "median" = median(x),
+      "mean" = mean(tn),
+      "median" = median(tn),
       stop("Illegal value for 'method'"))
     class(mod) = c("dummy.model", class(mod))
     mod

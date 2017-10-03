@@ -9,15 +9,26 @@
 #'   Object of type \code{\link{Learner}}.
 #' @param subset [\code{integer} | \code{logical}]\cr
 #'   Subset of \code{task} to train the data on.
-#' @return \code{\link{WrappedModel}}.
+#' @return \code{\link{MlrModel}}.
 #' @export
 train = function(task, learner, subset = NULL) {
   assertR6(task, "Task")
   assertR6(learner, "Learner")
 
   train = translateSubset(task, subset)
-  model = trainWorker(task, learner, train)
-  WrappedModel$new(task, learner, model, train)
+  wrapped.model = NULL
+  raw.log = evaluate::evaluate("wrapped.model = trainWorker(task, learner, train)",
+    include_timing = TRUE, new_device = FALSE)
+
+  train.log = TrainLog$new(raw.log)
+
+  if (is.null(wrapped.model) || train.log$n.errors > 0)
+    gstop("Training {learner$id} on {task$id} failed with {train.log$errors[[1]]}")
+    #FIXME: add Dummy learner and option to continue on error
+
+  gVerboseMessage("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
+
+  MlrModel$new(task, learner, wrapped.model, train, train.log)
 }
 
 trainWorker = function(task, learner, subset) {

@@ -1,12 +1,15 @@
 Prediction = R6Class("Prediction",
   cloneable = FALSE,
   public = list(
-    model = NULL,
+    task = NULL, # [Task]: ref to we trained on
+    wrapped.model = NULL,
+    split = NULL,
     response = NULL,
 
-    initialize = function(model, response) {
+    initialize = function(task, wrapped.model, split, response) {
       self$task = assertR6(task, "Task")
-      self$model = assertR6(wrapped.model, "WrappedModel")
+      self$wrapped.model = assertR6(wrapped.model, "MlrModel")
+      self$split = assertR6(split, "Split")
       self$response = assertVector(response)
       data.table(
         model = list(model),
