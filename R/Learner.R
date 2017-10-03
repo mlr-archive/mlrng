@@ -43,6 +43,8 @@ Learner = R6Class("Learner",
       private$pv[names(rhs)] = rhs
     },
     predict.type = function(rhs) {
+      if (missing(rhs))
+        return(private$pt)
       assertChoice(rhs, self$allowed.predict.types)
       private$pt = rhs
     }
