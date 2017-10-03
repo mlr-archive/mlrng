@@ -17,8 +17,9 @@ Learner = R6Class("Learner",
     properties = character(0L),
     train = NULL,
     predict = NULL,
+    allowed.predict.types = NULL,
 
-    initialize = function(type, name, par.set, par.vals = list(), packages = character(0L), properties = character(0L), train, predict) {
+    initialize = function(type, name, par.set, par.vals = list(), packages = character(0L), properties = character(0L), train, predict, allowed.predict.types) {
       self$type = assertString(type)
       self$name = assertString(name)
       self$id = stri_paste(type, ".", name)
@@ -29,6 +30,7 @@ Learner = R6Class("Learner",
       self$train = assertFunction(train, args = c("task", "subset"), ordered = TRUE)
       self$predict = assertFunction(predict, args = c("model", "task", "subset"), ordered = TRUE)
       environment(self$train) = environment(self$predict) = environment(self$initialize)
+      allowed.predict.types = assertCharacter(allowed.predict.types, any.missing = FALSE, min.len = 1L)
     }
   ),
   active = list(
@@ -38,6 +40,10 @@ Learner = R6Class("Learner",
       assertList(rhs, names = "unique")
       assertSubset(names(rhs), getParamIds(self$par.set))
       private$pv[names(rhs)] = rhs
+    },
+    predict.type = function(rhs) {
+      assertChoice(rhs, lrn$allowed.predict.types)
+      self$predict.type = predict.type
     }
   ),
   private = list(
