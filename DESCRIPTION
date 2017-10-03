@@ -11,6 +11,7 @@ Description: Machine Learning in R. Next Gen.
 License: GPL-2
 NeedsCompilation: no
 Depends:
+    R (>= 3.1.0),
     data.table
 Imports:
     BBmisc,
@@ -21,25 +22,21 @@ Imports:
     RSQLite,
     backports (>= 1.1.1),
     checkmate (>= 1.8.4),
-    dbplyr,
     digest,
-    dplyr,
+    dplyr (>= 0.7.0),
     glue,
     parallelMap,
     stringi
 Suggests:
-    devtools,
-    kernlab,
+    dbplyr,
     knitr,
-    mlbench,
     rmarkdown,
     rpart,
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate: 
+Collate:
     'BenchmarkResult.R'
-    'Connection.R'
     'Dictionary.R'
     'Dictionaries.R'
     'Learner.R'

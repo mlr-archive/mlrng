@@ -22,7 +22,7 @@ mlr.learners$add(LearnerClassif$new(
     rpart::rpart(task$formula, data, ...)
   },
   predict = function(model, task, subset, ...) {
-    data = task$data(subset, setdiff(task$active.cols, task$target))
+    data = task$data(subset, setdiff(task$view$active.cols, task$target))
     pt = self$predict.type
     if (pt == "response")
       as.character(predict(model, newdata = data, type = "class", ...)) else

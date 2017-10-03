@@ -7,6 +7,6 @@ test_that("MlrModel creation",{
   expect_is(mod, "MlrModel")
   expect_equal(mod$learner, lrn)
   expect_equal(mod$task, task)
-  expect_equal(mod$train, task$active.rows)
+  expect_equal(mod$train, task$view$active.rows)
   expect_is(mod$log, "TrainLog")
 })
