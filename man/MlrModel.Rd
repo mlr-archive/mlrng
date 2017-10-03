@@ -23,6 +23,9 @@ A \code{\link[R6]{R6Class}} containing data of a \code{\link{train}}.
 \item{\code{train}}{[\code{integer}]: Indices of training data used to fit the model.}
 
 \item{\code{log}}{[\code{\link{TrainLog}}]: Logging information from model fit.}
+
+\item{\code{train.success}}{[\code{logical(1)}]: Was the training sucessfull.
+Depending on the settings of \code{mlrng.continue.on.train.error} this can still be a valid model, but it uses a dummy fallback learner.}
 }}
 
 \keyword{datasets}

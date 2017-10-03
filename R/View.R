@@ -76,7 +76,7 @@ View = R6Class("View",
     active.rows = function(rows) {
       if (missing(rows)) {
         if (is.null(private$view.rows))
-          return(dplyr::collect(dplyr::select(self$raw.tbl, dplyr::one_of(self$rowid.col)))[[1L]])
+          private$view.rows = dplyr::collect(dplyr::select(self$raw.tbl, dplyr::one_of(self$rowid.col)))[[1L]]
         return(private$view.rows)
       }
 

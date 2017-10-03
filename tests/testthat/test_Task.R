@@ -38,8 +38,8 @@ test_that("Tasks can be loaded from the fs", {
   task = TaskClassif$new(id = "iris", data = iris, "Species")
   fn.rds = tempfile(fileext = ".rds")
   saveRDS(task, file = fn.rds)
-  rm(task); gc()
+  rm(task)
 
-  task = readRDS(fn)
+  task = readRDS(fn.rds)
   expect_supervisedtask(task)
 })

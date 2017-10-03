@@ -54,7 +54,7 @@ Resampling = R6Class("Resampling",
     set = function(task, train, test = NULL) {
       if (is.null(test))
         test = lapply(train, function(x) !x)
-      ids = task$active.rows
+      ids = task$view$active.rows
       train = lapply(train, function(x) ids[x])
       test = lapply(test, function(x) ids[x])
 
