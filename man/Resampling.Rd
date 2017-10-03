@@ -15,7 +15,7 @@ Resampling
 A \code{\link[R6]{R6Class}} to construct resampling measures.
 This is the abstract base class, do not use directly!
 
-Predefined resampling measures are stored in \code{\link{Resamplings}}.
+Predefined resampling measures are stored in \code{\link{mlr.resamplings}}.
 }
 \section{Fields}{
 

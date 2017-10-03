@@ -7,8 +7,8 @@ test_that("train", {
   expect_is(mod, "MlrModel")
   expect_true(mod$train.success)
   p = predict(mod, task)
-  expect_subset(p$predicted, task$levels(task$target))
-  })
+  expect_subset(p$predicted, task$view$distinct(task$target))
+})
 
 
 test_that("warnings/messages are caught", {

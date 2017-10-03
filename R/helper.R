@@ -45,13 +45,13 @@ stri_peek = function(str, append = "...") {
 
 translateSubset = function(task, subset = NULL) {
   if (is.null(subset))
-    return(task$active.rows)
+    return(task$view$active.rows)
   if (is.logical(subset)) {
     assertLogical(subset, len = task$nrow, any.missing = FALSE)
   } else {
     assertIntegerish(subset, any.missing = FALSE, lower = 1L, upper = task$nrow)
   }
-  task$active.rows[subset]
+  task$view$active.rows[subset]
 }
 
 

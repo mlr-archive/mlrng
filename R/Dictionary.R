@@ -3,8 +3,8 @@
 #'
 #' @description
 #' A \code{\link[R6]{R6Class}} for a simple dictionary (hash map).
-#' This is used to store objects like \code{\link{Tasks}}, \code{\link{mlr.learners}},
-#' \code{\link{Resamplings}} or \code{\link{mlr.measures}}.
+#' This is used to store objects like \code{\link{mlr.tasks}}, \code{\link{mlr.learners}},
+#' \code{\link{mlr.resamplings}} or \code{\link{mlr.measures}}.
 #'
 #' @field ids Returns the ids of registered learners.
 #' @field env Environment where all \code{\link{Learner}} objects are stored.
@@ -116,7 +116,7 @@ as.data.table.Dictionary = function(x, keep.rownames = FALSE, ..., with.obj = TR
     ee = if (inherits(e, "LazyElement")) e$get() else e$clone()
     row = cbind(data.table(id = e$id), x$getElementSummary(ee))
     if (with.obj)
-      row[, "obj" := .(list(ee))]
+      row[, "obj" := list(list(ee))]
     return(row)
   }, USE.NAMES = FALSE), fill = TRUE)
   setkeyv(tab, "id")[]

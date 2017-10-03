@@ -3,7 +3,7 @@
 #' @import stringi
 #' @import ParamHelpers
 #' @import evaluate
-#' @importFrom stats setNames
+#' @importFrom stats setNames predict
 #' @importFrom utils data
 #' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col isFALSE
 #' @importFrom parallelMap parallelMap parallelExport parallelLibrary

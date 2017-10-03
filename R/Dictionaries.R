@@ -8,7 +8,7 @@
 #' \code{Tasks} is a \code{\link{Dictionary}} used to manage tasks.
 #'
 #' @export
-DictionaryTasks = R6Class("DictionaryTasks", inherit = Dictionary,
+mlr.tasks = R6Class("DictionaryTasks", inherit = Dictionary,
   public = list(
     initialize = function() {
       super$initialize("Task")
@@ -21,8 +21,7 @@ DictionaryTasks = R6Class("DictionaryTasks", inherit = Dictionary,
       )
     }
   )
-)
-mlr.tasks = DictionaryTasks$new()
+)$new()
 
 #' @title Registered Learners
 #' @docType class
@@ -36,7 +35,7 @@ mlr.tasks = DictionaryTasks$new()
 #' mlr.learners$ids
 #' mlr.learners$contains("classif.dummy")
 #' mlr.learners$get("classif.dummy")
-DictionaryLearners = R6Class("DictionaryLearners", inherit = Dictionary,
+mlr.learners = R6Class("DictionaryLearners", inherit = Dictionary,
   public = list(
     initialize = function() {
       super$initialize("Learner")
@@ -50,8 +49,7 @@ DictionaryLearners = R6Class("DictionaryLearners", inherit = Dictionary,
       )
     }
   )
-)
-mlr.learners = DictionaryLearners$new()
+)$new()
 
 #' @title Registered Resampling Methods
 #' @docType class
@@ -61,7 +59,7 @@ mlr.learners = DictionaryLearners$new()
 #' \code{mlr.measures} is a \code{\link{Dictionary}} used to manage performance measures.
 #'
 #' @export
-DictionaryMeasures = R6Class("DictionaryMeasures", inherit = Dictionary,
+mlr.measures = R6Class("DictionaryMeasures", inherit = Dictionary,
   public = list(
     initialize = function() {
       super$initialize("Measure")
@@ -70,8 +68,7 @@ DictionaryMeasures = R6Class("DictionaryMeasures", inherit = Dictionary,
       data.table(task.types = list(x$task.types))
     }
   )
-)
-mlr.measures = DictionaryMeasures$new()
+)$new()
 
 
 #' @title Registered Resampling Methods
@@ -82,7 +79,7 @@ mlr.measures = DictionaryMeasures$new()
 #' \code{Resamplings} is a \code{\link{Dictionary}} used to manage resampling methods.
 #'
 #' @export
-DictionaryResamplings = R6Class("Resamplings", inherit = Dictionary,
+mlr.resamplings = R6Class("Resamplings", inherit = Dictionary,
   public = list(
     initialize = function() {
       super$initialize("Resampling")
@@ -95,6 +92,4 @@ DictionaryResamplings = R6Class("Resamplings", inherit = Dictionary,
       )
     }
   )
-)
-mlr.resamplings = DictionaryResamplings$new()
-
+)$new()
