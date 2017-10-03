@@ -22,13 +22,13 @@ Imports:
     RSQLite,
     backports (>= 1.1.1),
     checkmate (>= 1.8.4),
-    dbplyr,
     digest,
     dplyr (>= 0.7.0),
     glue,
     parallelMap,
     stringi
 Suggests:
+    dbplyr,
     knitr,
     rmarkdown,
     rpart,
