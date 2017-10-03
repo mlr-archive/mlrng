@@ -1,6 +1,6 @@
 #' @include Dictionaries.R
 
-mlr.learners$add(Learner$new(
+mlr.learners$add(LearnerClassif$new(
   type = "classif",
   name = "rpart",
   package = "rpart",

@@ -93,7 +93,7 @@ expect_resampling = function(r, instantiated = NULL) {
 
 
 # Dummy learner that can produce warnings/errors/messages
-lrn.mock.regr = Learner$new(
+lrn.mock.regr = LearnerRegr$new(
   type = "regr",
   name = "mock",
   par.set = ParamHelpers::makeParamSet(
