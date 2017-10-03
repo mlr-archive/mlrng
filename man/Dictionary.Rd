@@ -13,8 +13,8 @@ Dictionary
 }
 \description{
 A \code{\link[R6]{R6Class}} for a simple dictionary (hash map).
-This is used to store objects like \code{\link{Tasks}}, \code{\link{Learners}},
-\code{\link{Resamplings}} or \code{\link{Measures}}.
+This is used to store objects like \code{\link{Tasks}}, \code{\link{mlr.learners}},
+\code{\link{Resamplings}} or \code{\link{mlr.measures}}.
 }
 \section{Fields}{
 

@@ -15,7 +15,7 @@ Measure
 A \code{\link[R6]{R6Class}} to construct performance measures.
 This is the abstract base class, do not use directly!
 
-Predefined measures are stored in \code{\link{Measures}}.
+Predefined measures are stored in \code{\link{mlr.measures}}.
 }
 \section{Fields}{
 
