@@ -111,7 +111,9 @@ View = R6Class("View",
     },
 
     types = function() {
-      vcapply(dplyr::collect(head(self$tbl, 1L)), class)
+      if (is.null(private$cache$types))
+        private$cache$types = vcapply(dplyr::collect(head(self$tbl, 1L)), class)
+      private$cache$types
     }
   ),
 
