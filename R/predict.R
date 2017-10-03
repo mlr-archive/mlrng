@@ -19,5 +19,5 @@ predictWorker = function(model, task, learner, subset) {
 
 predictFailureModel = function(model, task, subset) {
   fallback.learner = createFallbackLearner(task)
-  predictWorker(model, task, fallback.learner, subset)
+  predictWorker(model$wrapped.model, task, fallback.learner, subset)
 }
