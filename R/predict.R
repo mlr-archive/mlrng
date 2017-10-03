@@ -4,7 +4,11 @@ predict.MlrModel = function(object, task, subset = NULL, ...) {
   subset = translateSubset(task, subset)
   split = Split$new(train = object$train, test = subset)
 
-  response = predictWorker(object$model, task, object$learner, subset = split$test)
+  response = if (object$train.success)
+    predictWorker(object$model, task, object$learner, subset = split$test)
+  else
+    predictFailureModel(object$model, task, split$test)
+
   Prediction$new(task, object, split, response)
 }
 
@@ -13,4 +17,10 @@ predictWorker = function(model, task, learner, subset) {
 
   pars = c(list(model = model, task = task, subset = subset), learner$par.vals)
   do.call(learner$predict, pars)
+}
+
+
+predictFailureModel = function(model, task, subset) {
+  fallback.learner = createFallbackLearner(task)
+  predictWorker(model, task, fallback.learner, subset)
 }

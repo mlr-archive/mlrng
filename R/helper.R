@@ -53,3 +53,8 @@ translateSubset = function(task, subset = NULL) {
   }
   task$active.rows[subset]
 }
+
+createFallbackLearner = function(task) {
+ mlr.learners$get(stri_paste(task$type, ".dummy"))
+}
+

@@ -116,7 +116,7 @@ lrn.mock.regr = Learner$new(
     if (warning)
       warning("dummy warning")
     if (error)
-      Simpleerror("dummy error")
+      stop("dummy error")
 
     mod
   },

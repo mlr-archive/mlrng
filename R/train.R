@@ -21,14 +21,21 @@ train = function(task, learner, subset = NULL) {
     include_timing = TRUE, new_device = FALSE)
 
   train.log = TrainLog$new(raw.log)
+  train.success = !is.null(wrapped.model) && train.log$n.errors == 0
 
-  if (is.null(wrapped.model) || train.log$n.errors > 0)
-    gstop("Training {learner$id} on {task$id} failed with {train.log$errors[[1]]}")
-    #FIXME: add Dummy learner and option to continue on error
+  if (!train.success) {
+   if (getOption("mlrng.continue.on.learner.error", FALSE)) {
+      wrapped.model = trainFailureModel(task, train)
+      gVerboseMessage("Training {learner$id} on {task$id} failed, fallback to dummy model.")
+    } else {
+      gstop("Training {learner$id} on {task$id} failed with {train.log$errors[[1]]$message}.")
+    }
+  }
+
 
   gVerboseMessage("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
 
-  MlrModel$new(task, learner, wrapped.model, train, train.log)
+  MlrModel$new(task, learner, wrapped.model, train, train.log, train.success)
 }
 
 trainWorker = function(task, learner, subset) {
@@ -36,3 +43,10 @@ trainWorker = function(task, learner, subset) {
   pars = c(list(task = task, subset = subset), learner$par.vals)
   do.call(learner$train, pars)
 }
+
+
+trainFailureModel = function(task, subset) {
+  fallback.learner = createFallbackLearner(task)
+  trainWorker(task, fallback.learner, subset)
+}
+
