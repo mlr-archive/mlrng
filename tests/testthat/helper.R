@@ -131,11 +131,12 @@ lrn.mock.regr = LearnerRegr$new(
     ParamHelpers::makeDiscreteParam("method", values = c("mean", "median"), default = "mean"),
     ParamHelpers::makeLogicalParam("message", default = FALSE),
     ParamHelpers::makeLogicalParam("warning", default = FALSE),
-    ParamHelpers::makeLogicalParam("error", default = FALSE)
+    ParamHelpers::makeLogicalParam("error", default = FALSE),
+    ParamHelpers::makeLogicalParam("segfault", default = FALSE)
   ),
   par.vals = list(),
   properties = c("missings", "factors", "numerics"),
-  train = function(task, subset, method = "mean", message = FALSE, warning = FALSE, error = FALSE, ...) {
+  train = function(task, subset, method = "mean", message = FALSE, warning = FALSE, error = FALSE, segfault = TRUE,...) {
     tn = unlist(task$data(subset, task$target))
     mod = switch(method,
       "mean" = mean(tn),
@@ -148,6 +149,8 @@ lrn.mock.regr = LearnerRegr$new(
       warning("dummy warning")
     if (error)
       stop("dummy error")
+    if (segfault)
+      library(trump)
 
     mod
   },

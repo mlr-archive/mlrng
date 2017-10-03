@@ -25,7 +25,7 @@ MlrModel = R6Class("MlrModel",
       self$learner = assertR6(learner, "Learner")
       self$wrapped.model = wrapped.model
       self$train = assertInteger(train)
-      self$log = assertR6(log, "TrainLog")
+      self$log = assertR6(log, "TrainLog", null.ok = TRUE)
       self$train.success = assertFlag(train.success)
     }
   )
