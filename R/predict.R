@@ -2,10 +2,8 @@
 predict.MlrModel = function(object, task, subset = NULL, ...) {
   assertR6(task, "Task")
   subset = translateSubset(task, subset)
-  split = Split$new(train = object$train, test = subset)
-
-  response = predictWorker(object$model, task, object$learner, subset = split$test)
-  Prediction$new(task, object, split, response)
+  response = predictWorker(object$wrapped.model, task, object$learner, subset = subset)
+  dispatchPrediction(task, object, subset, response)
 }
 
 predictWorker = function(model, task, learner, subset) {
