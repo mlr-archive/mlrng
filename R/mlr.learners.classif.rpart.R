@@ -1,4 +1,3 @@
-
 #' @include Dictionaries.R
 
 mlr.learners$add(LearnerClassif$new(
@@ -28,5 +27,10 @@ mlr.learners$add(LearnerClassif$new(
     if (pt == "response")
       as.character(predict(model, newdata = data, type = "class", ...)) else
         predict(model, newdata = data, type = "prob", ...)
-  }
+  },
+  # FIXME: can be removed, was just for testing
+  model.extractors = list(residuals = function(model, task, subset, type = "usual", ...) {
+    type = assertSubset(type, choices = c("usual", "pearson", "deviance"))
+    rpart:::residuals.rpart(model, type = type, ...)
+  })
 ))
