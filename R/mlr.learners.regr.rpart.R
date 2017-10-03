@@ -22,10 +22,7 @@ mlr.learners$add(LearnerRegr$new(
     rpart::rpart(task$formula, data, ...)
   },
   predict = function(model, task, subset, ...) {
-    data = task$data(subset, setdiff(task$active.cols, task$target))
-    pt = self$predict.type
-    if (pt == "response")
-      as.character(predict(model, newdata = data, type = "class", ...)) else
-        predict(model, newdata = data, type = "prob", ...)
+    data = task$data(subset, setdiff(task$view$active.cols, task$target))
+    unname(predict(model, newdata = data, type = "vector", ...))
   }
 ))

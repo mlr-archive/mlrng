@@ -17,7 +17,7 @@ mlr.learners$add(LearnerClassif$new(
   },
 
   predict = function(model, task, subset, method = "mode", ...) {
-    data = task$data(subset, setdiff(task$active.cols, task$target))
+    data = task$data(subset, setdiff(task$view$active.cols, task$target))
     if (method == "mode")
       rep.int(as.character(sample(model[N == max(N)][[task$target]], 1L)), nrow(data))
     else

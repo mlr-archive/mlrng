@@ -3,9 +3,6 @@ sudo: false
 language: r
 cache: packages
 
-r_github_packages:
-  - tidyverse/glue # CRAN version does not work with R-3.1.x
-
 r:
   - 3.2
   - 3.3
