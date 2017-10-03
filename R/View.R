@@ -20,6 +20,10 @@ View = R6Class("View",
       self$rowid.col = assertString(rowid.col)
     },
 
+    deep_clone = function(name, value) {
+      if (name == "internal.con") NULL else value
+    },
+
     data = function(rows = NULL, cols = NULL) {
       tbl = self$raw.tbl
 
@@ -45,7 +49,8 @@ View = R6Class("View",
 
   active = list(
     con = function() {
-      if (is.null(self$internal.con) || !DBI::dbIsValid(self$internal.con))
+      ok = try(DBI::dbIsValid(self$internal.con), silent = TRUE)
+      if (inherits(ok, "try-error") || !isTRUE(ok) || is.null(self$internal.con))
         self$internal.con = do.call(DBI::dbConnect, self$pars)
       self$internal.con
     },

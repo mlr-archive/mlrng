@@ -40,7 +40,7 @@ test_that("asView", {
   v = asView(data = iris)
   expect_view(v)
   expect_equal(v$rowid.col, "rowid")
-  expect_set_equal(names(v$pars), c("drv", "dbname"))
+  expect_set_equal(names(v$pars), c("drv", "dbname", "flags"))
   expect_file_exists(v$pars$dbname, access = "r")
   expect_numeric(file.size(v$pars$dbname), min = 1)
   expect_true(DBI::dbExistsTable(v$con, v$name))

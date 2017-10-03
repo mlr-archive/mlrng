@@ -30,6 +30,10 @@ Task = R6Class("Task",
 
     head = function(n = 6L) {
       setDT(dplyr::collect(head(self$view$tbl, n = n)))
+    },
+
+    deep_clone = function(name, value) {
+      if (name == "view") value$clone(deep = TRUE) else value
     }
   ),
 

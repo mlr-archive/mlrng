@@ -42,7 +42,8 @@ expect_task = function(task) {
   expect_count(task$nrow)
   expect_count(task$ncol)
   expect_view(task$view)
-  expect_data_table(task$data())
+  expect_data_table(task$data(task$view$active.rows[1]))
+  expect_data_table(task$head(1))
 }
 
 expect_supervisedtask = function(task) {

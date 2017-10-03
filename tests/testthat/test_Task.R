@@ -21,6 +21,7 @@ test_that("Registered Tasks are valid", {
 test_that("Tasks are cloned", {
   task = mlr.tasks$get("bh")
   expect_true(!identical(address(task), address(mlr.tasks$env$bh)))
+  expect_true(!identical(address(task$view), address(mlr.tasks$env$view)))
 
   data = data.table(x = 1:30, y = factor(sample(letters[1:2], 30, replace = TRUE)))
   task = TaskClassif$new("testthat-example", data, "y")
@@ -29,4 +30,16 @@ test_that("Tasks are cloned", {
 
   rtask = mlr.tasks$get("testthat-example")
   expect_true(!identical(address(task), address(rtask)))
+  expect_true(!identical(address(task$view), address(rtask$view)))
+})
+
+
+test_that("Tasks can be loaded from the fs", {
+  task = TaskClassif$new(id = "iris", data = iris, "Species")
+  fn.rds = tempfile(fileext = ".rds")
+  saveRDS(task, file = fn.rds)
+  rm(task); gc()
+
+  task = readRDS(fn)
+  expect_supervisedtask(task)
 })

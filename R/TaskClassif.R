@@ -21,14 +21,16 @@ TaskClassif = R6Class("TaskClassif",
   public = list(
     type = "classif",
     positive = NA_character_,
-    initialize = function(id, connection, target, positive) {
-      super$initialize(id, connection, target)
+    initialize = function(id, data, target, positive) {
+      super$initialize(id, data, target)
+      # FIXME: we can do this efficiently with dplyr
       target = self$data(cols = self$target)[[1L]]
       qassert(target, c("S", "F"))
     }
   ),
 
   active = list(
+    # FIXME: we can do this efficiently with dplyr
     classes = function() self$levels(self$target),
     nclasses = function() length(self$classes)
   )
