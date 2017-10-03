@@ -54,7 +54,20 @@ translateSubset = function(task, subset = NULL) {
   task$active.rows[subset]
 }
 
+
+asListOfRows = function(x) {
+  if (is.vector(x)) {
+    as.list(x)
+  } else if (is.matrix(x)) {
+    apply(x, 1, list)
+  } else if (is.data.frame(x)) {
+    if (ncol(x) == 1L)
+      as.list(x[[1L]])
+    else
+      .mapply(list, x, MoreArgs = list())
+  }
+}
+
 createFallbackLearner = function(task) {
  mlr.learners$get(stri_paste(task$type, ".dummy"))
 }
-

@@ -26,5 +26,5 @@ test_that("Basic resampling", {
   rr = resample(task, learner, resampling, measures)
   rr$data
   expect_is(rr, "ResampleResult")
-  expect_data_table(rr$data, ncol = 8, nrow = 3)
+  expect_data_table(rr$data, ncol = 7, nrow = 3)
 })
