@@ -2,6 +2,7 @@
 #' @import data.table
 #' @import stringi
 #' @import ParamHelpers
+#' @import evaluate
 #' @importFrom stats setNames
 #' @importFrom utils data
 #' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col isFALSE
@@ -19,7 +20,8 @@
   opts = options()
   opts.mlrng = list(
     mlrng.verbose = TRUE,
-    mlrng.debug   = TRUE
+    mlrng.debug   = TRUE,
+    mlrng.keep.train.output = FALSE
   )
   unset = !(names(opts.mlrng) %in% names(opts))
   if (any(unset)) options(opts.mlrng[unset])
