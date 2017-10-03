@@ -27,7 +27,6 @@ mlr.learners$add(
       makeLogicalLearnerParam(id = "savesplitstats", default = FALSE, tunable = FALSE)
     ),
   par.vals = list(),
-  predict.type = "response",
   properties = c("twoclass", "multiclass", "prob", "factors", "numerics", "ordered", "weights", "missings", "featimp"),
   train = function(task, subset, ...) {
     f = task$formula

@@ -17,7 +17,6 @@ mlr.learners$add(LearnerClassif$new(
     makeIntegerLearnerParam(id = "xval", default = 10L, lower = 0L, tunable = FALSE)
   ),
   par.vals = list(),
-  predict.type = "response",
   properties = c("missings"),
   train = function(task, subset, ...) {
     data = task$data(subset)
