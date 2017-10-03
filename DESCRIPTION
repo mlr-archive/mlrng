@@ -37,12 +37,14 @@ Suggests:
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'BenchmarkResult.R'
     'Connection.R'
     'Dictionary.R'
     'Dictionaries.R'
     'Learner.R'
+    'LearnerClassif.R'
+    'LearnerRegr.R'
     'Measure.R'
     'MlrModel.R'
     'Prediction.R'
