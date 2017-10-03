@@ -7,11 +7,9 @@ runExperiment = function(task, learner, resampling, resampling.iter, measures, s
 
   gmessage("[Experiment]: task={task$id} | learner={learner$id} | resampling={resampling$id}: {resampling.iter}/{resampling$iters}")
 
-  model = trainWorker(task = task, learner = learner, subset = train)
-  response = predictWorker(model = model, task = task, learner = learner, subset = test)
-  truth = task$data(test, task$target)[[1L]]
-  performance = lapply(measures, function(x) x$fun(truth, response))
-  names(performance) = ids(measures)
+  model = train(task = task, learner = learner, subset = train)
+  pred = predict(model, task = task, subset = test)
+  perf = performance(pred, measures = measures)
 
   data.table(
     task = list(task),
@@ -19,8 +17,7 @@ runExperiment = function(task, learner, resampling, resampling.iter, measures, s
     resampling = list(resampling),
     split = list(split),
     model = if (store.model) list(model) else list(NULL),
-    response = list(response),
-    truth = list(truth),
-    performance = list(performance)
+    pred = list(pred),
+    perf = list(perf)
   )
 }
