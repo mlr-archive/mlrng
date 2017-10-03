@@ -14,8 +14,7 @@
 #' @family Tasks
 #' @export
 #' @examples
-#' con = ConnectionMem$new("iris", iris)
-#' task = TaskClassif$new(id = "iris", con, target = "Species")
+#' task = TaskClassif$new(data = iris, target = "Species")
 #' task$formula
 TaskClassif = R6Class("TaskClassif",
   inherit = TaskSupervised,

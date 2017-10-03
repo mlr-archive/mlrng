@@ -38,7 +38,6 @@ Suggests:
 RoxygenNote: 6.0.1
 Collate: 
     'BenchmarkResult.R'
-    'Connection.R'
     'Dictionary.R'
     'Dictionaries.R'
     'Learner.R'

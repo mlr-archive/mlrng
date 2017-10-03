@@ -1,3 +1,12 @@
+intersect_if_not_null = function(x, y) {
+  if (!is.null(x)) {
+    if (!is.null(y))
+      return(intersect(x, y))
+    return(x)
+  }
+  return(y)
+}
+
 View = R6Class("View",
   public = list(
     pars = NULL,
@@ -9,6 +18,23 @@ View = R6Class("View",
       self$pars = assertList(pars, names = "unique")
       self$name = assertString(name)
       self$rowid.col = assertString(rowid.col)
+    },
+
+    data = function(rows = NULL, cols = NULL) {
+      tbl = self$raw.tbl
+
+      ### select rows first
+      rows = intersect_if_not_null(private$rows, rows)
+      if (!is.null(rows))
+        tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
+
+      ### select columns second - we can drop the id col now
+      if (is.null(private$view.cols))
+        private$view.cols = setdiff(colnames(self$raw.tbl), self$rowid.col)
+      cols = intersect_if_not_null(private$view.cols, cols)
+      tbl = dplyr::select(tbl, dplyr::one_of(cols))
+
+      dplyr::collect(tbl)
     },
 
     distinct = function(col) {
@@ -25,17 +51,18 @@ View = R6Class("View",
     },
 
     tbl = function() {
-      tbl = dplyr::tbl(self$name, src = self$con)
+      tbl = self$raw.tbl
 
       if (!is.null(private$view.rows))
         tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% private$view.rows))
 
       if (is.null(private$view.cols))
-        private$view.cols = setdiff(colnames(tbl), self$rowid.col)
+        private$view.cols = setdiff(colnames(self$raw.tbl), self$rowid.col)
       tbl = dplyr::select(tbl, dplyr::one_of(private$view.cols))
 
       return(tbl)
     },
+
 
     raw.tbl = function() {
       tbl = dplyr::tbl(self$name, src = self$con)
@@ -111,7 +138,7 @@ asView = function(name = deparse(substitute(data)), data, rowid.col = NULL, path
   DBI::dbDisconnect(con)
 
   view = View$new(
-    pars = list(drv = RSQLite::SQLite(), dbname = path),
+    pars = list(drv = RSQLite::SQLite(), dbname = path, flags = RSQLite::SQLITE_RO),
     name = name,
     rowid.col = rowid.col
   )
