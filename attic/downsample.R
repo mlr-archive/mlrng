@@ -26,7 +26,7 @@ downsampleWrapper = function(lrn, ratio = 0.1) {
 
 
 # test_that("Basic resampling", {
-#   learner = Learners$get("classif.rpart", mtry = 2)
+#   learner = mlr.learners$get("classif.rpart", mtry = 2)
 #   learner = downsampleWrapper(learner, ratio = 0.1)
 #   rr = resample("iris", learner, "cv", "mmce")
 #   expect_class(rr, "ResampleResult")

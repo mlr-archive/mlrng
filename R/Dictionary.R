@@ -3,8 +3,8 @@
 #'
 #' @description
 #' A \code{\link[R6]{R6Class}} for a simple dictionary (hash map).
-#' This is used to store objects like \code{\link{Tasks}}, \code{\link{Learners}},
-#' \code{\link{Resamplings}} or \code{\link{Measures}}.
+#' This is used to store objects like \code{\link{Tasks}}, \code{\link{mlr.learners}},
+#' \code{\link{Resamplings}} or \code{\link{mlr.measures}}.
 #'
 #' @field ids Returns the ids of registered learners.
 #' @field env Environment where all \code{\link{Learner}} objects are stored.
@@ -74,6 +74,10 @@ Dictionary = R6Class("Dictionary",
       invisible(self)
     },
 
+    getElementSummary = function(x) {
+      data.table()
+    },
+
     print = function(...) {
       ids = self$ids
       gcat("
@@ -107,14 +111,14 @@ as.list.Dictionary = function(x, ...) {
 }
 
 #' @export
-as.data.table.Dictionary = function(x, keep.rownames = FALSE, ...) {
+as.data.table.Dictionary = function(x, keep.rownames = FALSE, ..., with.obj = TRUE) {
   tab = rbindlist(eapply(x$env, function(e) {
-    x = if (inherits(e, "LazyElement")) e$get() else e$clone()
-    list(
-      id = e$id,
-      obj = list(x)
-    )
-  }, USE.NAMES = FALSE))
+    ee = if (inherits(e, "LazyElement")) e$get() else e$clone()
+    row = cbind(data.table(id = e$id), x$getElementSummary(ee))
+    if (with.obj)
+      row[, "obj" := .(list(ee))]
+    return(row)
+  }, USE.NAMES = FALSE), fill = TRUE)
   setkeyv(tab, "id")[]
 }
 

@@ -11,6 +11,12 @@ Prediction = R6Class("Prediction",
       self$wrapped.model = assertR6(wrapped.model, "MlrModel")
       self$split = assertR6(split, "Split")
       self$response = assertVector(response)
+      data.table(
+        model = list(model),
+
+        truth = task$truth,
+        response = list(response)
+      )
     }
   )
 )

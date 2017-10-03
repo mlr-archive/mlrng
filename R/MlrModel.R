@@ -6,7 +6,7 @@
 #'
 #' @field task [\code{\link{Task}}]: Task used to fit the model.
 #' @field learner [\code{\link{Learner}}]: Learner used to fit the model.
-#' @field model [any]: Result of the model fit as returned by third party packages.
+#' @field wrapped.model [any]: Result of the model fit as returned by third party packages.
 #' @field train [\code{integer}]: Indices of training data used to fit the model.
 #' @field log [\code{\link{TrainLog}}]: Logging information from model fit.
 MlrModel = R6Class("MlrModel",
@@ -14,13 +14,13 @@ MlrModel = R6Class("MlrModel",
   public = list(
     task = NULL,
     learner = NULL,
-    model = NULL,
+    wrapped.model = NULL,
     train = NULL,
     log = NULL,
-    initialize = function(task, learner, model, train, log) {
+    initialize = function(task, learner, wrapped.model, train, log) {
       self$task = assertR6(task, "Task")
       self$learner = assertR6(learner, "Learner")
-      self$model = model
+      self$wrapped.model = wrapped.model
       self$train = assertInteger(train)
       self$log = assertR6(log, "TrainLog")
     }

@@ -1,5 +1,6 @@
-#' @include Resamplings.R
-Resamplings$add(
+#' @include Dictionaries.R
+
+mlr.resamplings$add(
   Resampling$new(
     id = "cv",
     description = "cross-validation",

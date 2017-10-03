@@ -1,8 +1,8 @@
 context("train")
 
 test_that("train", {
-  task = Tasks$get("spam")
-  lrn = Learners$get("classif.dummy")
+  task = mlr.tasks$get("spam")
+  lrn = mlr.learners$get("classif.dummy")
   mod = train(task, lrn)
   expect_is(mod, "MlrModel")
   p = predict(mod, task, subset = seq_len(task$nrow))
@@ -11,7 +11,7 @@ test_that("train", {
 
 
 test_that("warnings/messages are caught", {
-  task = Tasks$get("bh")
+  task = mlr.tasks$get("bh")
   lrn.mock.regr$par.vals = list(warning = TRUE, message = TRUE)
   mod = train(task, lrn.mock.regr)
   expect_equal(mod$log$n.messages, 1)

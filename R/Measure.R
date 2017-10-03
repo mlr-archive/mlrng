@@ -5,7 +5,7 @@
 #' A \code{\link[R6]{R6Class}} to construct performance measures.
 #' This is the abstract base class, do not use directly!
 #'
-#' Predefined measures are stored in \code{\link{Measures}}.
+#' Predefined measures are stored in \code{\link{mlr.measures}}.
 #'
 #' @field id [\code{character(1)}]: Identifier of the measure.
 #' @field description [\code{character(1)}]: Description of the measure.
