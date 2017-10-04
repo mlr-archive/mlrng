@@ -9,15 +9,15 @@
 #'   Object of type \code{\link{Learner}}.
 #' @param subset [\code{integer} | \code{logical}]\cr
 #'   Subset of \code{task} to train the data on.
-#' @return \code{\link{MlrModel}}.
+#' @return \code{\link{TrainResult}}.
 #' @export
 train = function(task, learner, subset = NULL) {
   assertR6(task, "Task")
   assertR6(learner, "Learner")
 
-  train = translateSubset(task, subset)
+  subset = translateSubset(task, subset)
   wrapped.model = NULL
-  raw.log = evaluate::evaluate("wrapped.model = trainWorker(task, learner, train)",
+  raw.log = evaluate::evaluate("wrapped.model = trainWorker(task, learner, subset)",
     include_timing = TRUE, new_device = FALSE)
 
   train.log = TrainLog$new(raw.log)
@@ -25,7 +25,7 @@ train = function(task, learner, subset = NULL) {
 
   if (!train.success) {
    if (getOption("mlrng.continue.on.learner.error", FALSE)) {
-      wrapped.model = trainFailureModel(task, train)
+      wrapped.model = trainFailureModel(task, subset)
       gVerboseMessage("Training {learner$id} on {task$id} failed, fallback to dummy model.")
     } else {
       gstop("Training {learner$id} on {task$id} failed with {train.log$errors[[1]]$message}.")
@@ -35,7 +35,7 @@ train = function(task, learner, subset = NULL) {
 
   gVerboseMessage("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
 
-  MlrModel$new(task, learner, wrapped.model, train, train.log, train.success)
+  TrainResult$new(task, learner, wrapped.model, subset, train.log, train.success)
 }
 
 trainWorker = function(task, learner, subset) {
