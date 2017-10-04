@@ -6,25 +6,6 @@ propVectorToMatrix = function(p, levs) {
   return(y)
 }
 
-# FIXME: do we want to keep the recode.target stuf task$all.rows()f from the old mlr?
-getTaskData = function(task, subset = task$view$active.rows, target.extra = FALSE) {
-  if (target.extra) {
-    # FIXME: If we allow user-defined formula, we might want to use task$formula to create data
-    data = task$data(subset, setdiff(task$view$active.cols, task$target))
-    data = BBmisc::convertDataFrameCols(data, chars.as.factor = TRUE, logicals.as.factor = TRUE)
-    # FIXME: does this work with survival etc.?
-    # FIXME: should target be a data.frame or vector?
-    target = task$data(subset, task$target)
-    target = BBmisc::convertDataFrameCols(target, chars.as.factor = TRUE, logicals.as.factor = TRUE)
-    res = list(data = data, target = target[[task$target]])
-    return(res)
-  } else {
-    data = task$data(subset, task$view$active.cols)
-    data = BBmisc::convertDataFrameCols(data, chars.as.factor = TRUE, logicals.as.factor = TRUE)
-    return(data)
-  }
-}
-
 #' @title Convert arguments to control structure.
 #'
 #' @description

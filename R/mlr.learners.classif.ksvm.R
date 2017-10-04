@@ -34,7 +34,7 @@ mlr.learners$add(
       makeIntegerLearnerParam(id = "cache", default = 40L, lower = 1L)
     ),
     par.vals = list(fit = FALSE),
-    properties = c("twoclass", "multiclass", "numerics", "factors", "prob", "class.weights"),
+    properties = c("twoclass", "multiclass", "feat.numeric", "feat.factor", "prob"),
     train = function(task, subset, weights = NULL, ...) {
       kpar = learnerArgsToControl(control = list, degree = self$par.vals$degree,
         offset = self$par.vals$offset, scale = self$par.vals$scale, sigma = self$par.vals$sigma,
@@ -49,7 +49,7 @@ mlr.learners$add(
     },
     predict = function(model, task, subset, ...) { #FIXME: not working right now
       type = switch(self$predict.type, prob = "probabilities", "response")
-      data = getTaskData(task, target.extra = TRUE)$data
+      data = getTaskData(task, type = "test")
       kernlab::predict(model, newdata = data, type = type, ...)
     }
   ))

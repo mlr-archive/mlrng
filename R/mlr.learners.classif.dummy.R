@@ -7,7 +7,7 @@ mlr.learners$add(LearnerClassif$new(
     makeDiscreteParam("method", values = c("mode", "sample"), default = "mode")
   ),
   par.vals = list(),
-  properties = c("missings", "factors", "numerics"),
+  properties = c("missings", "feat.factor", "feat.numeric"),
   train = function(task, subset, ...) {
     data = task$data(subset)
     tn = task$target
