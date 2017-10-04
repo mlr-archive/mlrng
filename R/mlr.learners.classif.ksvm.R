@@ -49,7 +49,7 @@ mlr.learners$add(
     },
     predict = function(model, task, subset, ...) { #FIXME: not working right now
       type = switch(self$predict.type, prob = "probabilities", "response")
-      data = getTaskData(task, type = "test")
+      data = getTaskData(task, subset, type = "test")
       kernlab::predict(model, newdata = data, type = type, ...)
     }
   ))
