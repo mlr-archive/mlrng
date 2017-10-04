@@ -1,13 +1,14 @@
-getTaskData = function(task, subset, type, props = NULL) {
+getTaskData = function(task, subset = task$view$active.rows, type = "train", props = NULL) {
   assertR6(task, "TaskSupervised")
   assertAtomicVector(subset, any.missing = FALSE)
+  assertChoice(type, choices = c("train", "test", "extra"))
   x = task$data(rows = subset, cols = task$features)
   convertFeatures(x, props)
 
   switch(type,
-    train = set(x, j = task$target, value = task$data(subset, task$target)[[1L]])[],
+    train = set(x, j = task$target, value = task$data(subset, task$target))[],
     test = x,
-    extra = list(y = task$data(subset, task$target)[[1L]], x = x)
+    extra = list(y = task$data(subset, task$target), x = x)
   )
 }
 
