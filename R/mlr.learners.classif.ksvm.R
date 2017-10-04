@@ -48,7 +48,7 @@ mlr.learners$add(
     },
     predict = function(model, task, subset, ...) { #FIXME: not working right now
       type = switch(self$predict.type, prob = "probabilities", "response")
-      data = task$data(subset, setdiff(task$active.cols, task$target))
-      kernlab::predict(model, newdata = data, type = type, ...)
+      data = as.data.frame(task$data(subset, setdiff(task$active.cols, task$target)))
+      as.character(kernlab::predict(model, newdata = data, type = type, ...))
     }
   ))
