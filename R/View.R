@@ -27,7 +27,7 @@ View = R6Class("View",
       tbl = self$raw.tbl
 
       ### select rows first
-      rows = intersect_if_not_null(private$rows, rows)
+      rows = intersect_if_not_null(private$view.rows, rows)
       if (!is.null(rows))
         tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
 
@@ -74,9 +74,11 @@ View = R6Class("View",
 
     active.rows = function(rows) {
       if (missing(rows)) {
-        if (is.null(private$view.rows))
-          private$view.rows = dplyr::collect(dplyr::select(self$raw.tbl, dplyr::one_of(self$rowid.col)))[[1L]]
-        return(private$view.rows)
+        if (!is.null(private$active.rows))
+          return(private$active.rows)
+        if (is.null(private$cache$active.rows))
+          private$cache$active.rows = dplyr::collect(dplyr::select(self$raw.tbl, dplyr::one_of(self$rowid.col)))[[1L]]
+        return(private$cache$active.rows)
       }
 
       assertAtomicVector(rows, any.missing = FALSE)
@@ -86,6 +88,7 @@ View = R6Class("View",
       if (res$n != length(rows))
         stop("Invalid row ids provided")
       private$cache$nrow = length(rows)
+      private$cache$active.rows = NULL
       private$view.rows = rows
     },
 
