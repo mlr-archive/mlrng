@@ -34,6 +34,11 @@ test_that("getTaskData", {
   y = getTaskData(task, 1:5, "extra", "feat.character")
   expect_list(y, len = 2)
   expect_set_equal(names(y), c("x", "y"))
-  expect_character(y$y)
-  expect_data_table(y$x, nrow = 5, ncol = 5, types = setdiff(types, "factor"))
+  expect_data_table(y$y, ncols = 1)
+  expect_data_table(y$x, nrows = 5, ncols = 5, types = setdiff(types, "factor"))
+
+  y = getTaskData(task, 1:5, "extra", "feat.character", target.as = "character")
+  expect_character(y$y[[task$target]])
+  y = getTaskData(task, 1:5, "extra", "feat.character", target.as = "factor")
+  expect_factor(y$y[[task$target]])
 })

@@ -19,6 +19,6 @@ mlr.learners$add(LearnerRegr$new(
   },
 
   predict = function(model, task, subset, ...) {
-    as.numeric(model)
+    rep(as.numeric(model), length(subset))
   }
 ))

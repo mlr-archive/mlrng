@@ -17,7 +17,7 @@ Object of type \code{\link{Learner}}.}
 Subset of \code{task} to train the data on.}
 }
 \value{
-\code{\link{MlrModel}}.
+\code{\link{TrainResult}}.
 }
 \description{
 Fits a model on a subset of the task data.

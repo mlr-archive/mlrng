@@ -19,8 +19,9 @@ test_that("logging without errors", {
   err = 0
 
   call.successful = FALSE
-  raw.log = evaluate::evaluate("call.successful = logGenerator(n.out, n.warn, n.message, err)", new_device = FALSE)
-  log.obj = TrainLog$new(raw.log)
+  raw.log = evaluate::evaluate("call.successful = logGenerator(n.out, n.warn, n.message, err)", new_device = FALSE,
+    include_timing = TRUE)
+  log.obj = TrainLog$new(raw.log, attr(raw.log[[1]]$src, "timing")[3])
   expect_true(call.successful)
   expect_null(log.obj$output)
   expect_equal(log.obj$n.messages, n.message)
@@ -35,8 +36,9 @@ test_that("logging with error", {
   err = 1
 
   call.successful = FALSE
-  raw.log = evaluate::evaluate("call.successful = logGenerator(error = err)", new_device = FALSE)
-  log.obj = TrainLog$new(raw.log)
+  raw.log = evaluate::evaluate("call.successful = logGenerator(error = err)", new_device = FALSE,
+    include_timing = TRUE)
+  log.obj = TrainLog$new(raw.log, attr(raw.log[[1]]$src, "timing")[3])
   expect_false(call.successful)
   expect_null(log.obj$output)
   expect_equal(log.obj$n.messages, 0)
