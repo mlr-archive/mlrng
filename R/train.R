@@ -61,3 +61,14 @@ trainFailureModel = function(task, subset) {
   trainWorker(task, fallback.learner, subset)
 }
 
+getTrainEvalString = function(encapsulation) {
+  assertInt(encapsulation, lower = 1,  upper = 2)
+  if (encapsulation == 1) {
+    "wrapped.model = trainWorker(task, learner, train)"
+  } else  {
+     "wrapped.model = callr::r(function(task, learner, train) {
+        library(mlrng)
+        mlrng:::trainWorker(task, learner, train)
+        }, list(task = task, learner = learner, train = train))"
+  }
+}
