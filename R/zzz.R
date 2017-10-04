@@ -1,3 +1,4 @@
+#' @import callr
 #' @import checkmate
 #' @import data.table
 #' @import stringi
@@ -20,9 +21,9 @@
   opts = options()
   opts.mlrng = list(
     mlrng.verbose = TRUE,
-    mlrng.debug   = TRUE,
     mlrng.keep.train.output = FALSE,
-    mlrng.continue.on.learner.error = FALSE
+    mlrng.continue.on.learner.error = FALSE,
+    mlrng.train.encapsulation = 1
   )
   unset = !(names(opts.mlrng) %in% names(opts))
   if (any(unset)) options(opts.mlrng[unset])

@@ -136,7 +136,7 @@ lrn.mock.regr = LearnerRegr$new(
   ),
   par.vals = list(),
   properties = c("missings", "factors", "numerics"),
-  train = function(task, subset, method = "mean", message = FALSE, warning = FALSE, error = FALSE, ...) {
+  train = function(task, subset, method = "mean", message = FALSE, warning = FALSE, error = FALSE,...) {
     tn = unlist(task$data(subset, task$target))
     mod = switch(method,
       "mean" = mean(tn),
