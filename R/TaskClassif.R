@@ -31,7 +31,7 @@ TaskClassif = R6Class("TaskClassif",
 
   active = list(
     # FIXME: we can do this efficiently with dplyr
-    classes = function() self$levels(self$target),
+    classes = function() self$view$distinct(self$target),
     nclasses = function() length(self$classes)
   )
 )
