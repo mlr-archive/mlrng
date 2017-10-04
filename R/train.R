@@ -12,8 +12,9 @@
 #' @return \code{\link{TrainResult}}.
 #' @export
 train = function(task, learner, subset = NULL) {
-  assertR6(task, "Task")
-  assertR6(learner, "Learner")
+  assertTask(task)
+  assertLearner(learner, for.task = task)
+  assertIndexSet(subset, for.task = task)
 
   subset = translateSubset(task, subset)
   wrapped.model = NULL

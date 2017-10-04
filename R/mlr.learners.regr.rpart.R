@@ -1,7 +1,6 @@
 #' @include Dictionaries.R
 
 mlr.learners$add(LearnerRegr$new(
-  type = "regr",
   name = "rpart",
   package = "rpart",
   par.set = makeParamSet(

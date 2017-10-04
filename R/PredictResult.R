@@ -3,10 +3,12 @@ PredictResult = R6Class("PredictResult",
   public = list(
     initialize = function(train.result, test.set, poutput) {
       assertR6(train.result, "TrainResult")
-      # FIXME: rowids seem to be integer here? should be character
-      #FIXME: what hapens with the ref here? do we clone? DANGEROUS!
       self$dt = train.result$dt
-      self$dtgrow(test.set = test.set, poutput = poutput)
+      self$dtgrow(
+        test.set = assertIndexSet(test.set, for.task = train.result$task),
+        #FIXME: which assertions should go here? learner group defines this
+        poutput = poutput
+      )
     }
   ),
   active = list(

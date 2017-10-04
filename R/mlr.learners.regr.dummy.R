@@ -1,7 +1,6 @@
 #' @include Dictionaries.R
 
 mlr.learners$add(LearnerRegr$new(
-  type = "regr",
   name = "dummy",
   par.set = makeParamSet(
     makeDiscreteParam("method", values = c("mean", "median"), default = "mean")

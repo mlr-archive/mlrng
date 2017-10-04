@@ -17,10 +17,10 @@ TrainResult = R6Class("TrainResult",
     #FIXME: train.success seems clumsy name
     initialize = function(task, learner, rmodel, train.set, train.log, train.success) {
       super$initialize(
-        task = assertR6(task, "Task"),
-        learner = assertR6(learner, "Learner"),
+        task = assertTask(task),
+        learner = assertLearner(learner),
         rmodel = rmodel,
-        train.set = assertInteger(train.set),
+        train.set = assertIndexSet(train.set, for.task = task),
         train.log = assertR6(train.log, "TrainLog"),
         train.success = assertFlag(train.success)
       )
