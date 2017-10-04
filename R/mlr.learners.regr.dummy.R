@@ -7,7 +7,7 @@ mlr.learners$add(LearnerRegr$new(
     makeDiscreteParam("method", values = c("mean", "median"), default = "mean")
   ),
   par.vals = list(),
-  properties = c("missings", "factors", "numerics"),
+  properties = c("missings", "feat.factor", "feat.numeric"),
   train = function(task, subset, method = "mean", ...) {
     tn = unlist(task$data(subset, task$target))
     mod = switch(method,

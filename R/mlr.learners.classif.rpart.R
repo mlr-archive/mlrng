@@ -15,14 +15,14 @@ mlr.learners$add(LearnerClassif$new(
     makeIntegerLearnerParam(id = "maxdepth", default = 30L, lower = 1L, upper = 30L),
     makeIntegerLearnerParam(id = "xval", default = 10L, lower = 0L, tunable = FALSE)
   ),
-  par.vals = list(),
-  properties = c("missings"),
+  par.vals = list(cp = 1),
+  properties = c("twoclass", "multiclass", "missings", "feat.numeric", "feat.factor", "feat.ordered", "prob", "weights", "featimp"),
   train = function(task, subset, ...) {
-    data = task$data(subset)
+    data = getTaskData(task, subset = subset, type = "train", props = self$properties)
     rpart::rpart(task$formula, data, ...)
   },
   predict = function(model, task, subset, ...) {
-    data = task$data(subset, setdiff(task$view$active.cols, task$target))
+    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
     pt = self$predict.type
     if (pt == "response")
       as.character(predict(model, newdata = data, type = "class", ...)) else
