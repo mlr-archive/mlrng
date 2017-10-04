@@ -12,6 +12,7 @@ mlr.learners$add(
         values = c("vanilladot", "polydot", "rbfdot", "tanhdot", "laplacedot", "besseldot", "anovadot", "splinedot")),
       makeNumericLearnerParam(id = "C",
         lower = 0, default = 1, requires = quote(type %in% c("C-svc", "C-bsvc", "spoc-svc", "kbb-svc"))),
+
       makeNumericLearnerParam(id = "nu",
         lower = 0, default = 0.2, requires = quote(type == "nu-svc")),
       makeNumericLearnerParam(id = "epsilon", default = 0.1,
@@ -48,7 +49,7 @@ mlr.learners$add(
     },
     predict = function(model, task, subset, ...) { #FIXME: not working right now
       type = switch(self$predict.type, prob = "probabilities", "response")
-      data = task$data(subset, setdiff(task$active.cols, task$target))
+      data = getTaskData(task, target.extra = TRUE)$data
       kernlab::predict(model, newdata = data, type = type, ...)
     }
   ))
