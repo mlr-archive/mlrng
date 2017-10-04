@@ -10,7 +10,7 @@ TrainLog
 }
 \description{
 A \code{\link[R6]{R6Class}} containing logging information of a \code{\link{train}} call.
-Constructor is called with raw.log [\code{list}]: List of output, messages, warnings and errors occured in training.
+Constructor is called with output [\code{list}]: List of output, messages, warnings and errors occured in training and the training time.
 }
 \section{Fields}{
 

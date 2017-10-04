@@ -79,3 +79,4 @@ createFallbackLearner = function(task) {
 `%chnin%` = function(x, y) {
   !chmatch(x, y, nomatch = 0L)
 }
+

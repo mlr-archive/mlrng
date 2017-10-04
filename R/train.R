@@ -17,10 +17,21 @@ train = function(task, learner, subset = NULL) {
 
   train = translateSubset(task, subset)
   wrapped.model = NULL
-  raw.log = evaluate::evaluate("wrapped.model = trainWorker(task, learner, train)",
-    include_timing = TRUE, new_device = FALSE)
+  raw.log = list()
+  encapsulation = getOption("mlrng.train.encapsulation", 1)
 
-  train.log = TrainLog$new(raw.log)
+  start.time = proc.time()[3]
+
+  if (encapsulation == 0) {
+    wrapped.model = trainWorker(task, learner, train)
+  } else {
+    eval.string = getTrainEvalString(encapsulation)
+    raw.log = evaluate::evaluate(eval.string, new_device = FALSE)
+  }
+
+  train.time = proc.time()[3] - start.time
+
+  train.log = TrainLog$new(raw.log, train.time)
   train.success = !is.null(wrapped.model) && train.log$n.errors == 0
 
   if (!train.success) {
@@ -50,3 +61,14 @@ trainFailureModel = function(task, subset) {
   trainWorker(task, fallback.learner, subset)
 }
 
+getTrainEvalString = function(encapsulation) {
+  assertInt(encapsulation, lower = 1,  upper = 2)
+  if (encapsulation == 1) {
+    "wrapped.model = trainWorker(task, learner, train)"
+  } else  {
+     "wrapped.model = callr::r(function(task, learner, train) {
+        library(mlrng)
+        mlrng:::trainWorker(task, learner, train)
+        }, list(task = task, learner = learner, train = train))"
+  }
+}
