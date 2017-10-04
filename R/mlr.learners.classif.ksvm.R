@@ -43,13 +43,15 @@ mlr.learners$add(
       f = task$formula
       pm = self$predict.type == "prob"
       if (base::length(kpar) > 0L)
-        kernlab::ksvm(f, data = getTaskData(task, subset), kpar = kpar, prob.model = pm, ...)
+        kernlab::ksvm(f, data = getTaskData(task, subset, props = self$properties),
+          kpar = kpar, prob.model = pm, ...)
       else
-        kernlab::ksvm(f, data = getTaskData(task, subset), prob.model = pm, ...)
+        kernlab::ksvm(f, data = getTaskData(task, subset, props = self$properties),
+          prob.model = pm, ...)
     },
     predict = function(model, task, subset, ...) { #FIXME: not working right now
       type = switch(self$predict.type, prob = "probabilities", "response")
-      data = getTaskData(task, type = "test")
+      data = getTaskData(task, subset = subset, type = "test")
       kernlab::predict(model, newdata = data, type = type, ...)
     }
   ))

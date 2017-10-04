@@ -18,11 +18,11 @@ mlr.learners$add(LearnerRegr$new(
   par.vals = list(),
   properties = c("missings"),
   train = function(task, subset, ...) {
-    data = task$data(subset)
+    data = getTaskData(task, subset = subset, type = "train", props = self$properties)
     rpart::rpart(task$formula, data, ...)
   },
   predict = function(model, task, subset, ...) {
-    data = getTaskData(task, type = "test")
+    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
     unname(predict(model, newdata = data, type = "vector", ...))
   }
 ))
