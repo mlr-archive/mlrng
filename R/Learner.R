@@ -17,9 +17,10 @@ Learner = R6Class("Learner",
     properties = character(0L),
     train = NULL,
     predict = NULL,
+    model.extractors = list(),
     allowed.predict.types = NULL,
 
-    initialize = function(type, name, par.set, par.vals = list(), packages = character(0L), properties = character(0L), train, predict, allowed.predict.types, predict.type) {
+    initialize = function(type, name, par.set, par.vals = list(), packages = character(0L), properties = character(0L), train, predict, model.extractors, allowed.predict.types, predict.type) {
       self$type = assertString(type)
       self$name = assertString(name)
       self$id = stri_paste(type, ".", name)
@@ -29,9 +30,16 @@ Learner = R6Class("Learner",
       self$properties = assertCharacter(properties, any.missing = FALSE, unique = TRUE)
       self$train = assertFunction(train, args = c("task", "subset"), ordered = TRUE)
       self$predict = assertFunction(predict, args = c("model", "task", "subset"), ordered = TRUE)
-      environment(self$train) = environment(self$predict) = environment(self$initialize)
+      self$model.extractors = lapply(model.extractors,
+        function(m) assertFunction(m, args = c("model", "task", "subset"), ordered = TRUE, null.ok = TRUE))
       self$allowed.predict.types = assertCharacter(allowed.predict.types, any.missing = FALSE, min.len = 1L)
       self$predict.type = assertChoice(predict.type, allowed.predict.types)
+
+      # set environments for functions
+      if (length(self$model.extractors) > 0)
+        for (i in seq_along(self$model.extractors))
+          environment(self$model.extractors[[i]]) = environment(self$initialize)
+      environment(self$train) = environment(self$predict) = environment(self$initialize)
     }
   ),
   active = list(

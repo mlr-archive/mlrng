@@ -71,3 +71,11 @@ asListOfRows = function(x) {
 createFallbackLearner = function(task) {
  mlr.learners$get(stri_paste(task$type, ".dummy"))
 }
+
+`%nin%` = function(x, y) {
+  !match(x, y, nomatch = 0L)
+}
+
+`%chnin%` = function(x, y) {
+  !chmatch(x, y, nomatch = 0L)
+}
