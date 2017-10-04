@@ -22,7 +22,7 @@ mlr.learners$add(LearnerRegr$new(
     rpart::rpart(task$formula, data, ...)
   },
   predict = function(model, task, subset, ...) {
-  data = getTaskData(task, subset = subset, type = "test", props = self$properties)
-  unname(predict(model, newdata = data, type = "vector", ...))
+    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
+    unname(predict(model, newdata = data, type = "vector", ...))
   }
 ))
