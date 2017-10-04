@@ -87,7 +87,7 @@ getTrainEvalString = function(encapsulation) {
     "wrapped.model = trainWorker(task, learner, train)"
   } else  {
      "wrapped.model = callr::r(function(task, learner, train) {
-        ibrary(mlrng)
+        library(mlrng)
         mlrng:::trainWorker(task, learner, train)
         }, list(task = task, learner = learner, train = train))"
   }
