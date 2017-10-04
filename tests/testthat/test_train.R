@@ -21,15 +21,16 @@ test_that("No training encapsulation works", {
   })
 })
 
-test_that("Training in external R session works", {
-  withr::with_options(new = list(mlrng.train.encapsulation = 2), code = {
-    mod = train(task, lrn)
-    expect_is(mod, "MlrModel")
-    expect_true(mod$train.success)
-    p = predict(mod, task)
-    expect_subset(p$predicted, task$view$distinct(task$target))
-  })
-})
+#FIXME: We can't test this, since we have to call library(mlrng) which does not work if the package is not installed.
+#test_that("Training in external R session works", {
+#  withr::with_options(new = list(mlrng.train.encapsulation = 2), code = {
+#    mod = train(task, lrn)
+#    expect_is(mod, "MlrModel")
+#    expect_true(mod$train.success)
+#    p = predict(mod, task)
+#    expect_subset(p$predicted, task$view$distinct(task$target))
+#  })
+#})
 
 
 test_that("warnings/messages are caught", {
