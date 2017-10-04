@@ -14,7 +14,7 @@ getTaskData = function(task, subset, type, props = NULL) {
 convertFeatures = function(x, props = NULL) {
   assertDataTable(x)
   if (!is.null(props)) {
-    assertSubset(props, sprintf("feat.%s", c("logical", "integer", "numeric", "character", "factor")))
+    assertSubset(props, mlrng$supported.learner.props)
     mutate_if = function(x, predicate, conv, ...) {
       predicate = match.fun(predicate)
       nn = names(which(vlapply(x, predicate)))
