@@ -18,25 +18,18 @@ train = function(task, learner, subset = NULL) {
   train = translateSubset(task, subset)
   wrapped.model = NULL
   raw.log = list()
-  encapsulation = getOption("mlrng.train.encapsulation", 0)
+  encapsulation = getOption("mlrng.train.encapsulation", 1)
+
+  start.time = proc.time()[3]
 
   if (encapsulation == 0) {
-    train.time = system.time({
-      wrapped.model = trainWorker(task, learner, train)
-    })
-    train.time = train.time[3]
-  } else if(encapsulation == 1) {
-    raw.log = evaluate::evaluate("wrapped.model = trainWorker(task, learner, train)",
-    include_timing = TRUE, new_device = FALSE)
-    train.time = attr(raw.log[[1]]$src, "timing")[3]
+    wrapped.model = trainWorker(task, learner, train)
   } else {
-    raw.log = evaluate::evaluate("wrapped.model = callr::r(function(task, learner, train) {
-      library(mlrng)
-      mlrng:::trainWorker(task, learner, train)
-    }, list(task = task, learner = learner, train = train))",
-    include_timing = TRUE, new_device = FALSE)
-    train.time = NA
+    eval.string = getTrainEvalString(encapsulation)
+    raw.log = evaluate::evaluate(eval.string, new_device = FALSE)
   }
+
+  train.time = proc.time()[3] - start.time
 
   train.log = TrainLog$new(raw.log, train.time)
   train.success = !is.null(wrapped.model) && train.log$n.errors == 0
