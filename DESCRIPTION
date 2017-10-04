@@ -57,6 +57,7 @@ Collate:
     'TuneControlGrid.R'
     'View.R'
     'benchmark.R'
+    'getTaskData.R'
     'helper.R'
     'mlr.learners.classif.dummy.R'
     'mlr.learners.classif.ksvm.R'
