@@ -9,13 +9,13 @@
 #'   Object of type \code{\link{Learner}}.
 #' @param subset [\code{integer} | \code{logical}]\cr
 #'   Subset of \code{task} to train the data on.
-#' @return \code{\link{MlrModel}}.
+#' @return \code{\link{TrainResult}}.
 #' @export
 train = function(task, learner, subset = NULL) {
   assertR6(task, "Task")
   assertR6(learner, "Learner")
 
-  train = translateSubset(task, subset)
+  subset = translateSubset(task, subset)
   wrapped.model = NULL
   raw.log = list()
   encapsulation = getOption("mlrng.train.encapsulation", 1)
@@ -23,7 +23,7 @@ train = function(task, learner, subset = NULL) {
   start.time = proc.time()[3]
 
   if (encapsulation == 0) {
-    wrapped.model = trainWorker(task, learner, train)
+    wrapped.model = trainWorker(task, learner, subset)
   } else {
     eval.string = getTrainEvalString(encapsulation)
     raw.log = evaluate::evaluate(eval.string, new_device = FALSE)
@@ -36,7 +36,7 @@ train = function(task, learner, subset = NULL) {
 
   if (!train.success) {
    if (getOption("mlrng.continue.on.learner.error", FALSE)) {
-      wrapped.model = trainFailureModel(task, train)
+      wrapped.model = trainFailureModel(task, subset)
       gVerboseMessage("Training {learner$id} on {task$id} failed, fallback to dummy model.")
     } else {
       gstop("Training {learner$id} on {task$id} failed with {train.log$errors[[1]]$message}.")
@@ -46,7 +46,7 @@ train = function(task, learner, subset = NULL) {
 
   gVerboseMessage("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
 
-  MlrModel$new(task, learner, wrapped.model, train, train.log, train.success)
+  TrainResult$new(task, learner, wrapped.model, subset, train.log, train.success)
 }
 
 trainWorker = function(task, learner, subset) {
@@ -64,11 +64,11 @@ trainFailureModel = function(task, subset) {
 getTrainEvalString = function(encapsulation) {
   assertInt(encapsulation, lower = 1,  upper = 2)
   if (encapsulation == 1) {
-    "wrapped.model = trainWorker(task, learner, train)"
+    "wrapped.model = trainWorker(task, learner, subset)"
   } else  {
-     "wrapped.model = callr::r(function(task, learner, train) {
+     "wrapped.model = callr::r(function(task, learner, subset) {
         library(mlrng)
-        mlrng:::trainWorker(task, learner, train)
-        }, list(task = task, learner = learner, train = train))"
+        mlrng:::trainWorker(task, learner, subset)
+        }, list(task = task, learner = learner, train = subset))"
   }
 }
