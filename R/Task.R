@@ -57,33 +57,3 @@ Task = R6Class("Task",
     }
   )
 )
-
-getTaskSupervisedData = function(task, type, subset, learner.props = NULL) {
-  task = mlr.tasks$get("bh")
-  type = "train"
-  assertR6(task, "TaskSupervised")
-  assertChoice(type, c("train", "test", "extra"))
-  assertAtomicVector(subset, any.missing = FALSE)
-  x = task$data(rows = subset, cols = task$active.cols)
-
-  if (!is.null(learner.probs)) {
-    mutate_if = function(x, predicate, conv, ...) {
-      nn = names(which(vlapply(x, is.character)))
-      if (length(nn)) {
-        conv = match.fun(conv)
-        x[, nn := lapply(.SD, conv, ...), .SDcols = nn]
-      }
-    }
-
-    if ("logical" %chnin% learner.probs)
-      x = mutate_if(x, is.logical, as.integer)
-    if ("integer" %chnin% learner.probs)
-      x = mutate_if(x, is.integer, as.double)
-    if ("character" %chin% learner.probs && "factor" %chnin% learner.probs)
-      x = mutate_if(x, is.factor, as.character)
-    if ("character" %chnin% learner.probs && "factor" %chin% learner.probs)
-      x = mutate_if(x, is.character, as.factor)
-  }
-
-  return(x)
-}

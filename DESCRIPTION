@@ -35,7 +35,7 @@ Suggests:
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'BenchmarkResult.R'
     'Dictionary.R'
     'Dictionaries.R'
@@ -57,6 +57,7 @@ Collate:
     'TuneControlGrid.R'
     'View.R'
     'benchmark.R'
+    'getTaskData.R'
     'helper.R'
     'mlr.learners.classif.dummy.R'
     'mlr.learners.classif.rpart.R'
