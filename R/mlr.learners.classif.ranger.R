@@ -1,7 +1,6 @@
 #' @include Dictionaries.R
 
 mlr.learners$add(LearnerClassif$new(
-  type = "classif",
   name = "ranger",
   package = "ranger",
   par.set = makeParamSet(
@@ -25,40 +24,18 @@ mlr.learners$add(LearnerClassif$new(
       makeLogicalLearnerParam(id = "keep.inbag", default = FALSE, tunable = FALSE)
     ),
   par.vals = list(num.threads = 1L, verbose = FALSE, respect.unordered.factors = TRUE),
-  properties = c("twoclass", "multiclass", "prob", "feat.numeric", "feat.factor", "feat.ordered", "featimp", "weights"),
- 
+  properties = c("twoclass", "multiclass", "prob", "feat.numeric", "feat.factor", "feat.ordered", "featimp", "weights", "parallel"),
+
   train = function(task, subset, weights = NULL, ...) {
     tn = task$target
-    data = getTaskData(task, subset = subset, type = "train", props = self$properties)
-    data[[tn]] = as.factor(data[[tn]])
-    ranger::ranger(formula = NULL, dependent.variable = tn, data = data,
-      probability = (self$predict.type == "prob"), case.weights = weights, ...)
+    data = getTaskData(task, subset = subset, type = "train", target.as = "factor", props = self$properties)
+    ranger::ranger(formula = task$formula, data = data, probability = (self$predict.type == "prob"),
+      case.weights = weights, ...)
   },
-  
+
   predict = function(model, task, subset, ...) {
     data = getTaskData(task, subset = subset, type = "test", props = self$properties)
     p = predict(model, newdata = data, ...)
     return(p$predictions)
   }
-  
-  
-  
-  
-  
-   # train = function(task, subset, ...) {
-  #   data = getTaskData(task, subset = subset, type = "train", props = self$properties)
-  #   rpart::rpart(task$formula, data, ...)
-  # },
-  # predict = function(model, task, subset, ...) {
-  #   data = getTaskData(task, subset = subset, type = "test", props = self$properties)
-  #   pt = self$predict.type
-  #   if (pt == "response")
-  #     as.character(predict(model, newdata = data, type = "class", ...)) else
-  #       predict(model, newdata = data, type = "prob", ...)
-  # },
-  # # FIXME: can be removed, was just for testing
-  # model.extractors = list(residuals = function(model, task, subset, type = "usual", ...) {
-  #   type = assertSubset(type, choices = c("usual", "pearson", "deviance"))
-  #   rpart:::residuals.rpart(model, type = type, ...)
-  # })
 ))
