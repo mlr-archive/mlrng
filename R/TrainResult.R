@@ -24,6 +24,14 @@ TrainResult = R6Class("TrainResult",
         train.log = assertR6(train.log, "TrainLog"),
         train.success = assertFlag(train.success)
       )
+    },
+    print = function(...) {
+      gcat("Training result of {self$learner$id} on {self$task$id}.")
+      if (!self$train.success)
+        gcat("Training failed with error {stri_peek(self$train.log$errors[[1]]$message)}.
+              Model will output constant predictions from dummy learner.")
+      if (getOption("mlrng.debug", TRUE))
+        cat("\n", format(self), "\n")
     }
   ),
   active = list(

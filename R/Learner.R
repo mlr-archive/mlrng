@@ -46,6 +46,8 @@ Learner = R6Class("Learner",
             Predict type: {self$predict.type}.
             Properties: {stri_peek(self$properties)}
             Extractors: {stri_peek(names(self$model.extractors))}")
+      if (getOption("mlrng.debug", TRUE))
+        cat("\n", format(self), "\n")
     }
   ),
   active = list(
