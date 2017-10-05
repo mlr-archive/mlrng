@@ -52,9 +52,9 @@ Task = R6Class("Task",
       gcat("Task name: {self$id}
             {self$nrow} rows and {length(cols)} features.
             Features: {stri_peek(names(cols))}
-            Feature types: {stri_paste(tbl, names(tbl), sep = ' ', collapse = ', ')}")
+            Feature types: {stri_pasteNames(tbl, names.first = FALSE)}")
       if (length(n.miss > 0))
-        gcat("Missings: {stri_paste(n.miss, names(n.miss), sep = ' ', collapse = ', ')}")
+        gcat("Missings: {stri_pasteNames(n.miss)}")
       if (getOption("mlrng.debug", TRUE))
           cat("\n", format(self), "\n")
   }),

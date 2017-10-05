@@ -9,6 +9,11 @@ PredictResult = R6Class("PredictResult",
         #FIXME: which assertions should go here? learner group defines this
         poutput = poutput
       )
+    },
+    print = function(...) {
+      gcat("Prediction result of {self$learner$id} trained on {self$task$id}.")
+      if (getOption("mlrng.debug", TRUE))
+        cat("\n", format(self), "\n")
     }
   ),
   active = list(
