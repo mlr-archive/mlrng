@@ -24,6 +24,10 @@ TaskClassif = R6Class("TaskClassif",
       # FIXME: we can do this efficiently with dplyr
       target = self$data(cols = self$target)[[1L]]
       qassert(target, c("S", "F"))
+    },
+    print = function(...) {
+      cat("Classification ")
+      super$print()
     }
   ),
 

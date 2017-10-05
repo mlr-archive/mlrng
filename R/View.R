@@ -9,27 +9,43 @@ View = R6Class("View",
       self$pars = assertList(pars, names = "unique")
       self$name = assertString(name)
       self$rowid.col = assertString(rowid.col)
-      private$cache = new.env(parent = emptyenv())
+      private$cache = new.env(hash = FALSE, parent = emptyenv())
       private$view.cols = setdiff(colnames(self$raw.tbl), rowid.col)
     },
 
     deep_clone = function(name, value) {
-      if (name == "internal.con") NULL else value
+      if (name == "cache") copy_env(value) else value
+    },
+
+    finalize = function() {
+      DBI::dbDisconnect(self$con)
     },
 
     data = function(rows = NULL, cols = NULL) {
+      intersect_if_not_null = function(x, y) {
+        if (is.null(x))
+          return(y)
+        if (is.null(y))
+          return(x)
+        return(intersect(x, y))
+      }
+
       tbl = self$raw.tbl
-      tbl = private$filter(tbl, intersect_if_not_null(private$view.rows, rows))
-      tbl = private$select(tbl, intersect_if_not_null(private$view.cols, cols))
+      tbl = private$filter(tbl, intersect_if_not_null(rows, private$view.rows))
+      tbl = private$select(tbl, intersect_if_not_null(cols, private$view.cols))
       dplyr::collect(tbl)
     },
 
     distinct = function(col) {
-      assertChoice(col, self$active.cols)
+      assertChoice(col, private$view.cols)
       private$cached("distinct",
         unlist(dplyr::collect(dplyr::distinct(private$select(private$filter(self$raw.tbl), col))), use.names = FALSE),
         slot = col
       )
+    },
+
+    head = function(n = 6L) {
+      dplyr::collect(head(private$filter(self$raw.tbl), n = n))
     }
   ),
 
@@ -59,14 +75,13 @@ View = R6Class("View",
       }
 
       assertAtomicVector(rows, any.missing = FALSE)
-      # FIXME: cleanup
       n = dplyr::tally(private$select(private$filter(self$raw.tbl, rows), self$rowid.col))
       if (dplyr::collect(n)[[1L]] != length(rows))
         stop("Invalid row ids provided")
 
       private$view.rows = rows
       private$cache[["nrow"]] = length(rows)
-      private$invalidate(c("active.rows", "distinct"))
+      private$invalidate(c("active.rows", "distinct", "na.cols"))
     },
 
     active.cols = function(cols) {
@@ -74,7 +89,7 @@ View = R6Class("View",
         return(private$view.cols)
       }
       private$view.cols = assertSubset(cols, setdiff(colnames(self$raw.tbl), self$rowid.col))
-      private$invalidate("na.cols")
+      private$invalidate(c("types", "na.cols"))
     },
 
     nrow = function() {

@@ -31,6 +31,7 @@ Imports:
 Suggests:
     dbplyr,
     knitr,
+    mlbench,
     rmarkdown,
     rpart,
     testthat,
@@ -46,7 +47,8 @@ Collate:
     'Measure.R'
     'PerformanceResult.R'
     'PredictResult.R'
-    'R6DT.R'
+    'R6DT1D.R'
+    'R6DT2D.R'
     'ResampleResult.R'
     'Resampling.R'
     'Split.R'
