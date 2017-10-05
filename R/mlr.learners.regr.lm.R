@@ -20,10 +20,10 @@ mlr.learners$add(LearnerRegr$new(
   predict = function(model, task, subset, ...) {
     data = getTaskData(task, subset, type = "test")
     if (self$predict.type == "response") {
-      predict(model, newdata = data, se.fit = FALSE, ...)
+      unnamed(predict(model, newdata = data, se.fit = FALSE, ...))
     } else {
       p = predict(model, newdata = data, se.fit = TRUE, ...)
-      cbind(p$fit, p$se.fit)
+      cbind(unname(p$fit), unname(p$se.fit))
     }
   }
 ))
