@@ -23,6 +23,8 @@ This is the abstract base class, do not use directly!
 \item{\code{features}}{[\code{character}]: Names of the features.}
 
 \item{\code{formula}}{[\code{character}]: Formula describing the learning task.}
+
+\item{\code{task.type}}{[\code{character(1)}]: Type of task (\dQuote{classif}).}
 }}
 
 \seealso{

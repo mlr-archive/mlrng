@@ -31,6 +31,10 @@ Task = R6Class("Task",
       setDT(self$view$data(rows, cols))[]
     },
 
+    truth = function(rows = NULL) {
+      self$data(rows, cols = self$target)
+    },
+
     head = function(n = 6L) {
       setDT(dplyr::collect(head(self$view$tbl, n = n)))[]
     },
