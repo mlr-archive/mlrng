@@ -80,10 +80,10 @@ createFallbackLearner = function(task) {
   !chmatch(x, y, nomatch = 0L)
 }
 
-intersect_if_not_null = function(x, y) {
-  if (is.null(x))
-    return(y)
-  if (is.null(y))
-    return(x)
-  return(intersect(x, y))
+plural = function(n) {
+  if (n != 1L) "s" else ""
+}
+
+copy_env = function(ee) {
+  list2env(as.list(ee), parent = emptyenv())
 }
