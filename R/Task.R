@@ -52,8 +52,7 @@ Task = R6Class("Task",
     },
 
     na.cols = function() {
-      res = dplyr::summarize(self$view$tbl, dplyr::funs(sum(is.na(.))))
-      unlist(dplyr::collect(res))
+      self$view$na.cols
     }
   )
 )
