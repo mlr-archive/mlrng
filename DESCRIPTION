@@ -37,7 +37,7 @@ Suggests:
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'BenchmarkResult.R'
     'Dictionary.R'
     'Dictionaries.R'
@@ -47,7 +47,8 @@ Collate:
     'Measure.R'
     'PerformanceResult.R'
     'PredictResult.R'
-    'R6DT.R'
+    'R6DT1D.R'
+    'R6DT2D.R'
     'ResampleResult.R'
     'Resampling.R'
     'Split.R'

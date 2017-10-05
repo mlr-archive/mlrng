@@ -12,7 +12,7 @@
 #' @field train.success [\code{logical(1)}]: Was the training sucessfull.
 #'  Depending on the settings of \code{mlrng.continue.on.train.error} this can still be a valid model, but it uses a dummy fallback learner.
 TrainResult = R6Class("TrainResult",
-  inherit = R6DT,
+  inherit = R6DT1D,
   public = list(
     #FIXME: train.success seems clumsy name
     initialize = function(task, learner, rmodel, train.set, train.log, train.success) {
