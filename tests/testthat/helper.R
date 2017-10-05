@@ -44,6 +44,9 @@ expect_task = function(task) {
   expect_view(task$view)
   expect_data_table(task$data(task$view$active.rows[1]))
   expect_data_table(task$head(1))
+  task.nas = task$na.cols
+  expect_integer(task.nas, names = "unique", any.missing = FALSE, lower = 0L, upper = task$nrow)
+  expect_set_equal(names(task.nas), task$view$active.cols)
 }
 
 expect_supervisedtask = function(task) {
