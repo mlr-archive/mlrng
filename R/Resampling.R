@@ -8,7 +8,6 @@
 #' Predefined resampling measures are stored in \code{\link{mlr.resamplings}}.
 #'
 #' @field id [\code{character(1)}]: Identifier of the measure.
-#' @field description [\code{character(1)}]: Name of the measure.
 #' @field task.types [\code{character}]: Set of compatible task types.
 #' @field fun [\code{function(truth, predicted)}]: function to compute the measure.
 #' @return [\code{Measure}].
@@ -16,16 +15,14 @@
 Resampling = R6Class("Resampling",
   public = list(
     id = NA_character_,
-    description = NA_character_,
     instantiate = NULL,
     iters = NA_integer_,
     checksum = NA_character_,
     pars = list(),
     instance = NULL,
 
-    initialize = function(id, description, instantiate, iters, pars = list()) {
+    initialize = function(id, instantiate, iters, pars = list()) {
       self$id = assertString(id)
-      self$description = assertString(description)
       if (!is.null(instantiate)) {
         self$instantiate = assertFunction(instantiate, args = "task")
         environment(self$instantiate) = environment(self$initialize)
@@ -39,26 +36,26 @@ Resampling = R6Class("Resampling",
       self$instance[[i]]
     },
 
-    train = function(i) {
+    train.set = function(i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      self$instance[[i]][["train"]]
+      self$instance[[i]][["train.set"]]
     },
 
-    test = function(i) {
+    test.set = function(i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      self$instance[[i]][["test"]]
+      self$instance[[i]][["test.set"]]
     },
 
-    set = function(task, train, test = NULL) {
-      if (is.null(test))
-        test = lapply(train, function(x) !x)
+    set = function(task, train.sets, test.sets = NULL) {
+      if (is.null(test.sets))
+        test.sets = lapply(train.sets, function(x) !x)
       ids = task$view$active.rows
-      train = lapply(train, function(x) ids[x])
-      test = lapply(test, function(x) ids[x])
+      train.sets = lapply(train.sets, function(s) ids[s])
+      test.sets = lapply(test.sets, function(s) ids[s])
 
-      self$instance = Map(Split$new, train = train, test = test)
+      self$instance = Map(Split$new, train.set = train.sets, test.set = test.sets)
       self$checksum = digest(self$instance, algo = "murmur32")
       invisible(self)
     },

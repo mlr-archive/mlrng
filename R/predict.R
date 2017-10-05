@@ -4,6 +4,8 @@
 
 #' @export
 predict.TrainResult = function(object, subset = NULL, ...) {
+  if (length(list(...)) > 0L)
+    stop("predict: dotargs currently unsupported!")
   task = object$task
   assertIndexSet(subset, for.task = task)
   subset = translateSubset(task, subset)

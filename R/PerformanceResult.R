@@ -1,4 +1,4 @@
-PerforemanceResult = R6Class("PerforemanceResult",
+PerformanceResult = R6Class("PerformanceResult",
   inherit = PredictResult,
   public = list(
     initialize = function(pred.result, perf.vals) {
