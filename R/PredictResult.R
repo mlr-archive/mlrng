@@ -15,14 +15,14 @@ PredictResult = R6Class("PredictResult",
     test.set = function() self$dt$test.set[[1L]],
     poutput = function() self$dt$poutput[[1L]],
     response = function() self$dt$poutput[[1L]],
-    truth = function() self$dt$task[[1L]]$truth()
-    # pred = function() {
-    #   cbind(
-    #     test.set = self$dt$test.set[[1L]],
-    #     truth = function() self$dt$task$truth[[1L]],
-    #     poutput = function() self$dt$poutput[[1L]]
-    #   )
-    # }
+    truth = function() self$dt$task[[1L]]$truth(rows = self$test.set),
+    pred = function() {
+      data.table(
+        test.set = self$dt$test.set[[1L]],
+        truth = self$truth[[1]],
+        response = self$response
+      )
+    }
   )
 )
 

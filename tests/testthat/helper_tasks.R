@@ -4,7 +4,7 @@ data(BostonHousing, package = "mlbench", envir = environment())
 test.tasks = DictionaryTasks$new()
 
 test.tasks$add(
-  TaskClassif$new(id = "clm.num", data = iris[seq(1, 150, 3),], target = "Species"),
+  TaskClassif$new(id = "clm.num", data = iris[seq(1, 150, 3),], target = "Species")
 )
 
 test.tasks$add(
