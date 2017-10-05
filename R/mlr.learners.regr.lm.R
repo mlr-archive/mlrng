@@ -8,16 +8,16 @@ mlr.learners$add(LearnerRegr$new(
     makeLogicalLearnerParam(id = "singular.ok", default = TRUE, tunable = FALSE)
   ),
   par.vals = list(),
-  properties = c("numerics", "factors", "se", "weights"),
+  properties = c("feat.numeric", "feat.factor", "se", "weights"),
   train = function(task, subset, weights = NULL, ...) {
-    data = getTaskData(task, subset, type = "train")
+    data = getTaskData(task, subset = subset, type = "train", props = self$properties)
     if (is.null(weights))
       lm(task$formula, data, ...)
     else
       lm(task$formula, data, weights = weights,...)
   },
   predict = function(model, task, subset, ...) {
-    data = getTaskData(task, subset, type = "test")
+    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
     if (self$predict.type == "response") {
       unnamed(predict(model, newdata = data, se.fit = FALSE, ...))
     } else {
