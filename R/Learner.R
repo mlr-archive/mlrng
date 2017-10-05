@@ -9,9 +9,9 @@
 #' @export
 Learner = R6Class("Learner",
   public = list(
-    name = NA_character_,
-    id = NA_character_,
-    task.type = NA_character_,
+    name = NA_character_,  # immutable
+    id = NA_character_,  # user can change this, by default this is <task.type>.<name>
+    task.type = NA_character_,  # immutable
     packages = NA_character_,
     par.set = list(),
     properties = character(0L),
