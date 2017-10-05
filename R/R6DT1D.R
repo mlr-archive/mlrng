@@ -1,5 +1,5 @@
 
-R6DT = R6Class("R6DT",
+R6DT1D = R6Class("R6DT1D",
   public = list(
     dt = NULL,
 
@@ -12,6 +12,9 @@ R6DT = R6Class("R6DT",
       self$dt[, names(dt) := dt]
       invisible(self)
     }
+  ),
+  active = list(
+    names = function() colnames(dt)
   )
 )
 
