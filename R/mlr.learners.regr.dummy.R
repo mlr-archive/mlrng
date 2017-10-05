@@ -1,7 +1,6 @@
 #' @include Dictionaries.R
 
 mlr.learners$add(LearnerRegr$new(
-  type = "regr",
   name = "dummy",
   par.set = makeParamSet(
     makeDiscreteParam("method", values = c("mean", "median"), default = "mean")
@@ -19,6 +18,6 @@ mlr.learners$add(LearnerRegr$new(
   },
 
   predict = function(model, task, subset, ...) {
-    as.numeric(model)
+    rep(as.numeric(model), length(subset))
   }
 ))

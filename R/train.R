@@ -9,44 +9,45 @@
 #'   Object of type \code{\link{Learner}}.
 #' @param subset [\code{integer} | \code{logical}]\cr
 #'   Subset of \code{task} to train the data on.
-#' @return \code{\link{MlrModel}}.
+#' @return \code{\link{TrainResult}}.
 #' @export
 train = function(task, learner, subset = NULL) {
-  assertR6(task, "Task")
-  assertR6(learner, "Learner")
+  assertTask(task)
+  assertLearner(learner, for.task = task)
+  assertIndexSet(subset, for.task = task)
 
-  train = translateSubset(task, subset)
+  subset = translateSubset(task, subset)
   wrapped.model = NULL
   raw.log = list()
-  encapsulation = getOption("mlrng.train.encapsulation", 1)
+  encapsulation = getOption("mlrng.train.encapsulation", 1L)
 
-  start.time = proc.time()[3]
+  start.time = proc.time()[3L]
 
-  if (encapsulation == 0) {
-    wrapped.model = trainWorker(task, learner, train)
+  if (encapsulation == 0L) {
+    wrapped.model = trainWorker(task, learner, subset)
   } else {
     eval.string = getTrainEvalString(encapsulation)
     raw.log = evaluate::evaluate(eval.string, new_device = FALSE)
   }
 
-  train.time = proc.time()[3] - start.time
+  train.time = proc.time()[3L] - start.time
 
   train.log = TrainLog$new(raw.log, train.time)
-  train.success = !is.null(wrapped.model) && train.log$n.errors == 0
+  train.success = !is.null(wrapped.model) && train.log$n.errors == 0L
 
   if (!train.success) {
    if (getOption("mlrng.continue.on.learner.error", FALSE)) {
-      wrapped.model = trainFailureModel(task, train)
-      gVerboseMessage("Training {learner$id} on {task$id} failed, fallback to dummy model.")
+      wrapped.model = trainFailureModel(task, subset)
+      ginfo("Training {learner$id} on {task$id} failed, fallback to dummy model.")
     } else {
       gstop("Training {learner$id} on {task$id} failed with {train.log$errors[[1]]$message}.")
     }
   }
 
 
-  gVerboseMessage("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
+  ginfo("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
 
-  MlrModel$new(task, learner, wrapped.model, train, train.log, train.success)
+  TrainResult$new(task, learner, wrapped.model, subset, train.log, train.success)
 }
 
 trainWorker = function(task, learner, subset) {
@@ -55,20 +56,19 @@ trainWorker = function(task, learner, subset) {
   do.call(learner$train, pars)
 }
 
-
 trainFailureModel = function(task, subset) {
   fallback.learner = createFallbackLearner(task)
   trainWorker(task, fallback.learner, subset)
 }
 
 getTrainEvalString = function(encapsulation) {
-  assertInt(encapsulation, lower = 1,  upper = 2)
-  if (encapsulation == 1) {
-    "wrapped.model = trainWorker(task, learner, train)"
-  } else  {
-     "wrapped.model = callr::r(function(task, learner, train) {
+  assertInt(encapsulation, lower = 1L,  upper = 2L)
+  if (encapsulation == 1L) {
+    "wrapped.model = trainWorker(task, learner, subset)"
+  } else {
+     "wrapped.model = callr::r(function(task, learner, subset) {
         library(mlrng)
-        mlrng:::trainWorker(task, learner, train)
-        }, list(task = task, learner = learner, train = train))"
+        mlrng:::trainWorker(task, learner, subset)
+        }, list(task = task, learner = learner, train = subset))"
   }
 }

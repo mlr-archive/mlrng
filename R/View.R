@@ -42,7 +42,9 @@ View = R6Class("View",
 
     distinct = function(col) {
       assertChoice(col, self$active.cols)
-      dplyr::collect(dplyr::distinct(dplyr::select(self$raw.tbl, col)))[[1L]]
+      if (is.null(private$cache$distinct))
+        private$cache$distinct = list()
+      private$cache$distinct[[col]] = dplyr::collect(dplyr::distinct(dplyr::select(self$tbl, col)))[[1L]]
     }
   ),
 
@@ -89,6 +91,7 @@ View = R6Class("View",
         stop("Invalid row ids provided")
       private$cache$nrow = length(rows)
       private$cache$active.rows = NULL
+      private$cache$distinct = NULL
       private$view.rows = rows
     },
 

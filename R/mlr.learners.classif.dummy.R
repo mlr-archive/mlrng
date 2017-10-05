@@ -1,7 +1,6 @@
 #' @include Dictionaries.R
 
 mlr.learners$add(LearnerClassif$new(
-  type = "classif",
   name = "dummy",
   par.set = makeParamSet(
     makeDiscreteParam("method", values = c("mode", "sample"), default = "mode")

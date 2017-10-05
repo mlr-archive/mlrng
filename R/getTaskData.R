@@ -1,14 +1,28 @@
-getTaskData = function(task, subset = task$view$active.rows, type = "train", props = NULL) {
+getTaskData = function(task, subset = task$view$active.rows,  type = "train",
+  props = NULL, target.as = NULL) {
   assertR6(task, "TaskSupervised")
   assertAtomicVector(subset, any.missing = FALSE)
+  # FIXME: Maybe we want also 'target.as' to be logical or integer, however beware of typecast errors.
+  assertSubset(target.as, c("factor", "character"), empty.ok = TRUE)
   assertChoice(type, choices = c("train", "test", "extra"))
   x = task$data(rows = subset, cols = task$features)
   convertFeatures(x, props)
 
+  target = task$data(subset, task$target)
+  if (!is.null(target.as)) {
+    # FIXME: what happens with multilabel when we have multiple target-factors with different levels?
+    if (target.as == "factor") {
+      levs = task$view$distinct(col = task$target)
+      mutate_if(target, function(x) !is.factor(x), function(x) factor(x, levels = levs))
+    } else if (target.as == "character") {
+      mutate_if(target, function(x) !is.character(x), as.character)
+    }
+  }
+
   switch(type,
-    train = set(x, j = task$target, value = task$data(subset, task$target))[],
+    train = set(x, j = task$target, value = target)[],
     test = x,
-    extra = list(y = task$data(subset, task$target), x = x)
+    extra = list(y = target, x = x)
   )
 }
 
@@ -16,14 +30,6 @@ convertFeatures = function(x, props = NULL) {
   assertDataTable(x)
   if (!is.null(props)) {
     assertSubset(props, mlrng$supported.learner.props)
-    mutate_if = function(x, predicate, conv, ...) {
-      predicate = match.fun(predicate)
-      nn = names(which(vlapply(x, predicate)))
-      if (length(nn)) {
-        conv = match.fun(conv)
-        for (j in nn) set(x, j = j, value = conv(x[[j]], ...))
-      }
-    }
 
     if ("feat.logical" %chnin% props)
       mutate_if(x, is.logical, as.integer)
@@ -36,4 +42,13 @@ convertFeatures = function(x, props = NULL) {
   }
 
   return(x)
+}
+
+mutate_if = function(x, predicate, conv, ...) {
+  predicate = match.fun(predicate)
+  nn = names(which(vlapply(x, predicate)))
+  if (length(nn)) {
+    conv = match.fun(conv)
+    for (j in nn) set(x, j = j, value = conv(x[[j]], ...))
+  }
 }

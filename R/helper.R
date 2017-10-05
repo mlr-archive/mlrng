@@ -12,7 +12,7 @@ gmessage = function(..., .sep = "", .envir = parent.frame()) {
   message(glue(..., .sep = .sep, .envir = .envir), appendLF = TRUE)
 }
 
-gVerboseMessage = function(..., .sep = "", .envir = parent.frame()) {
+ginfo = function(..., .sep = "", .envir = parent.frame()) {
   if (getOption("mlrng.verbose", FALSE))
     message(glue(..., .sep = .sep, .envir = .envir), appendLF = TRUE)
 }
