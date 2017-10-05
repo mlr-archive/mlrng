@@ -179,7 +179,7 @@ asView = function(name = deparse(substitute(data)), data, rowid.col = NULL, path
   dplyr::copy_to(con, data, name = name, temporary = FALSE, overwrite = TRUE, row.names = FALSE, unique_indexes = list(rowid.col))
   DBI::dbDisconnect(con)
 
-  view = View$new(
+  View$new(
     pars = list(drv = RSQLite::SQLite(), dbname = path, flags = RSQLite::SQLITE_RO),
     name = name,
     rowid.col = rowid.col

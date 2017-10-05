@@ -17,6 +17,7 @@ Resampling = R6Class("Resampling",
     id = NA_character_,
     instantiate = NULL,
     iters = NA_integer_,
+    row.ids = NULL,
     checksum = NA_character_,
     pars = list(),
     instance = NULL,
@@ -31,32 +32,24 @@ Resampling = R6Class("Resampling",
       self$pars = assertList(pars, names = "unique")
     },
 
-    split = function(i) {
-      assertInt(i, lower = 1L, upper = self$iters)
-      self$instance[[i]]
-    },
-
     train.set = function(i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      self$instance[[i]][["train.set"]]
+      self$row.ids[as.which(self$instance[[i]]$train.set)]
     },
 
     test.set = function(i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      self$instance[[i]][["test.set"]]
+      self$row.ids[as.which(self$instance[[i]]$test.set)]
     },
 
     set = function(task, train.sets, test.sets = NULL) {
       if (is.null(test.sets))
         test.sets = lapply(train.sets, function(x) !x)
-      ids = task$view$active.rows
-      train.sets = lapply(train.sets, function(s) ids[s])
-      test.sets = lapply(test.sets, function(s) ids[s])
-
+      self$row.ids = task$view$active.rows
       self$instance = Map(Split$new, train.set = train.sets, test.set = test.sets)
-      self$checksum = digest(self$instance, algo = "murmur32")
+      self$checksum = digest(list(task$id, self$row.ids, self$instance), algo = "murmur32")
       invisible(self)
     },
 
@@ -65,9 +58,10 @@ Resampling = R6Class("Resampling",
       self$checksum = NA_character_
       invisible(self)
     },
+
     print = function(...) {
       if (!self$is.instantiated) cat("(Uninstantiated) ")
-      gcat("Resampling: {self$description} [{self$id}] with {self$iters} splits.")
+      gcat("Resampling: {self$id} with {self$iters} splits.")
     }
   ),
   active = list(
