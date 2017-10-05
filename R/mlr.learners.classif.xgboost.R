@@ -80,8 +80,7 @@ mlr.learners$add(LearnerClassif$new(
     do.call(xgboost::xgb.train, parlist)
   },
   
-  predict = function(model, task, subset, ...) {
-    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
+  predict = function(model, newdata, ...) {
     cl = task$classes
     nc = task$nclasses
     obj = self$par.vals$objective
@@ -89,38 +88,38 @@ mlr.learners$add(LearnerClassif$new(
   if (is.null(obj))
     self$par.vals$objective = ifelse(nc == 2L, "binary:logistic", "multi:softprob")
 
-  p = predict(model, newdata = data.matrix(data), ...)
+  p = predict(model$rmodel, newdata = data.matrix(newdata), ...)
 
   if (nc == 2L) { #binaryclass
     if (self$par.vals$objective == "multi:softprob") {
       y = matrix(p, nrow = length(p) / nc, ncol = nc, byrow = TRUE)
       colnames(y) = cl
     } else {
-      y = matrix(0, ncol = 2, nrow = nrow(data))
+      y = matrix(0, ncol = 2, nrow = nrow(newdata))
       colnames(y) = cl
       y[, 1L] = 1 - p
       y[, 2L] = p
     }
     if (self$predict.type == "prob") {
-      return(y)
+      unname(y)
     } else {
       p = colnames(y)[max.col(y)]
       names(p) = NULL
       p = factor(p, levels = colnames(y))
-      return(p)
+      unname(p)
     }
   } else { #multiclass
     if (self$par.vals$objective  == "multi:softmax") {
-      return(factor(p, levels = cl)) #special handling for multi:softmax which directly predicts class levels
+      unname(factor(p, levels = cl)) #special handling for multi:softmax which directly predicts class levels
     } else {
       p = matrix(p, nrow = length(p) / nc, ncol = nc, byrow = TRUE)
       colnames(p) = cl
-      if self$predict.type == "prob") {
-        return(p)
+      if (self$predict.type == "prob") {
+        unname(p)
       } else {
         ind = max.col(p)
         cns = colnames(p)
-        return(factor(cns[ind], levels = cns))
+        unname(factor(cns[ind], levels = cns))
       }
     }
   }
@@ -133,7 +132,7 @@ mlr.learners$add(LearnerClassif$new(
         stop("You must set the parameter value for 'importance' to
           'impurity' or 'permutation' to compute feature importance.")
       }
-      ranger::importance(model)
+      ranger::importance(model$rmodel)
     }
   )
 ))
