@@ -17,7 +17,6 @@ Resampling = R6Class("Resampling",
     id = NA_character_,
     instantiate = NULL,
     iters = NA_integer_,
-    row.ids = NULL,
     checksum = NA_character_,
     pars = list(),
     instance = NULL,
@@ -32,24 +31,29 @@ Resampling = R6Class("Resampling",
       self$pars = assertList(pars, names = "unique")
     },
 
-    train.set = function(i) {
+    train.set = function(task, i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      self$row.ids[as.which(self$instance[[i]]$train.set)]
+      rows = task$view$active.rows
+      bit = self$instance[[i]]$train.set
+      assertBit(bit, len = length(bit))
+      rows[as.which(bit)]
     },
 
-    test.set = function(i) {
+    test.set = function(task, i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      self$row.ids[as.which(self$instance[[i]]$test.set)]
+      rows = task$view$active.rows
+      bit = self$instance[[i]]$test.set
+      assertBit(bit, len = length(bit))
+      rows[as.which(bit)]
     },
 
     set = function(task, train.sets, test.sets = NULL) {
       if (is.null(test.sets))
         test.sets = lapply(train.sets, function(x) !x)
-      self$row.ids = task$view$active.rows
       self$instance = Map(Split$new, train.set = train.sets, test.set = test.sets)
-      self$checksum = digest(list(task$id, self$row.ids, self$instance), algo = "murmur32")
+      self$checksum = digest(list(task$id, task$view$active.rows, self$instance), algo = "murmur32")
       invisible(self)
     },
 
