@@ -59,6 +59,7 @@ Collate:
     'TuneControl.R'
     'TuneControlGrid.R'
     'View.R'
+    'asserts.R'
     'benchmark.R'
     'getTaskData.R'
     'helper.R'

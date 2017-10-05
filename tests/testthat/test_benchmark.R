@@ -7,8 +7,9 @@ test_that("benchmark", {
   lrn2 = mlr.learners$get("classif.dummy")
   learners = list(lrn1, lrn2)
   resamplings = list(mlr.resamplings$get("cv"))
+  resamplings[[1]]$iters = 3L
   measures = list(mlr.measures$get("mmce"))
 
   bmr = benchmark(tasks, learners, resamplings, measures)
-  expect_data_table(bmr$data, ncols = 7, nrows = 40)
+  expect_data_table(bmr$data, ncols = 7, nrows = 12)
 })

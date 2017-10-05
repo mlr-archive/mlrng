@@ -3,17 +3,14 @@ R6DT = R6Class("R6DT",
   public = list(
     dt = NULL,
 
-    initialize = function(..., .dt = NULL, .slots) {
-      if (is.null(.dt))
-        self$dt = do.call(data.table, lapply(list(...), list))
-      else
-        self$dt = .dt
+    initialize = function(...) {
+      self$dt = do.call(data.table, lapply(list(...), list))
     },
 
-    dtgrow = function(..., .dt = NULL) {
-      if (is.null(.dt))
-        .dt = do.call(data.table, lapply(list(...), list))
-      self$dt = cbind(self$dt, .dt)
+    dtgrow = function(...) {
+      dt = do.call(data.table, lapply(list(...), list))
+      self$dt[, names(dt) := dt]
+      invisible(self)
     }
   )
 )

@@ -4,7 +4,9 @@ PerforemanceResult = R6Class("PerforemanceResult",
     initialize = function(pred.result, perf.vals) {
       assertR6(pred.result, "PredictResult")
       self$dt = pred.result$dt
-      self$dtgrow(perf.vals = perf.vals)
+      self$dtgrow(
+        perf.vals = assertNumeric(perf.vals, min.len = 1L)
+      )
     }
   ),
   active = list(

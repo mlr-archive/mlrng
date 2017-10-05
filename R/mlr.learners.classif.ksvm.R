@@ -2,7 +2,6 @@
 
 mlr.learners$add(
   LearnerClassif$new(
-    type = "classif",
     name = "ksvm",
     package = "kernlab",
     par.set = makeParamSet(
