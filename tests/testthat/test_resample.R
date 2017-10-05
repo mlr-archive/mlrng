@@ -6,6 +6,6 @@ test_that("Basic resampling", {
   resampling = mlr.resamplings$get("cv")
   resampling$iters = 3
   measures = list(mlr.measures$get("mmce"))
-  rr = resample(task, learner, resampling, measures)
+  resampling$instantiate(task)
   expect_r6dt2d(rr, "ResampleResult", nrow = 3L)
 })

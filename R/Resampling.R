@@ -36,7 +36,7 @@ Resampling = R6Class("Resampling",
         stop("Resampling has not been instantiated yet")
       rows = task$view$active.rows
       bit = self$instance[[i]]$train.set
-      assertBit(bit, len = length(bit))
+      assertBit(bit, len = length(rows))
       rows[as.which(bit)]
     },
 
@@ -45,13 +45,21 @@ Resampling = R6Class("Resampling",
         stop("Resampling has not been instantiated yet")
       rows = task$view$active.rows
       bit = self$instance[[i]]$test.set
-      assertBit(bit, len = length(bit))
+      assertBit(bit, len = length(rows))
       rows[as.which(bit)]
     },
 
     set = function(task, train.sets, test.sets = NULL) {
-      if (is.null(test.sets))
+      assertList(train.sets, type = "logical")
+      if (length(unique(lengths(train.sets))) != 1L)
+        stop("Train sets have different length")
+      if (is.null(test.sets)) {
         test.sets = lapply(train.sets, function(x) !x)
+      } else {
+        assertList(test.sets, type = "logical")
+        if (length(unique(lengths(test.sets))) != 1L)
+          stop("Test sets have different length")
+      }
       self$instance = Map(Split$new, train.set = train.sets, test.set = test.sets)
       self$checksum = digest(list(task$id, task$view$active.rows, self$instance), algo = "murmur32")
       invisible(self)
