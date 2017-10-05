@@ -41,8 +41,23 @@ Task = R6Class("Task",
 
     head = function(n = 6L) {
       setDT(self$view$head(n))[]
-    }
-  ),
+    },
+    print = function(...) {
+      cols = self$col.types
+      n.miss = self$na.cols
+      n.miss = n.miss[n.miss > 0]
+      if(!is.null(self$target))
+        cols = cols[names(cols) != self$target]
+      tbl = table(cols)
+      gcat("Task name: {self$id}
+            {self$nrow} rows and {length(cols)} features.
+            Features: {stri_peek(names(cols))}
+            Feature types: {stri_pasteNames(tbl, names.first = FALSE)}")
+      if (length(n.miss > 0))
+        gcat("Missings: {stri_pasteNames(n.miss)}")
+      if (getOption("mlrng.debug", TRUE))
+          cat("\n", format(self), "\n")
+  }),
 
   ### ACTIVE ##################################################################
   active = list(

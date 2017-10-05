@@ -67,8 +67,16 @@ Resampling = R6Class("Resampling",
       self$instance = NULL
       self$checksum = NA_character_
       invisible(self)
+    },
+    print = function(...) {
+      if (!self$is.instantiated) cat("(Uninstantiated) ")
+      gcat("Resampling: {self$description} [{self$id}] with {self$iters} splits.")
     }
-  )
+  ),
+  active = list(
+    is.instantiated = function() {
+      !is.null(self$instance)
+    })
 )
 
 #' @export

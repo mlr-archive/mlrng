@@ -21,6 +21,7 @@
   opts = options()
   opts.mlrng = list(
     mlrng.verbose = TRUE,
+    mlrng.debug = FALSE,
     mlrng.keep.train.output = FALSE,
     mlrng.continue.on.learner.error = FALSE,
     mlrng.train.encapsulation = 1
