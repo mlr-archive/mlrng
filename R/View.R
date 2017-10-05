@@ -13,6 +13,10 @@ View = R6Class("View",
       private$view.cols = setdiff(colnames(self$raw.tbl), rowid.col)
     },
 
+    finalize = function() {
+      DBI::dbDisconnect(self$con)
+    },
+
     deep_clone = function(name, value) {
       if (name == "internal.con") NULL else value
     },
