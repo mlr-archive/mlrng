@@ -57,3 +57,19 @@ Task = R6Class("Task",
     }
   )
 )
+
+print.Task = function(x, debug = getOption("mlrng.debug", FALSE)) {
+  cols = x$col.types
+  if(!is.null(x$target))
+    cols = cols[names(cols) != x$target]
+  tbl = table(cols)
+  gcat("Task name: {x$id}")
+  gcat("{x$nrow} rows and {length(cols)} features.")
+  cat("Feature types: ")
+  gcat("{tbl} {names(tbl)}") #FIXME: his still includes the target
+  # gcat("Missing values: {x$na.cols}") FIXME: na.cols is broken
+  if (debug) {
+    cat("\n")
+    NextMethod()
+  }
+}

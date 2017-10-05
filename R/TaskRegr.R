@@ -24,3 +24,8 @@ TaskRegr = R6Class("TaskRegr",
     }
   )
 )
+
+print.TaskRegr = function(x, debug = getOption("mlrng.debug", FALSE)) {
+  cat("Regression ")
+  NextMethod()
+}
