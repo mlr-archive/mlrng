@@ -15,7 +15,7 @@ mlr.tasks = R6Class("DictionaryTasks", inherit = Dictionary,
     },
     getElementSummary = function(x) {
       data.table(
-        type = x$type,
+        task.type = x$task.type,
         nrow = x$nrow,
         ncol = x$ncol
       )
@@ -43,7 +43,7 @@ mlr.learners = R6Class("DictionaryLearners", inherit = Dictionary,
     getElementSummary = function(x) {
       data.table(
         name = x$name,
-        type = x$type,
+        task.type = x$task.type,
         properties = list(x$properties),
         packages = list(x$packages)
       )

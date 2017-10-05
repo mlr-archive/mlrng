@@ -1,12 +1,12 @@
 context("Task")
 
 test_that("Task Construction", {
-  task = Task$new(id = "foo", iris)
+  task = Task$new(task.type = "bla", id = "foo", iris)
   expect_task(task)
 })
 
 test_that("TaskSupervised Construction", {
-  task = TaskSupervised$new(id = "foo", iris, target = "Species")
+  task = TaskSupervised$new(task.type = "bla", id = "foo", iris, target = "Species")
   expect_supervisedtask(task)
 })
 

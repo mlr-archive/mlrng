@@ -1,5 +1,7 @@
 #FIXME: predict REALLY has also to work with newdata!!!!
 
+#FIXME: we IGNORE ...? due to s3 inheritance, but check this
+
 #' @export
 predict.TrainResult = function(object, subset = NULL, ...) {
   task = object$task
