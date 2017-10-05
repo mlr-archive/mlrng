@@ -34,6 +34,19 @@ Task = R6Class("Task",
 
     deep_clone = function(name, value) {
       if (name == "view") value$clone(deep = TRUE) else value
+    },
+    print = function(...) {
+      cols = self$col.types
+      if(!is.null(self$target))
+        cols = cols[names(cols) != self$target]
+      tbl = table(cols)
+      gcat("Task name: {self$id}
+            {self$nrow} rows and {length(cols)} features.
+            Features: {stri_peek(names(cols))}")
+      cat("Feature types: ")
+      gcat("{tbl} {names(tbl)}")
+      if (getOption("mlrng.debug", TRUE))
+          cat("\n", format(self), "\n")
     }
   ),
 
@@ -57,19 +70,3 @@ Task = R6Class("Task",
     }
   )
 )
-
-print.Task = function(x, debug = getOption("mlrng.debug", FALSE)) {
-  cols = x$col.types
-  if(!is.null(x$target))
-    cols = cols[names(cols) != x$target]
-  tbl = table(cols)
-  gcat("Task name: {x$id}")
-  gcat("{x$nrow} rows and {length(cols)} features.")
-  cat("Feature types: ")
-  gcat("{tbl} {names(tbl)}") #FIXME: his still includes the target
-  # gcat("Missing values: {x$na.cols}") FIXME: na.cols is broken
-  if (debug) {
-    cat("\n")
-    NextMethod()
-  }
-}

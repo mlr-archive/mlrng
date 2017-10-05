@@ -21,11 +21,9 @@ TaskRegr = R6Class("TaskRegr",
     initialize = function(id = deparse(substitute(data)), data, target) {
       super$initialize(id, data, target)
       assertNumeric(self$data(cols = self$target)[[1L]], finite = TRUE, any.missing = FALSE, .var.name = "target column")
+    },
+    print = function(...) {
+      gcat("Regression {super$print()}")
     }
   )
 )
-
-print.TaskRegr = function(x, debug = getOption("mlrng.debug", FALSE)) {
-  cat("Regression ")
-  NextMethod()
-}

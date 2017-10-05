@@ -17,6 +17,12 @@ TaskSupervised = R6Class("TaskSupervised",
     initialize = function(id, data, target) {
       super$initialize(id = id, data = data)
       self$target = assertChoice(target, self$view$active.cols)
+    },
+    print = function(...) {
+        gcat("Supervised Task
+              Target: {self$target}")
+        super$print()
+
     }
   ),
 
@@ -30,9 +36,3 @@ TaskSupervised = R6Class("TaskSupervised",
     features = function() setdiff(self$view$active.cols, self$target)
   )
 )
-
-print.TaskSupervised = function(x, debug = getOption("mlrng.debug", FALSE)) {
-  gcat("Supervised Task")
-  gcat("Target: {x$target}")
-  NextMethod()
-}

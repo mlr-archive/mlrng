@@ -26,6 +26,10 @@ TaskClassif = R6Class("TaskClassif",
       # FIXME: we can do this efficiently with dplyr
       target = self$data(cols = self$target)[[1L]]
       qassert(target, c("S", "F"))
+    },
+    print = function(...) {
+      cat("Classification ")
+      super$print()
     }
   ),
 
@@ -35,9 +39,3 @@ TaskClassif = R6Class("TaskClassif",
     nclasses = function() length(self$classes)
   )
 )
-
-print.TaskClassif = function(x, debug = getOption("mlrng.debug", FALSE)) {
-  cat("Classification ")
-  NextMethod()
-  if(!testScalarNA(x$positive)) gcat("Positive class: {x$positive}")
-}
