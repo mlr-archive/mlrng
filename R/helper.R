@@ -69,7 +69,7 @@ asListOfRows = function(x) {
 }
 
 createFallbackLearner = function(task) {
- mlr.learners$get(stri_paste(task$type, ".dummy"))
+ mlr.learners$get(stri_paste(task$task.type, ".dummy"))
 }
 
 `%nin%` = function(x, y) {
@@ -78,4 +78,12 @@ createFallbackLearner = function(task) {
 
 `%chnin%` = function(x, y) {
   !chmatch(x, y, nomatch = 0L)
+}
+
+intersect_if_not_null = function(x, y) {
+  if (is.null(x))
+    return(y)
+  if (is.null(y))
+    return(x)
+  return(intersect(x, y))
 }

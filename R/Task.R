@@ -6,16 +6,19 @@
 #' This is the abstract base class, do not use directly!
 #'
 #' @template fields-task
+#' @field task.type [\code{character(1)}]: Type of task (\dQuote{classif}).
 #' @return [\code{\link{Task}}].
 #' @family Tasks
 Task = R6Class("Task",
   public = list(
     ### SLOTS ##################################################################
+    task.type = NULL,
     id = NULL,
     view = NULL,
 
     ### METHODS ################################################################
-    initialize = function(id, data) {
+    initialize = function(task.type, id, data) {
+      self$task.type = assertString(task.type)
       self$id = assertString(id, min.chars = 1L)
       if (is.data.frame(data)) {
         self$view = asView(name = id, data = data)
@@ -24,16 +27,20 @@ Task = R6Class("Task",
       }
     },
 
+    deep_clone = function(name, value) {
+      if (name == "view") value$clone(deep = TRUE) else value
+    },
+
     data = function(rows = NULL, cols = NULL) {
       setDT(self$view$data(rows, cols))[]
     },
 
-    head = function(n = 6L) {
-      setDT(dplyr::collect(head(self$view$tbl, n = n)))[]
+    truth = function(rows = NULL) {
+      self$data(rows, cols = self$target)
     },
 
-    deep_clone = function(name, value) {
-      if (name == "view") value$clone(deep = TRUE) else value
+    head = function(n = 6L) {
+      setDT(self$view$head(n))[]
     },
     print = function(...) {
       cols = self$col.types
@@ -47,8 +54,7 @@ Task = R6Class("Task",
       gcat("{tbl} {names(tbl)}")
       if (getOption("mlrng.debug", TRUE))
           cat("\n", format(self), "\n")
-    }
-  ),
+  }),
 
   ### ACTIVE ##################################################################
   active = list(
@@ -65,8 +71,7 @@ Task = R6Class("Task",
     },
 
     na.cols = function() {
-      res = dplyr::summarize(self$view$tbl, dplyr::funs(sum(is.na(.))))
-      unlist(dplyr::collect(res))
+      self$view$na.cols
     }
   )
 )

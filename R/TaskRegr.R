@@ -6,7 +6,6 @@
 #'
 #' @template fields-task
 #' @template fields-supervisedtask
-#' @field type [\code{character(1)}]: Type of task (\dQuote{regr}).
 #'
 #' @return [\code{\link{TaskRegr}}].
 #' @family Tasks
@@ -17,9 +16,8 @@
 TaskRegr = R6Class("TaskRegr",
   inherit = TaskSupervised,
   public = list(
-    type = "regr",
     initialize = function(id = deparse(substitute(data)), data, target) {
-      super$initialize(id, data, target)
+      super$initialize("regr", id, data, target)
       assertNumeric(self$data(cols = self$target)[[1L]], finite = TRUE, any.missing = FALSE, .var.name = "target column")
     },
     print = function(...) {

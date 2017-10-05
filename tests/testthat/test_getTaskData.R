@@ -25,7 +25,7 @@ test_that("convertFeatures", {
 test_that("getTaskData", {
   x = data.table(log = replace(logical(10), 5:10, TRUE), int = 1:10, real = runif(10), char = letters[1:10], fac = factor(letters[1:10]))
   x$y = rep(letters[1:2], each = 5)
-  task = TaskSupervised$new("testtask", x, target = "y")
+  task = TaskSupervised$new(task.type = "bla", id = "testtask", x, target = "y")
 
   expect_data_table(getTaskData(task, 1:5, "train"), nrows = 5, ncols = 6, any.missing = FALSE)
   expect_data_table(getTaskData(task, 1:5, "test"), nrows = 5, ncols = 5, any.missing = FALSE)

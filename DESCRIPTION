@@ -31,12 +31,13 @@ Imports:
 Suggests:
     dbplyr,
     knitr,
+    mlbench,
     rmarkdown,
     rpart,
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate: 
+Collate:
     'BenchmarkResult.R'
     'Dictionary.R'
     'Dictionaries.R'

@@ -41,5 +41,6 @@ mlrng = new.env(parent = emptyenv())
 mlrng$supported.col.types = c("logical", "integer", "numeric", "character", "factor", "ordered")
 mlrng$supported.learner.props = c(
   sprintf("feat.%s", mlrng$supported.col.types),
-  "missings", "weights", "twoclass", "multiclass", "prob", "featimp", "parallel"
+  "missings", "weights", "twoclass", "multiclass", "prob", "featimp", "parallel",
+  "formula", "oobpreds", "se"
 )
