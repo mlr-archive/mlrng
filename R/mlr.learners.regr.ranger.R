@@ -37,10 +37,10 @@ mlr.learners$add(LearnerRegr$new(
     unname(p$predictions)
   },
   model.extractors = list(
-    OOBPredictions = function(model) {
+    OOBPredictions = function(model, task, subset, ...) {
       model$predictions
     },
-    FeatureImportance = function(model) {
+    FeatureImportance = function(model, task, subset, ...) {
       has.fiv = self$par.vals$importance
       if (is.null(has.fiv) || has.fiv == "none") {
         stop("You must set the learners parameter value for importance to
