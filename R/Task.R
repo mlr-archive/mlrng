@@ -44,14 +44,17 @@ Task = R6Class("Task",
     },
     print = function(...) {
       cols = self$col.types
+      n.miss = self$na.cols
+      n.miss = n.miss[n.miss > 0]
       if(!is.null(self$target))
         cols = cols[names(cols) != self$target]
       tbl = table(cols)
       gcat("Task name: {self$id}
             {self$nrow} rows and {length(cols)} features.
-            Features: {stri_peek(names(cols))}")
-      cat("Feature types: ")
-      gcat("{tbl} {names(tbl)}")
+            Features: {stri_peek(names(cols))}
+            Feature types: {stri_paste(tbl, names(tbl), sep = ' ', collapse = ', ')}")
+      if (length(n.miss > 0))
+        gcat("Missings: {stri_paste(n.miss, names(n.miss), sep = ' ', collapse = ', ')}")
       if (getOption("mlrng.debug", TRUE))
           cat("\n", format(self), "\n")
   }),
