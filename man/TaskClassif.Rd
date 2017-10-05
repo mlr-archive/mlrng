@@ -25,8 +25,6 @@ A \code{\link[R6]{R6Class}} to construct classification tasks.
 
 \item{\code{target}}{[\code{character(1)}]: Name of the target column.}
 
-\item{\code{type}}{[\code{character(1)}]: Type of task (\dQuote{classif}).}
-
 \item{\code{positive}}{[\code{character(1)}]: Only for binary classification: Level of the positive class (\code{NA} otherwise).}
 
 \item{\code{levels}}{[\code{character()}]: Levels of class labels.}

@@ -44,6 +44,9 @@ expect_task = function(task) {
   expect_view(task$view)
   expect_data_table(task$data(task$view$active.rows[1]))
   expect_data_table(task$head(1))
+  task.nas = task$na.cols
+  expect_integer(task.nas, names = "unique", any.missing = FALSE, lower = 0L, upper = task$nrow)
+  expect_set_equal(names(task.nas), task$view$active.cols)
 }
 
 expect_supervisedtask = function(task) {
@@ -86,8 +89,8 @@ expect_learner = function(lrn) {
 
 expect_split = function(s, len = NULL) {
   expect_class(s, "Split")
-  expect_atomic_vector(s$train, min.len = 1)
-  expect_atomic_vector(s$test, min.len = 1L)
+  expect_atomic_vector(s$train.set, min.len = 1)
+  expect_atomic_vector(s$test.set, min.len = 1L)
 }
 
 # instantiated == NULL -> do not run tests for instance
@@ -97,7 +100,6 @@ expect_split = function(s, len = NULL) {
 expect_resampling = function(r, instantiated = NULL) {
   expect_is(r, "Resampling")
   expect_string(r$id, min.chars = 1L)
-  expect_string(r$description, min.chars = 1L)
   expect_list(r$pars, names = "unique")
   expect_count(r$iters)
 
@@ -114,8 +116,8 @@ expect_resampling = function(r, instantiated = NULL) {
       n = instantiated$nrow
       for (i in seq_len(r$iters)) {
         expect_split(r$instance[[i]], len = n)
-        expect_integer(r$train(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
-        expect_integer(r$test(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
+        expect_integer(r$train.set(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
+        expect_integer(r$test.set(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
       }
     } else {
       for (i in seq_along(r)) expect_split(r$instance[[i]])
@@ -123,37 +125,11 @@ expect_resampling = function(r, instantiated = NULL) {
   }
 }
 
-
-# Dummy learner that can produce warnings/errors/messages
-lrn.mock.regr = LearnerRegr$new(
-  name = "mock",
-  par.set = ParamHelpers::makeParamSet(
-    ParamHelpers::makeDiscreteParam("method", values = c("mean", "median"), default = "mean"),
-    ParamHelpers::makeLogicalParam("message", default = FALSE),
-    ParamHelpers::makeLogicalParam("warning", default = FALSE),
-    ParamHelpers::makeLogicalParam("error", default = FALSE)
-  ),
-  par.vals = list(),
-  properties = c("missings", "factors", "numerics"),
-  train = function(task, subset, method = "mean", message = FALSE, warning = FALSE, error = FALSE,...) {
-    tn = unlist(task$data(subset, task$target))
-    mod = switch(method,
-      "mean" = mean(tn),
-      "median" = median(tn),
-      stop("Illegal value for 'method'"))
-    class(mod) = c("dummy.model", class(mod))
-    if (message)
-      message("dummy message")
-    if (warning)
-      warning("dummy warning")
-    if (error)
-      stop("dummy error")
-
-    mod
-  },
-
-  predict = function(model, task, subset, ...) {
-    as.numeric(model)
-  }
-)
+expect_r6dt2d = function(x, cl = "R6DT2D", nrow = NULL, ncol = NULL) {
+  expect_r6(x, cl)
+  if (!is.null(nrow))
+    expect_equal(x$nrow, nrow)
+  if (!is.null(ncol))
+    expect_equal(x$ncol, ncol)
+}
 

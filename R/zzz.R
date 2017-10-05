@@ -21,6 +21,7 @@
   opts = options()
   opts.mlrng = list(
     mlrng.verbose = TRUE,
+    mlrng.debug = FALSE,
     mlrng.keep.train.output = FALSE,
     mlrng.continue.on.learner.error = FALSE,
     mlrng.train.encapsulation = 1
@@ -40,5 +41,6 @@ mlrng = new.env(parent = emptyenv())
 mlrng$supported.col.types = c("logical", "integer", "numeric", "character", "factor", "ordered")
 mlrng$supported.learner.props = c(
   sprintf("feat.%s", mlrng$supported.col.types),
-  "missings", "weights", "twoclass", "multiclass", "prob", "weights", "featimp"
+  "missings", "weights", "twoclass", "multiclass", "prob", "featimp", "parallel",
+  "formula", "oobpreds", "se"
 )

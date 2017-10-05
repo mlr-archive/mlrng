@@ -14,9 +14,15 @@ TaskSupervised = R6Class("TaskSupervised",
   inherit = Task,
   public = list(
     target = NA_character_,
-    initialize = function(id, data, target) {
-      super$initialize(id = id, data = data)
+    initialize = function(task.type, id, data, target) {
+      super$initialize(task.type = task.type, id = id, data = data)
       self$target = assertChoice(target, self$view$active.cols)
+    },
+    print = function(...) {
+        gcat("Supervised Task
+              Target: {self$target}")
+        super$print()
+
     }
   ),
 

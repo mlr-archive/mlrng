@@ -10,8 +10,8 @@ assertTask = function(task, subclass = "Task") {
 assertLearner = function(learner, subclass = "Learner", for.task = NULL) {
   assert_r6(learner, subclass)
   if (!is.null(for.task)) {
-    if (learner$type  != for.task$type)
-      gstop("Types do not match: learner id={learner$id}, type={learner$type} vs task id={for.task$id}, type={for.task$type}")
+    if (learner$task.type  != for.task$task.type)
+      gstop("Types do not match: learner id={learner$id}, task.type={learner$task.type} vs task id={for.task$id}, task.type={for.task$task.type}")
   }
   invisible(learner)
 }
@@ -28,12 +28,21 @@ assertIndexSet = function(subset, for.task = NULL) {
 }
 
 
-assertMeasures = function(measures, for.task = NULL) {
+assertMeasures = function(measures, for.task = NULL, for.learner = NULL) {
   assertList(measures, "Measure")
   if (!is.null(for.task)) {
     for (m in measures)
-    if (for.task$type %nin% m$task.types)
-      gstop("Types do not match: measure id={m$id}, types={collapse(m$task.types, ",")} vs task id={for.task$id}, type={for.task$type}")
+    if (for.task$task.type %nin% m$task.types)
+      gstop("Types do not match: measure id={m$id}, task.types={collapse(m$task.types, ",")} vs task id={for.task$id}, task.type={for.task$task.type}")
   }
+  #FIXME: check that measure matches the learner output
   invisible(measures)
 }
+
+assertResampling = function(resampling, for.task = NULL) {
+  assertR6(resampling, "Resampling")
+  #FIXME: maybe add a check that resampling matches task?
+}
+
+
+

@@ -8,12 +8,12 @@
 #' @field test [\code{integer}]: Test row ids
 Split = R6Class("Split",
   public = list(
-    train = NULL,
-    test = NULL,
-    initialize = function(train, test = NULL) {
-      assertAtomicVector(train, min.len = 1L, any.missing = FALSE)
-      self$train = train
-      self$test = test %??% vector(typeof(train), 0L)
+    train.set = NULL,
+    test.set = NULL,
+    initialize = function(train.set, test.set = NULL) {
+      assertAtomicVector(train.set, min.len = 1L, any.missing = FALSE)
+      self$train.set = train.set
+      self$test.set = test.set %??% vector(typeof(train.set), 0L)
     }
   )
 )
