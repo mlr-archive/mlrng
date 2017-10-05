@@ -6,16 +6,19 @@
 #' This is the abstract base class, do not use directly!
 #'
 #' @template fields-task
+#' @field task.type [\code{character(1)}]: Type of task (\dQuote{classif}).
 #' @return [\code{\link{Task}}].
 #' @family Tasks
 Task = R6Class("Task",
   public = list(
     ### SLOTS ##################################################################
+    task.type = NULL,
     id = NULL,
     view = NULL,
 
     ### METHODS ################################################################
-    initialize = function(id, data) {
+    initialize = function(task.type, id, data) {
+      self$task.type = assertString(task.type)
       self$id = assertString(id, min.chars = 1L)
       if (is.data.frame(data)) {
         self$view = asView(name = id, data = data)
@@ -26,6 +29,10 @@ Task = R6Class("Task",
 
     data = function(rows = NULL, cols = NULL) {
       setDT(self$view$data(rows, cols))[]
+    },
+
+    truth = function(rows = NULL) {
+      self$data(rows, cols = self$target)
     },
 
     head = function(n = 6L) {

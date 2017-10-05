@@ -24,7 +24,7 @@ mlr.learners$add(LearnerClassif$new(
       makeLogicalLearnerParam(id = "keep.inbag", default = FALSE, tunable = FALSE)
     ),
   par.vals = list(num.threads = 1L, verbose = FALSE, respect.unordered.factors = TRUE),
-  properties = c("twoclass", "multiclass", "prob", "feat.numeric", "feat.factor", "feat.ordered", "featimp", "weights", "parallel"),
+  properties = c("twoclass", "multiclass", "prob", "feat.numeric", "feat.factor", "feat.ordered", "featimp", "weights", "parallel", "formula"),
 
   train = function(task, subset, weights = NULL, ...) {
     tn = task$target
@@ -37,5 +37,14 @@ mlr.learners$add(LearnerClassif$new(
     data = getTaskData(task, subset = subset, type = "test", props = self$properties)
     p = predict(model, newdata = data, ...)
     return(p$predictions)
-  }
+  },
+
+  model.extractors = list(featureImportance = function(model, task, subset, ...) {
+    has.fiv = self$par.vals$importance
+    if (is.null(has.fiv) || has.fiv == "none") {
+      stop("You must set the parameter value for 'importance' to
+        'impurity' or 'permutation' to compute feature importance.")
+    }
+    ranger::importance(model)
+    })
 ))

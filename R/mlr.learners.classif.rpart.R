@@ -15,7 +15,7 @@ mlr.learners$add(LearnerClassif$new(
     makeIntegerLearnerParam(id = "xval", default = 10L, lower = 0L, tunable = FALSE)
   ),
   par.vals = list(cp = 1),
-  properties = c("twoclass", "multiclass", "missings", "feat.numeric", "feat.factor", "feat.ordered", "prob", "weights", "featimp"),
+  properties = c("twoclass", "multiclass", "missings", "feat.numeric", "feat.factor", "feat.ordered", "prob", "weights", "featimp", "formula"),
   train = function(task, subset, ...) {
     data = getTaskData(task, subset = subset, type = "train", props = self$properties)
     rpart::rpart(task$formula, data, ...)

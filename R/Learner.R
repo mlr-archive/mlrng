@@ -9,9 +9,9 @@
 #' @export
 Learner = R6Class("Learner",
   public = list(
-    name = NA_character_,
-    id = NA_character_,
-    type = NA_character_,
+    name = NA_character_,  # immutable
+    id = NA_character_,  # user can change this, by default this is <task.type>.<name>
+    task.type = NA_character_,  # immutable
     packages = NA_character_,
     par.set = list(),
     properties = character(0L),
@@ -20,10 +20,10 @@ Learner = R6Class("Learner",
     model.extractors = list(),
     allowed.predict.types = NULL,
 
-    initialize = function(type, name, par.set, par.vals = list(), packages = character(0L), properties = character(0L), train, predict, model.extractors, allowed.predict.types, predict.type) {
-      self$type = assertString(type)
+    initialize = function(task.type, name, par.set, par.vals = list(), packages = character(0L), properties = character(0L), train, predict, model.extractors, allowed.predict.types, predict.type) {
+      self$task.type = assertString(task.type)
       self$name = assertString(name)
-      self$id = stri_paste(type, ".", name)
+      self$id = stri_paste(task.type, ".", name)
       self$par.set = assertClass(par.set, "ParamSet")
       private$pv = assertList(par.vals, names = "unique")
       self$packages = assertCharacter(packages, any.missing = FALSE, unique = TRUE)
