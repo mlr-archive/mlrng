@@ -12,6 +12,13 @@ ResampleResult = R6Class("ResampleResult",
     data = NULL,
     initialize = function(experiments) {
       self$data = rbindlist(experiments)
+    },
+    print = function(...) {
+      iters = self$data$resampling[[1]]$iters
+      gcat("[Resample result]: task={self$data$task[[1]]$id} | learner={self$data$learner[[1]]$id}")
+      for (i in seq_len(iters))
+        gcat("[{i}/{iters}]: {stri_pasteNames(self$data$perf[[i]]$perf.vals)}")
+      gcat("[Aggregated]: {self$aggr}")
     }
   ),
   active = list(
