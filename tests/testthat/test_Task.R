@@ -43,3 +43,16 @@ test_that("Tasks can be loaded from the fs", {
   task = readRDS(fn.rds)
   expect_supervisedtask(task)
 })
+
+
+
+test_that("Task$truth works", {
+  task = TaskClassif$new(id = "iris", data = iris, target = "Species")
+  y = task$truth()
+  expect_data_table(y, nrow = task$nrow, ncol = 1L, types = "character")
+  expect_names(names(y), identical.to = task$target)
+
+  y = task$truth(1:10L)
+  expect_data_table(y, nrow = 10L, ncol = 1L, types = "character")
+  expect_names(names(y), identical.to = task$target)
+})
