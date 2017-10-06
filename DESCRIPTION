@@ -15,6 +15,7 @@ Depends:
     data.table
 Imports:
     BBmisc,
+    bit,
     callr,
     DBI,
     evaluate,
@@ -37,7 +38,7 @@ Suggests:
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate: 
+Collate:
     'BenchmarkResult.R'
     'Dictionary.R'
     'Dictionaries.R'
