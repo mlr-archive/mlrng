@@ -6,20 +6,27 @@
 #'
 #' @field data [\code{data.table}]: Data stored in a tabular format.
 BenchmarkResult = R6Class("BenchmarkResult",
-  inherit = R6DT2D,
+  inherit = ResampleResult,
   cloneable = FALSE,
-  active = list(
-    flat = function() {
-      res = data.table(
-        task.id = ids(x$task),
-        learner.id = ids(x$learner),
-        resampling.id = ids(x$resampling),
-        chksum = vcapply(x$resampling, "[[", "checksum")
-        )
-      cbind(res, rbindlist(x$performance))
-    },
-    aggr = function() {
-      self$flat[, list(mmce = mean(mmce)), by = list(task.id, learner.id, chksum)][, "!chksum"]
+  public = list(
+    initialize = function(results, resampling.ids, resampling.iters) {
+      self$data = rbindlist(lapply(results, function(x) x$data))
+      self$data[, "resampling.id" := resampling.ids]
+      self$data[, "resampling.iter" := resampling.iters][]
     }
+  ),
+  active = list(
+    # flat = function() {
+    #   res = data.table(
+    #     task.id = ids(x$task),
+    #     learner.id = ids(x$learner),
+    #     resampling.id = ids(x$resampling),
+    #     chksum = vcapply(x$resampling, "[[", "checksum")
+    #     )
+    #   cbind(res, rbindlist(x$performance))
+    # },
+    # aggr = function() {
+    #   self$flat[, list(mmce = mean(mmce)), by = list(task.id, learner.id, chksum)][, "!chksum"]
+    # }
   )
 )

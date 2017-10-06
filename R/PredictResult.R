@@ -1,29 +1,28 @@
+#' @include TrainResult.R
 PredictResult = R6Class("PredictResult",
   inherit = TrainResult,
   public = list(
     initialize = function(train.result, test.set, poutput) {
       assertR6(train.result, "TrainResult")
-      self$dt = train.result$dt
-      self$dtgrow(
-        test.set = assertIndexSet(test.set, for.task = train.result$task),
-        #FIXME: which assertions should go here? learner group defines this
-        poutput = poutput
-      )
+      self$data = train.result$data
+      self$data[, c("test.set", "poutput") := list(list(test.set), list(poutput))]
     },
+
     print = function(...) {
       gcat("Prediction result of {self$learner$id} trained on {self$task$id}.")
       if (getOption("mlrng.debug", TRUE))
         cat("\n", format(self), "\n")
     }
   ),
+
   active = list(
-    test.set = function() self$dt$test.set[[1L]],
-    poutput = function() self$dt$poutput[[1L]],
-    response = function() self$dt$poutput[[1L]],
-    truth = function() self$dt$task[[1L]]$truth(rows = self$test.set),
+    test.set = function() self$data$test.set[[1L]],
+    poutput = function() self$data$poutput[[1L]],
+    response = function() self$data$poutput[[1L]],
+    truth = function() self$data$task[[1L]]$truth(rows = self$test.set),
     pred = function() {
       data.table(
-        test.set = self$dt$test.set[[1L]],
+        test.set = self$data$test.set[[1L]],
         truth = self$truth[[1]],
         response = self$response
       )
