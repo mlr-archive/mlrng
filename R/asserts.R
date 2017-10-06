@@ -21,6 +21,7 @@ assertIndexSet = function(subset, for.task = NULL) {
   if (!is.null(subset)) {
     assertAtomicVector(subset)
   }
+  # FIXME: for.task currently ignored
   invisible(subset)
 }
 

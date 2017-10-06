@@ -77,7 +77,7 @@ View = R6Class("View",
 
       private$view.rows = rows
       private$cache[["nrow"]] = length(rows)
-      private$invalidate(c("active.rows", "distinct", "na.cols"))
+      private$invalidate(c("active.rows", "distinct", "na.cols", "checksum"))
     },
 
     active.cols = function(cols) {
@@ -85,7 +85,7 @@ View = R6Class("View",
         return(private$view.cols)
       }
       private$view.cols = assertSubset(cols, setdiff(colnames(self$raw.tbl), self$rowid.col))
-      private$invalidate(c("types", "na.cols"))
+      private$invalidate(c("types", "na.cols", "checksum"))
     },
 
     nrow = function() {
@@ -111,6 +111,12 @@ View = R6Class("View",
         unlist(dplyr::collect(
           dplyr::summarise_at(private$filter(self$raw.tbl), private$view.cols, dplyr::funs(sum(is.na(.))))
         ))
+      )
+    },
+
+    checksum = function() {
+      private$cached("checksum",
+        digest(list(self$name, self$active.cols, self$active.rows), algo = "murmur32")
       )
     }
   ),
