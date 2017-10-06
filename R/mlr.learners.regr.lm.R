@@ -16,13 +16,12 @@ mlr.learners$add(LearnerRegr$new(
     else
       lm(task$formula, data, weights = weights,...)
   },
-  predict = function(model, task, subset, ...) {
-    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
+  predict = function(model, newdata, ...) {
     if (self$predict.type == "response") {
-      unnamed(predict(model, newdata = data, se.fit = FALSE, ...))
+      predict(model$rmodel, newdata = newdata, se.fit = FALSE, ...)
     } else {
-      p = predict(model, newdata = data, se.fit = TRUE, ...)
-      cbind(unname(p$fit), unname(p$se.fit))
+      p = predict(model$rmodel, newdata = newdata, se.fit = TRUE, ...)
+      cbind(p$fit, p$se.fit)
     }
   }
 ))
