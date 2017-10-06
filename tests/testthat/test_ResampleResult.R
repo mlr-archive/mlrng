@@ -8,7 +8,6 @@ test_that("can create from runExperiment", {
   measures = list(mlr.measures$get("mmce"))
   rs = lapply(1:2, runExperiment, task = task, learner = learner, resampling = resampling, measures = measures)
   rr = ResampleResult$new(rs)
-  expect_r6dt2d(rr, "ResampleResult", nrow = 2L)
+  expect_result(rr)
+  expect_data_table(rr$data, nrow = 2)
 })
-
-
