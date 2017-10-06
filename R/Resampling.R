@@ -31,32 +31,37 @@ Resampling = R6Class("Resampling",
       self$pars = assertList(pars, names = "unique")
     },
 
-    split = function(i) {
-      assertInt(i, lower = 1L, upper = self$iters)
-      self$instance[[i]]
-    },
-
-    train.set = function(i) {
+    train.set = function(task, i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      self$instance[[i]][["train.set"]]
+      rows = task$view$active.rows
+      bit = self$instance[[i]]$train.set
+      assertBit(bit, len = length(rows))
+      rows[as.which(bit)]
     },
 
-    test.set = function(i) {
+    test.set = function(task, i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      self$instance[[i]][["test.set"]]
+      rows = task$view$active.rows
+      bit = self$instance[[i]]$test.set
+      assertBit(bit, len = length(rows))
+      rows[as.which(bit)]
     },
 
     set = function(task, train.sets, test.sets = NULL) {
-      if (is.null(test.sets))
+      assertList(train.sets, type = "logical")
+      if (length(unique(lengths(train.sets))) != 1L)
+        stop("Train sets have different length")
+      if (is.null(test.sets)) {
         test.sets = lapply(train.sets, function(x) !x)
-      ids = task$view$active.rows
-      train.sets = lapply(train.sets, function(s) ids[s])
-      test.sets = lapply(test.sets, function(s) ids[s])
-
+      } else {
+        assertList(test.sets, type = "logical")
+        if (length(unique(lengths(test.sets))) != 1L)
+          stop("Test sets have different length")
+      }
       self$instance = Map(Split$new, train.set = train.sets, test.set = test.sets)
-      self$checksum = digest(self$instance, algo = "murmur32")
+      self$checksum = digest(list(task$id, task$view$active.rows, self$instance), algo = "murmur32")
       invisible(self)
     },
 
@@ -65,9 +70,10 @@ Resampling = R6Class("Resampling",
       self$checksum = NA_character_
       invisible(self)
     },
+
     print = function(...) {
       if (!self$is.instantiated) cat("(Uninstantiated) ")
-      gcat("Resampling: {self$description} [{self$id}] with {self$iters} splits.")
+      gcat("Resampling: {self$id} with {self$iters} splits.")
     }
   ),
   active = list(

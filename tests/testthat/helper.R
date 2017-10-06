@@ -93,34 +93,34 @@ expect_split = function(s, len = NULL) {
   expect_atomic_vector(s$test.set, min.len = 1L)
 }
 
-# instantiated == NULL -> do not run tests for instance
-# instantiated == FALSE -> assert that r is not instantiated
-# instantiated == TRUE -> assert that r is instantiated
-# instantiated == [task] -> assert that r is instantiated with task
-expect_resampling = function(r, instantiated = NULL) {
+# task == NULL -> do not run tests for instance
+# task == FALSE -> assert that r is not instantiated
+# task == TRUE -> assert that r is instantiated
+# task == [task] -> assert that r is instantiated with task
+expect_resampling = function(r, task = NULL) {
   expect_is(r, "Resampling")
   expect_string(r$id, min.chars = 1L)
   expect_list(r$pars, names = "unique")
   expect_count(r$iters)
 
-  if (isFALSE(instantiated)) {
+  if (isFALSE(task)) {
     expect_scalar_na(r$checksum)
     expect_null(r$instance)
   }
 
-  if (isTRUE(instantiated) || inherits(instantiated, "Task")) {
+  if (isTRUE(task) || inherits(task, "Task")) {
     expect_string(r$checksum)
     expect_list(r$instance, types = "Split", len = r$iters, names = "unnamed")
 
-    if (inherits(instantiated, "Task")) {
-      n = instantiated$nrow
+    if (inherits(task, "Task")) {
+      n = task$nrow
       for (i in seq_len(r$iters)) {
         expect_split(r$instance[[i]], len = n)
-        expect_integer(r$train.set(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
-        expect_integer(r$test.set(i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
+        expect_integer(r$train.set(task, i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
+        expect_integer(r$test.set(task, i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
       }
     } else {
-      for (i in seq_along(r)) expect_split(r$instance[[i]])
+      for (i in seq_len(r$iters)) expect_split(r$instance[[i]])
     }
   }
 }

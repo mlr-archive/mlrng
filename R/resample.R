@@ -21,7 +21,6 @@ resample = function(task, learner, resampling, measures) {
 
   # FIXME: why is store.model not an option here?
 
-
   if (is.null(resampling$instance))
     resampling = resampling$clone()$instantiate(task)
 

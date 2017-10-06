@@ -3,15 +3,11 @@ runExperiment = function(task, learner, resampling, resampling.iter, measures, s
   if (is.null(resampling$instance))
     stop("Resampling has not been instantiated yet")
 
-  split = resampling$split(resampling.iter)
-  train.set = split$train
-  test.set = split$test
-
   gmessage("[Experiment]: task={task$id} | learner={learner$id} | resampling={resampling$id}: {resampling.iter}/{resampling$iters}")
 
   #FIXME: check later whether we want to construct this pipeline slightly better
-  tr = train(task = task, learner = learner, subset = train.set)
-  pr = predict(tr, subset = test.set)
+  tr = train(task = task, learner = learner, subset = resampling$train.set(task, resampling.iter))
+  pr = predict(tr, subset = resampling$test.set(task, resampling.iter))
   pfr = performance(pr, measures = measures)
   if (!store.model)
     pfr$dt$rmodel = NULL
