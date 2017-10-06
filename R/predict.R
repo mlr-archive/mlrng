@@ -16,8 +16,8 @@ predict.TrainResult = function(object, newdata = NULL, subset = NULL, ...) {
 }
 
 predictWorker = function(train.result, newdata, row.ids) {
-  requireNS(learner$packages)
   learner = if (train.result$train.success) train.result$learner else createFallbackLearner(task)
+  requireNS(learner$packages)
   pars = c(list(model = train.result, newdata = newdata), learner$par.vals)
   result = do.call(learner$predict, pars)
   PredictResult$new(train.result, row.ids, result)
