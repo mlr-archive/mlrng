@@ -13,8 +13,6 @@ predict.TrainResult = function(object, newdata = NULL, task = object$task, subse
   learner = object$learner
   if (is.null(newdata))
     newdata = getTaskData(task, subset = subset, type = "test", props = learner$properties)
-  assertIndexSet(subset, for.task = task)
-  subset = translateSubset(task, subset)
   response = if (object$train.success)
     predictWorker(object, learner, newdata)
   else
