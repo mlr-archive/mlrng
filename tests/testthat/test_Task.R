@@ -19,9 +19,13 @@ test_that("Registered Tasks are valid", {
 })
 
 test_that("Tasks are cloned", {
-  task = mlr.tasks$get("bh")
-  expect_true(!identical(address(task), address(mlr.tasks$env$bh)))
-  expect_true(!identical(address(task$view), address(mlr.tasks$env$view)))
+  task1 = mlr.tasks$get("bh")
+  task2 = task1$clone(deep = TRUE)
+
+  expect_different_address(task1, task2)
+  expect_different_address(task1$view, task2$view)
+  expect_different_address(private(task1$view)$cache, private(task2$view)$cache)
+  expect_same_address(task1$view$con, task2$view$con)
 
   data = data.table(x = 1:30, y = factor(sample(letters[1:2], 30, replace = TRUE)))
   task = TaskClassif$new("testthat-example", data, "y")
@@ -29,8 +33,10 @@ test_that("Tasks are cloned", {
   on.exit(mlr.tasks$remove("testthat-example"))
 
   rtask = mlr.tasks$get("testthat-example")
-  expect_true(!identical(address(task), address(rtask)))
-  expect_true(!identical(address(task$view), address(rtask$view)))
+  expect_different_address(task, rtask)
+  expect_different_address(task$view, rtask$view)
+  expect_different_address(private(task$view)$cache, private(rtask$view)$cache)
+  expect_same_address(task$view$con, rtask$view$con)
 })
 
 
@@ -44,7 +50,16 @@ test_that("Tasks can be loaded from the fs", {
   expect_supervisedtask(task)
 })
 
+test_that("Task$subset works", {
+  task = TaskClassif$new(id = "iris", data = iris, target = "Species")
+  expect_identical(task$nrow, 150L)
+  nt = task$subset(1:90)
 
+  expect_task(nt)
+  expect_different_address(task, nt)
+  expect_identical(task$nrow, 150L)
+  expect_identical(nt$nrow, 90L)
+})
 
 test_that("Task$truth works", {
   task = TaskClassif$new(id = "iris", data = iris, target = "Species")

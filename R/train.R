@@ -35,7 +35,9 @@ train = function(task, learner, subset = NULL) {
   train.log = TrainLog$new(raw.log, train.time)
   train.success = !is.null(wrapped.model) && train.log$n.errors == 0L
 
-  if (!train.success) {
+  if (train.success) {
+    ginfo("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
+  } else {
    if (getOption("mlrng.continue.on.learner.error", FALSE)) {
       wrapped.model = trainFailureModel(task, subset)
       ginfo("Training {learner$id} on {task$id} failed, fallback to dummy model.")
@@ -44,10 +46,7 @@ train = function(task, learner, subset = NULL) {
     }
   }
 
-
-  ginfo("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
-
-  TrainResult$new(task, learner, wrapped.model, subset, train.log, train.success)
+  TrainResult$new(task, learner, wrapped.model, subset, train.log)
 }
 
 trainWorker = function(task, learner, subset) {

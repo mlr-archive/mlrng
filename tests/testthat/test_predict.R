@@ -6,6 +6,7 @@ test_that("Step by step modeling", {
   train = sample(150, 120)
   model = train(task, learner, subset = train)
   expect_is(model, "TrainResult")
+  expect_result(model)
   pred = predict(model, subset = setdiff(1:150, train))
   expect_character(pred$response, len = 30, any.missing = FALSE)
   expect_subset(pred$response, levels(iris$Species))
@@ -15,7 +16,10 @@ test_that("Step by step modeling", {
   learner = mlr.learners$get("classif.rpart")
   model = train(task, learner, subset = train)
   expect_is(model, "TrainResult")
+  expect_result(model)
+
   pred = predict(model, subset = test)
+  expect_result(pred)
   expect_character(pred$response, len = length(test), any.missing = FALSE)
   expect_subset(pred$response, levels(iris$Species))
 
