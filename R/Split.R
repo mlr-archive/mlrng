@@ -12,7 +12,7 @@ Split = R6Class("Split",
     test.set = NULL,
     initialize = function(train.set, test.set = NULL) {
       self$train.set = as.bit(train.set)
-      self$test.set = as.bit(test.set %??% bit(length(train.set)))
+      self$test.set = if (is.null(test.set)) bit(length(train.set)) else as.bit(test.set)
     }
   )
 )
