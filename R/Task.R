@@ -27,18 +27,37 @@ Task = R6Class("Task",
       }
     },
 
+    deep_clone = function(name, value) {
+      if (name == "view") value$clone(deep = TRUE) else value
+    },
+
     data = function(rows = NULL, cols = NULL) {
       setDT(self$view$data(rows, cols))[]
     },
 
-    head = function(n = 6L) {
-      setDT(dplyr::collect(head(self$view$tbl, n = n)))[]
+    truth = function(rows = NULL) {
+      self$data(rows, cols = self$target)
     },
 
-    deep_clone = function(name, value) {
-      if (name == "view") value$clone(deep = TRUE) else value
-    }
-  ),
+    head = function(n = 6L) {
+      setDT(self$view$head(n))[]
+    },
+    print = function(...) {
+      cols = self$col.types
+      n.miss = self$na.cols
+      n.miss = n.miss[n.miss > 0]
+      if(!is.null(self$target))
+        cols = cols[names(cols) != self$target]
+      tbl = table(cols)
+      gcat("Task name: {self$id}
+            {self$nrow} rows and {length(cols)} features.
+            Features: {stri_peek(names(cols))}
+            Feature types: {stri_pasteNames(tbl, names.first = FALSE)}")
+      if (length(n.miss > 0))
+        gcat("Missings: {stri_pasteNames(n.miss)}")
+      if (getOption("mlrng.debug", TRUE))
+          cat("\n", format(self), "\n")
+  }),
 
   ### ACTIVE ##################################################################
   active = list(
@@ -55,8 +74,7 @@ Task = R6Class("Task",
     },
 
     na.cols = function() {
-      res = dplyr::summarize(self$view$tbl, dplyr::funs(sum(is.na(.))))
-      unlist(dplyr::collect(res))
+      self$view$na.cols
     }
   )
 )

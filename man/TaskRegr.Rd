@@ -24,8 +24,6 @@ A \code{\link[R6]{R6Class}} to construct classification tasks.
 \item{\code{formula}}{[\code{character}]: Formula describing the learning task.}
 
 \item{\code{target}}{[\code{character(1)}]: Name of the target column.}
-
-\item{\code{type}}{[\code{character(1)}]: Type of task (\dQuote{regr}).}
 }}
 
 \examples{

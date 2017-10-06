@@ -46,3 +46,29 @@ test_that("asView", {
   expect_true(DBI::dbExistsTable(v$con, v$name))
   expect_set_equal(v$distinct("Species"), levels(iris$Species))
 })
+
+
+test_that("View: cache gets invalidated", {
+  populate_cache = function(v) {
+    v$nrow
+    v$ncol
+    v$types
+    v$distinct("Species")
+    v$na.cols
+  }
+
+  v = asView(data = iris)
+  expect_set_equal(ls(private(v)$cache), character(0))
+
+  populate_cache(v)
+  expect_set_equal(ls(private(v)$cache), c("nrow", "types", "distinct", "na.cols"))
+  expect_set_equal(private(v)$cache$distinct$Species, levels(iris$Species))
+
+  v$active.rows = 1:40
+  expect_set_equal(ls(private(v)$cache), c("nrow", "types"))
+  expect_identical(private(v)$cache$nrow, 40L)
+
+  populate_cache(v)
+  v$active.cols = "Species"
+  expect_set_equal(ls(private(v)$cache), c("distinct", "nrow"))
+})

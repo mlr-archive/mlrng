@@ -26,6 +26,11 @@ TrainLog = R6Class("TrainLog",
         self$warnings = output[vlapply(output, evaluate::is.warning)]
         self$messages = output[vlapply(output, evaluate::is.message)]
         self$train.time = assertNumeric(train.time)
+    },
+    print = function(...) {
+     gcat("Training log with {self$n.errors} errors, {self$n.warnings} warnings and {self$n.messages} messages.")
+     if (getOption("mlrng.debug", TRUE))
+      cat("\n", format(self),  "\n")
     }),
   active = list(
     n.errors = function() {

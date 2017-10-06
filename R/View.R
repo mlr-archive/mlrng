@@ -1,11 +1,3 @@
-intersect_if_not_null = function(x, y) {
-  if (is.null(x))
-    return(y)
-  if (is.null(y))
-    return(x)
-  return(intersect(x, y))
-}
-
 View = R6Class("View",
   public = list(
     pars = NULL,
@@ -13,38 +5,47 @@ View = R6Class("View",
     rowid.col = NULL,
     internal.con = NULL,
 
-    initialize = function(pars = list(), name, rowid.col = NULL) {
+    initialize = function(pars = list(), name, rowid.col) {
       self$pars = assertList(pars, names = "unique")
       self$name = assertString(name)
       self$rowid.col = assertString(rowid.col)
+      private$cache = new.env(hash = FALSE, parent = emptyenv())
+      private$view.cols = setdiff(colnames(self$raw.tbl), rowid.col)
     },
 
     deep_clone = function(name, value) {
-      if (name == "internal.con") NULL else value
+      if (name == "cache") copy_env(value) else value
+    },
+
+    finalize = function() {
+      DBI::dbDisconnect(self$con)
     },
 
     data = function(rows = NULL, cols = NULL) {
+      intersect_if_not_null = function(x, y) {
+        if (is.null(x))
+          return(y)
+        if (is.null(y))
+          return(x)
+        return(intersect(x, y))
+      }
+
       tbl = self$raw.tbl
-
-      ### select rows first
-      rows = intersect_if_not_null(private$view.rows, rows)
-      if (!is.null(rows))
-        tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
-
-      ### select columns second - we can drop the id col now
-      if (is.null(private$view.cols))
-        private$view.cols = setdiff(colnames(self$raw.tbl), self$rowid.col)
-      cols = intersect_if_not_null(private$view.cols, cols)
-      tbl = dplyr::select(tbl, dplyr::one_of(cols))
-
+      tbl = private$filter(tbl, intersect_if_not_null(rows, private$view.rows))
+      tbl = private$select(tbl, intersect_if_not_null(cols, private$view.cols))
       dplyr::collect(tbl)
     },
 
     distinct = function(col) {
-      assertChoice(col, self$active.cols)
-      if (is.null(private$cache$distinct))
-        private$cache$distinct = list()
-      private$cache$distinct[[col]] = dplyr::collect(dplyr::distinct(dplyr::select(self$tbl, col)))[[1L]]
+      assertChoice(col, private$view.cols)
+      private$cached("distinct",
+        unlist(dplyr::collect(dplyr::distinct(private$select(private$filter(self$raw.tbl), col))), use.names = FALSE),
+        slot = col
+      )
+    },
+
+    head = function(n = 6L) {
+      dplyr::collect(head(private$filter(self$raw.tbl), n = n))
     }
   ),
 
@@ -57,18 +58,8 @@ View = R6Class("View",
     },
 
     tbl = function() {
-      tbl = self$raw.tbl
-
-      if (!is.null(private$view.rows))
-        tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% private$view.rows))
-
-      if (is.null(private$view.cols))
-        private$view.cols = setdiff(colnames(self$raw.tbl), self$rowid.col)
-      tbl = dplyr::select(tbl, dplyr::one_of(private$view.cols))
-
-      return(tbl)
+      private$select(private$filter(self$raw.tbl))
     },
-
 
     raw.tbl = function() {
       tbl = dplyr::tbl(self$name, src = self$con)
@@ -76,40 +67,37 @@ View = R6Class("View",
 
     active.rows = function(rows) {
       if (missing(rows)) {
-        if (!is.null(private$active.rows))
-          return(private$active.rows)
-        if (is.null(private$cache$active.rows))
-          private$cache$active.rows = dplyr::collect(dplyr::select(self$raw.tbl, dplyr::one_of(self$rowid.col)))[[1L]]
-        return(private$cache$active.rows)
+        if (!is.null(private$view.rows))
+          return(private$view.rows)
+        return(private$cached("active.rows",
+          dplyr::collect(dplyr::select_at(self$raw.tbl, self$rowid.col))[[1L]]
+        ))
       }
 
       assertAtomicVector(rows, any.missing = FALSE)
-      res = dplyr::filter_at(self$raw.tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
-      res = dplyr::tally(res)
-      res = dplyr::collect(res)
-      if (res$n != length(rows))
+      n = dplyr::tally(private$select(private$filter(self$raw.tbl, rows), self$rowid.col))
+      if (dplyr::collect(n)[[1L]] != length(rows))
         stop("Invalid row ids provided")
-      private$cache$nrow = length(rows)
-      private$cache$active.rows = NULL
-      private$cache$distinct = NULL
+
       private$view.rows = rows
+      private$cache[["nrow"]] = length(rows)
+      private$invalidate(c("active.rows", "distinct", "na.cols"))
     },
 
     active.cols = function(cols) {
       if (missing(cols)) {
-        if (is.null(private$view.cols))
-          private$view.cols = setdiff(colnames(self$raw.tbl), self$rowid.col)
         return(private$view.cols)
       }
       private$view.cols = assertSubset(cols, setdiff(colnames(self$raw.tbl), self$rowid.col))
+      private$invalidate(c("types", "na.cols"))
     },
 
     nrow = function() {
       if (!is.null(private$view.rows))
         return(length(private$view.rows))
-      if (!is.null(private$cache$nrow))
-        return(private$cache$nrow)
-      private$cache$nrow = dplyr::collect(dplyr::tally(self$tbl))[[1L]]
+      private$cached("nrow",
+        dplyr::collect(dplyr::tally(private$filter(self$raw.tbl)))[[1L]]
+      )
     },
 
     ncol = function() {
@@ -117,16 +105,58 @@ View = R6Class("View",
     },
 
     types = function() {
-      if (is.null(private$cache$types))
-        private$cache$types = vcapply(dplyr::collect(head(self$tbl, 1L)), class)
-      private$cache$types
+      private$cached("types",
+        vcapply(dplyr::collect(head(private$select(self$raw.tbl), 1L)), class)
+      )
+    },
+
+    na.cols = function() {
+      private$cached("na.cols",
+        unlist(dplyr::collect(
+          dplyr::summarise_at(private$filter(self$raw.tbl), private$view.cols, dplyr::funs(sum(is.na(.))))
+        ))
+      )
     }
   ),
 
   private = list(
     view.rows = NULL,
     view.cols = NULL,
-    cache = list()
+    cache = NULL,
+
+    cached = function(name, value, slot = NULL) {
+      ee = private$cache
+      if (is.null(slot)) {
+        if (!is.null(ee[[name]]))
+          return(ee[[name]])
+        ee[[name]] = value
+      } else {
+        if (is.null(ee[[name]])) {
+          ee[[name]] = list()
+        } else {
+          if (!is.null(ee[[name]][[slot]]))
+            return(ee[[name]][[slot]])
+        }
+        ee[[name]][[slot]] = value
+      }
+    },
+
+    invalidate = function(name) {
+      name = intersect(name, ls(private$cache, all.names = TRUE))
+      rm(list = name, envir = private$cache)
+    },
+
+    filter = function(tbl, rows = private$view.rows) {
+      if (!is.null(rows))
+        tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
+      tbl
+    },
+
+    select = function(tbl, cols = private$view.cols) {
+      if (!is.null(cols))
+        tbl = dplyr::select(tbl, dplyr::one_of(cols))
+      tbl
+    }
   )
 )
 
@@ -149,7 +179,7 @@ asView = function(name = deparse(substitute(data)), data, rowid.col = NULL, path
   dplyr::copy_to(con, data, name = name, temporary = FALSE, overwrite = TRUE, row.names = FALSE, unique_indexes = list(rowid.col))
   DBI::dbDisconnect(con)
 
-  view = View$new(
+  View$new(
     pars = list(drv = RSQLite::SQLite(), dbname = path, flags = RSQLite::SQLITE_RO),
     name = name,
     rowid.col = rowid.col

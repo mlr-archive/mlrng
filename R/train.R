@@ -69,6 +69,6 @@ getTrainEvalString = function(encapsulation) {
      "wrapped.model = callr::r(function(task, learner, subset) {
         library(mlrng)
         mlrng:::trainWorker(task, learner, subset)
-        }, list(task = task, learner = learner, train = subset))"
+        }, list(task = task, learner = learner, subset = subset))"
   }
 }
