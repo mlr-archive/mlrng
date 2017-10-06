@@ -15,13 +15,12 @@ mlr.learners$add(LearnerRegr$new(
     makeIntegerLearnerParam(id = "xval", default = 10L, lower = 0L, tunable = FALSE)
   ),
   par.vals = list(),
-  properties = c("missings", "feat.numeric", "feat.factor", "feat.ordered", "oobpreds", "featimp", "se", "formula"),
+  properties = c("missings", "feat.numeric", "feat.factor", "feat.ordered", "oobpreds", "featimp", "se", "formula"), # FIXME: Does rpart really support se estimation?
   train = function(task, subset, ...) {
     data = getTaskData(task, subset = subset, type = "train", props = self$properties)
     rpart::rpart(task$formula, data, ...)
   },
-  predict = function(model, task, subset, ...) {
-    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
-    unname(predict(model, newdata = data, type = "vector", ...))
+  predict = function(model, newdata, ...) {
+    unname(predict(model$rmodel, newdata = newdata, type = "vector", ...))
   }
 ))

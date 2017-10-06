@@ -15,11 +15,10 @@ mlr.learners$add(LearnerClassif$new(
     mod
   },
 
-  predict = function(model, task, subset, method = "mode", ...) {
-    data = task$data(subset, setdiff(task$view$active.cols, task$target))
+  predict = function(model, newdata, method = "mode", ...) {
     if (method == "mode")
-      rep.int(as.character(sample(model[N == max(N)][[task$target]], 1L)), nrow(data))
+      rep.int(as.character(sample(model$rmodel[N == max(N)][[model$task$target]], 1L)), nrow(newdata))
     else
-      as.character(sample(model[[task$target]], nrow(data), replace = TRUE, prob = model[["N"]]))
+      as.character(sample(model$rmodel[[model$task$target]], nrow(newdata), replace = TRUE, prob = model$rmodel[["N"]]))
   }
 ))
