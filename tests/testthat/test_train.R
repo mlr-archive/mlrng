@@ -7,8 +7,11 @@ test_that("Training with default options", {
   mod = train(task, lrn)
   expect_is(mod, "TrainResult")
   expect_true(mod$train.success)
+  expect_result(mod)
   p = predict(mod)
+  expect_is(p, "PredictResult")
   expect_subset(p$predicted, task$view$distinct(task$target))
+  expect_result(mod)
 })
 
 test_that("No training encapsulation works", {
@@ -31,7 +34,6 @@ test_that("No training encapsulation works", {
 #    expect_subset(p$predicted, task$view$distinct(task$target))
 #  })
 #})
-
 
 test_that("warnings/messages are caught", {
   task = mlr.tasks$get("bh")

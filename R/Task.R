@@ -41,7 +41,7 @@ Task = R6Class("Task",
 
     subset = function(subset) {
       nt = self$clone(deep = TRUE)
-      nt$view$active.rows = translateSubset(task, subset)
+      nt$view$active.rows = translateSubset(nt, subset)
       return(nt)
     },
 
