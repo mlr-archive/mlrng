@@ -25,7 +25,8 @@ test_that("Tasks are cloned", {
   expect_different_address(task1, task2)
   expect_different_address(task1$view, task2$view)
   expect_different_address(private(task1$view)$cache, private(task2$view)$cache)
-  expect_same_address(task1$view$con, task2$view$con)
+  if (getRversion() >= "3.4.0")
+    expect_same_address(task1$view$con, task2$view$con)
 
   data = data.table(x = 1:30, y = factor(sample(letters[1:2], 30, replace = TRUE)))
   task = TaskClassif$new("testthat-example", data, "y")
@@ -36,7 +37,8 @@ test_that("Tasks are cloned", {
   expect_different_address(task, rtask)
   expect_different_address(task$view, rtask$view)
   expect_different_address(private(task$view)$cache, private(rtask$view)$cache)
-  expect_same_address(task$view$con, rtask$view$con)
+  if (getRversion() >= "3.4.0")
+    expect_same_address(task$view$con, rtask$view$con)
 })
 
 
