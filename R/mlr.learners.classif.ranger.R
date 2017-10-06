@@ -32,11 +32,16 @@ mlr.learners$add(LearnerClassif$new(
     ranger::ranger(formula = task$formula, data = data, probability = (self$predict.type == "prob"),
       case.weights = weights, ...)
   },
-  
-  predict = function(model, task, subset, ...) {
-    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
-    p = predict(model, newdata = data, ...)
-    return(p$predictions)
+
+  predict = function(model, newdata, ...) {
+    pt = self$predict.type
+    if (pt == "response") {
+      p = predict(model$rmodel, data = newdata, type = "response", ...)
+      return(as.character(p$predictions))
+    } else { # FIXME: Probability estimation needs to be fixed
+      p = predict(model$rmodel, data = newdata, predict.all = TRUE, ...)
+      return(p$predictions)
+    }
   },
   
   model.extractors = list(

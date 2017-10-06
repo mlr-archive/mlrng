@@ -29,7 +29,7 @@ Learner = R6Class("Learner",
       self$packages = assertCharacter(packages, any.missing = FALSE, unique = TRUE)
       self$properties = assertCharacter(properties, any.missing = FALSE, unique = TRUE)
       self$train = assertFunction(train, args = c("task", "subset"), ordered = TRUE)
-      self$predict = assertFunction(predict, args = c("model", "task", "subset"), ordered = TRUE)
+      self$predict = assertFunction(predict, args = c("model", "newdata"), ordered = TRUE)
       self$model.extractors = lapply(model.extractors,
         function(m) assertFunction(m, args = c("model", "task", "subset"), ordered = TRUE, null.ok = TRUE))
       self$allowed.predict.types = assertCharacter(allowed.predict.types, any.missing = FALSE, min.len = 1L)
