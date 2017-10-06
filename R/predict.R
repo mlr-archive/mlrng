@@ -7,19 +7,18 @@ predict.TrainResult = function(object, newdata = NULL, subset = NULL, ...) {
   if (!is.null(newdata) && !is.null(subset))
     stop("Use 'subset' only without 'newdata'")
   task = object$task
-  assertIndexSet(subset, for.task = task)
-  subset = translateSubset(task, subset)
+  row.ids = translateSubset(task, subset)
 
-  learner = if (object$train.success) object$learner else createFallbackLearner(task)
-  response = predictWorker(object,
-    learner = learner,
-    newdata = newdata %??% getTaskData(task, subset = subset, type = "test", props = learner$properties)
+  predictWorker(object,
+    newdata = newdata %??% getTaskData(task, subset = row.ids, type = "test", props = object$learner$properties),
+    row.ids
   )
-  PredictResult$new(object, subset, response)
 }
 
-predictWorker = function(train.result, learner, newdata) {
+predictWorker = function(train.result, newdata, row.ids) {
   requireNS(learner$packages)
+  learner = if (train.result$train.success) train.result$learner else createFallbackLearner(task)
   pars = c(list(model = train.result, newdata = newdata), learner$par.vals)
-  do.call(learner$predict, pars)
+  result = do.call(learner$predict, pars)
+  PredictResult$new(train.result, row.ids, result)
 }

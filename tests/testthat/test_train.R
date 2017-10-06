@@ -1,6 +1,6 @@
 context("train")
 
-task = mlr.tasks$get("spam")
+task = mlr.tasks$get("iris")
 lrn = mlr.learners$get("classif.rpart")
 
 test_that("Training with default options", {

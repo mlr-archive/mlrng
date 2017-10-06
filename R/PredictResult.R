@@ -20,12 +20,12 @@ PredictResult = R6Class("PredictResult",
     test.set = function() self$data$test.set[[1L]],
     poutput = function() self$data$poutput[[1L]],
     response = function() self$data$poutput[[1L]],
-    truth = function() self$data$task[[1L]]$truth(rows = self$test.set),
+    truth = function() self$data$task[[1L]]$truth(rows = self$data$test.set[[1L]]),
     pred = function() {
       data.table(
         test.set = self$data$test.set[[1L]],
         truth = self$truth[[1]],
-        response = self$response
+        response = self$data$poutput[[1L]]
       )
     }
   )
