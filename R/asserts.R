@@ -18,15 +18,11 @@ assertLearner = function(learner, subclass = "Learner", for.task = NULL) {
 
 
 assertIndexSet = function(subset, for.task = NULL) {
-  #FIXME: can this be char log or int?
-  #FIXME: translateSubset should probably go in here?
-  # assertCharacter(subset, any.missing = FALSE, min.len = 1L)
-  if (!is.null(for.task)) {
-    #FIXME: check that row ids are valid for task
+  if (!is.null(subset)) {
+    assertAtomicVector(subset)
   }
   invisible(subset)
 }
-
 
 assertMeasures = function(measures, for.task = NULL, for.learner = NULL) {
   assertList(measures, "Measure")
@@ -41,8 +37,4 @@ assertMeasures = function(measures, for.task = NULL, for.learner = NULL) {
 
 assertResampling = function(resampling, for.task = NULL) {
   assertR6(resampling, "Resampling")
-  #FIXME: maybe add a check that resampling matches task?
 }
-
-
-

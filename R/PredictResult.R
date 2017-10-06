@@ -4,6 +4,7 @@ PredictResult = R6Class("PredictResult",
   public = list(
     initialize = function(train.result, test.set, poutput) {
       assertR6(train.result, "TrainResult")
+      assertAtomicVector(test.set)
       self$data = train.result$data
       self$data[, c("test.set", "poutput") := list(list(test.set), list(poutput))]
     },

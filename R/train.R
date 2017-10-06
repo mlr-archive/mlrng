@@ -18,13 +18,13 @@ train = function(task, learner, subset = NULL) {
 
   subset = translateSubset(task, subset)
   wrapped.model = NULL
-  raw.log = list()
   encapsulation = getOption("mlrng.train.encapsulation", 1L)
 
   start.time = proc.time()[3L]
 
   if (encapsulation == 0L) {
     wrapped.model = trainWorker(task, learner, subset)
+    raw.log = list()
   } else {
     eval.string = getTrainEvalString(encapsulation)
     raw.log = evaluate::evaluate(eval.string, new_device = FALSE)
