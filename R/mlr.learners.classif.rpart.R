@@ -23,7 +23,8 @@ mlr.learners$add(LearnerClassif$new(
   predict = function(model, newdata, ...) {
     pt = self$predict.type
     if (pt == "response")
-      as.character(predict(model$rmodel, newdata = newdata, type = "class", ...)) else
+      as.character(predict(model$rmodel, newdata = newdata, type = "class", ...)) 
+    else
         predict(model$rmodel, newdata = newdata, type = "prob", ...)
   },
   # FIXME: can be removed, was just for testing
