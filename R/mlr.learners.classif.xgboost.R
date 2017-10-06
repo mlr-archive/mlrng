@@ -81,8 +81,8 @@ mlr.learners$add(LearnerClassif$new(
   },
   
   predict = function(model, newdata, ...) {
-    cl = task$classes
-    nc = task$nclasses
+    cl = model$task$classes
+    nc = model$task$nclasses
     obj = self$par.vals$objective
 
   if (is.null(obj))
