@@ -3,6 +3,10 @@ sudo: false
 language: r
 cache: packages
 
+env:
+  global:
+    - _R_CHECK_TESTS_NLINES_=999
+
 r:
   - 3.2
   - 3.3
