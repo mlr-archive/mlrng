@@ -17,6 +17,12 @@ TaskSupervised = R6Class("TaskSupervised",
     initialize = function(task.type, id, data, target) {
       super$initialize(task.type = task.type, id = id, data = data)
       self$target = assertChoice(target, self$view$active.cols)
+    },
+    print = function(...) {
+        gcat("Supervised Task
+              Target: {self$target}")
+        super$print()
+
     }
   ),
 

@@ -6,13 +6,8 @@
 #'
 #' @field data [\code{data.table}]: Data stored in a tabular format.
 BenchmarkResult = R6Class("BenchmarkResult",
+  inherit = R6DT2D,
   cloneable = FALSE,
-  public = list(
-    data = NULL,
-    initialize = function(experiments) {
-      self$data = rbindlist(experiments)
-    }
-  ),
   active = list(
     flat = function() {
       res = data.table(

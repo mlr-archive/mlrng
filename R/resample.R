@@ -14,10 +14,12 @@
 #' @return \code{\link{ResampleResult}}.
 #' @export
 resample = function(task, learner, resampling, measures) {
-  assertR6(task, "Task")
-  assertR6(learner, "Learner")
-  assertR6(resampling, "Resampling")
-  assertList(measures, "Measure")
+  assertTask(task)
+  assertLearner(learner, for.task = task)
+  assertResampling(resampling, for.task = task)
+  assertMeasures(measures, for.task = task, for.learner = learner)
+
+  # FIXME: why is store.model not an option here?
 
   if (is.null(resampling$instance))
     resampling = resampling$clone()$instantiate(task)
