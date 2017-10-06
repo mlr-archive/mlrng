@@ -1,3 +1,4 @@
+#' @include Result.R
 #' @title TrainResult
 #' @format \code{\link{R6Class}} object
 #'
@@ -12,19 +13,18 @@
 #' @field train.success [\code{logical(1)}]: Was the training sucessfull.
 #'  Depending on the settings of \code{mlrng.continue.on.train.error} this can still be a valid model, but it uses a dummy fallback learner.
 TrainResult = R6Class("TrainResult",
-  inherit = R6DT1D,
+  inherit = Result,
   public = list(
-    #FIXME: train.success seems clumsy name
-    initialize = function(task, learner, rmodel, train.set, train.log, train.success) {
-      super$initialize(
-        task = assertTask(task),
-        learner = assertLearner(learner),
-        rmodel = rmodel,
-        train.set = assertIndexSet(train.set, for.task = task),
-        train.log = assertR6(train.log, "TrainLog"),
-        train.success = assertFlag(train.success)
-      )
+    initialize = function(task, learner, rmodel, train.set, train.log) {
+      super$initialize(data.table(
+        task = list(assertTask(task)),
+        learner = list(assertLearner(learner)),
+        rmodel = list(rmodel),
+        train.set = list(assertIndexSet(train.set, for.task = task)),
+        train.log = list(assertR6(train.log, "TrainLog"))
+      ))
     },
+
     print = function(...) {
       gcat("Training result of {self$learner$id} on {self$task$id}.")
       gcat("Training took {self$train.log$train.time} seconds.")
@@ -35,12 +35,13 @@ TrainResult = R6Class("TrainResult",
         cat("\n", format(self), "\n")
     }
   ),
+
   active = list(
-    task = function() self$dt$task[[1L]],
-    learner = function() self$dt$learner[[1L]],
-    rmodel = function() self$dt$rmodel[[1L]],
-    train.set = function() self$dt$train.set[[1L]],
-    train.log = function() self$dt$train.log[[1L]],
-    train.success = function() self$dt$train.success[[1L]]
+    task = function() self$data$task[[1L]],
+    learner = function() self$data$learner[[1L]],
+    rmodel = function() self$data$rmodel[[1L]],
+    train.set = function() self$data$train.set[[1L]],
+    train.log = function() self$data$train.log[[1L]],
+    train.success = function() self$data$train.log[[1L]]$n.errors == 0L
   )
 )

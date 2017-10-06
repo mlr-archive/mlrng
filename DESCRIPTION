@@ -38,7 +38,7 @@ Suggests:
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'BenchmarkResult.R'
     'Dictionary.R'
     'Dictionaries.R'
@@ -46,10 +46,10 @@ Collate:
     'LearnerClassif.R'
     'LearnerRegr.R'
     'Measure.R'
-    'PerformanceResult.R'
+    'Result.R'
+    'TrainResult.R'
     'PredictResult.R'
-    'R6DT1D.R'
-    'R6DT2D.R'
+    'PerformanceResult.R'
     'ResampleResult.R'
     'Resampling.R'
     'Split.R'
@@ -58,7 +58,6 @@ Collate:
     'TaskRegr.R'
     'TaskSupervised.R'
     'TrainLog.R'
-    'TrainResult.R'
     'TuneControl.R'
     'TuneControlGrid.R'
     'View.R'
