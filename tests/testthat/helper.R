@@ -83,7 +83,7 @@ expect_learner = function(lrn) {
   expect_subset(lrn$properties, mlrng$supported.learner.props)
   expect_is(lrn$par.set, "ParamSet")
   expect_list(lrn$par.vals, names = "unique")
-  expect_function(lrn$predict, args = c("model", "task", "subset"), ordered = TRUE)
+  expect_function(lrn$predict, args = c("model", "newdata"), ordered = TRUE)
   expect_function(lrn$train, args = c("task", "subset"), ordered = TRUE)
 }
 
@@ -125,11 +125,28 @@ expect_resampling = function(r, task = NULL) {
   }
 }
 
-expect_r6dt2d = function(x, cl = "R6DT2D", nrow = NULL, ncol = NULL) {
-  expect_r6(x, cl)
-  if (!is.null(nrow))
-    expect_equal(x$nrow, nrow)
-  if (!is.null(ncol))
-    expect_equal(x$ncol, ncol)
+expect_result = function(x) {
+  expect_r6(x, "Result", public = "data")
+  cols = list(
+    TrainResult = c("task", "learner", "rmodel", "train.set", "train.log"),
+    PredictResult = c("test.set", "poutput"),
+    PerformanceResult = c("perf.vals"),
+    ResampleResult = c("resampling.iter"),
+    BenchmarkResult = c("resampling.id")
+  )
+  i = max(match(class(x), names(cols), nomatch = 0L))
+  cols = unlist(head(cols, i), use.names = FALSE)
+
+  if (!is.null(x$print))
+    expect_output(print(x))
+  expect_data_table(x$data, min.rows = 1L)
+  expect_subset(cols, names(x$data))
 }
 
+expect_same_address = function(x, y) {
+  expect_identical(address(x), address(y))
+}
+
+expect_different_address = function(x, y) {
+  expect_false(identical(address(x), address(y)))
+}

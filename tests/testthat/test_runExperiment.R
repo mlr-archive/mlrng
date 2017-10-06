@@ -7,8 +7,8 @@ test_that("runExperiment worker", {
   resampling$instantiate(task)
   measures = list(mlr.measures$get("mmce"))
   for (i in 1:2) {
-    r = runExperiment(task, learner, resampling, i, measures)
+    r = runExperiment(task, learner, resampling, i, measures, store.model = FALSE)
     expect_r6(r, "PerformanceResult")
+    expect_result(r)
   }
 })
-

@@ -13,10 +13,6 @@ View = R6Class("View",
       private$view.cols = setdiff(colnames(self$raw.tbl), rowid.col)
     },
 
-    deep_clone = function(name, value) {
-      if (name == "cache") copy_env(value) else value
-    },
-
     finalize = function() {
       DBI::dbDisconnect(self$con)
     },
@@ -156,6 +152,10 @@ View = R6Class("View",
       if (!is.null(cols))
         tbl = dplyr::select(tbl, dplyr::one_of(cols))
       tbl
+    },
+
+    deep_clone = function(name, value) {
+      if (name == "cache") copy_env(value) else value
     }
   )
 )
