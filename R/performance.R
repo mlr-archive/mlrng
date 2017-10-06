@@ -7,7 +7,3 @@ performance = function(pred.res, measures) {
   perf.vals = setNames(perf.vals, mids)
   PerformanceResult$new(pred.res, perf.vals)
 }
-
-
-
-
