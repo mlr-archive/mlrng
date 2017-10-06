@@ -25,9 +25,8 @@ Dictionary = R6Class("Dictionary",
 
     # construct, set container type (string)
     initialize = function(eltype) {
-      assertString(eltype, null.ok = TRUE)
+      self$eltype = assertString(eltype, null.ok = TRUE)
       self$env = new.env(parent = emptyenv())
-      self$eltype = eltype
     },
 
     # register an new element, either take id (string) from object or set it manually
