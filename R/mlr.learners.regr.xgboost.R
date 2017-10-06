@@ -1,11 +1,11 @@
 #' @include Dictionaries.R
 
-mlr.learners$add(LearnerClassif$new(
+mlr.learners$add(LearnerRegr$new(
   name = "xgboost",
   package = "xgboost",
   par.set = makeParamSet(
     # we pass all of what goes in 'params' directly to ... of xgboost
-    # makeUntypedLearnerParam(id = "params", default = list()),
+    #makeUntypedLearnerParam(id = "params", default = list()),
     makeDiscreteLearnerParam(id = "booster", default = "gbtree", values = c("gbtree", "gblinear", "dart")),
     makeUntypedLearnerParam(id = "watchlist", default = NULL, tunable = FALSE),
     makeNumericLearnerParam(id = "eta", default = 0.3, lower = 0, upper = 1),
@@ -19,8 +19,8 @@ mlr.learners$add(LearnerClassif$new(
     makeNumericLearnerParam(id = "lambda", default = 1, lower = 0),
     makeNumericLearnerParam(id = "lambda_bias", default = 0, lower = 0),
     makeNumericLearnerParam(id = "alpha", default = 0, lower = 0),
-    makeUntypedLearnerParam(id = "objective", default = "binary:logistic", tunable = FALSE),
-    makeUntypedLearnerParam(id = "eval_metric", default = "error", tunable = FALSE),
+    makeUntypedLearnerParam(id = "objective", default = "reg:linear", tunable = FALSE),
+    makeUntypedLearnerParam(id = "eval_metric", default = "rmse", tunable = FALSE),
     makeNumericLearnerParam(id = "base_score", default = 0.5, tunable = FALSE),
     makeNumericLearnerParam(id = "max_delta_step", lower = 0, default = 0),
     makeNumericLearnerParam(id = "missing", default = NULL, tunable = FALSE, when = "both",
@@ -49,27 +49,18 @@ mlr.learners$add(LearnerClassif$new(
     makeUntypedLearnerParam(id = "callbacks", default = list(), tunable = FALSE)
   ),
   par.vals = list(nrounds = 1L, verbose = 0L),
-  properties = c("twoclass", "multiclass", "feat.numeric", "prob", "weights", "missings", "featimp"),
+  properties = c("feat.numeric", "weights", "featimp", "missings"),
   
   train = function(task, subset, weights = NULL, ...) {
-    nc = task$nclasses
     parlist = list(...)
     
     if (is.null(parlist$objective))
-      parlist$objective = ifelse(nc == 2L, "binary:logistic", "multi:softprob")
+      parlist$objective = "reg:linear"
     
-    if (self$predict.type == "prob" && parlist$objective == "multi:softmax")
-      stop("objective = 'multi:softmax' does not work with predict.type = 'prob'")
-    
-    #if we use softprob or softmax as objective we have to add the number of classes 'num_class'
-    if (parlist$objective %in% c("multi:softprob", "multi:softmax"))
-      parlist$num_class = nc
-    
-    data = getTaskData(task, subset = subset, type = "train", target.as = "factor", props = self$properties)
+    data = getTaskData(task, subset = subset, type = "train", props = self$properties)
     d = BBmisc::dropNamed(data, drop = task$target)
     truth = task$truth()
-    label = match(as.character(truth[[task$target]]), task$classes) - 1
-    parlist$data = xgboost::xgb.DMatrix(data = data.matrix(d), label = data.matrix(label))
+    parlist$data = xgboost::xgb.DMatrix(data = data.matrix(d), label = data.matrix(truth))
     
     if (!is.null(weights))
       xgboost::setinfo(parlist$data, "weight", weights)
@@ -81,48 +72,7 @@ mlr.learners$add(LearnerClassif$new(
   },
   
   predict = function(model, newdata, ...) {
-    cl = model$task$classes
-    nc = model$task$nclasses
-    obj = self$par.vals$objective
-    
-    if (is.null(obj))
-      self$par.vals$objective = ifelse(nc == 2L, "binary:logistic", "multi:softprob")
-    
-    p = predict(model$rmodel, newdata = data.matrix(newdata), ...)
-    
-    if (nc == 2L) { #binaryclass
-      if (self$par.vals$objective == "multi:softprob") {
-        y = matrix(p, nrow = length(p) / nc, ncol = nc, byrow = TRUE)
-        colnames(y) = cl
-      } else {
-        y = matrix(0, ncol = 2, nrow = nrow(newdata))
-        colnames(y) = cl
-        y[, 1L] = 1 - p
-        y[, 2L] = p
-      }
-      if (self$predict.type == "prob") {
-        unname(y)
-      } else {
-        p = colnames(y)[max.col(y)]
-        names(p) = NULL
-        p = factor(p, levels = colnames(y))
-        unname(p)
-      }
-    } else { #multiclass
-      if (self$par.vals$objective  == "multi:softmax") {
-        unname(factor(p, levels = cl)) #special handling for multi:softmax which directly predicts class levels
-      } else {
-        p = matrix(p, nrow = length(p) / nc, ncol = nc, byrow = TRUE)
-        colnames(p) = cl
-        if (self$predict.type == "prob") {
-          unname(p)
-        } else {
-          ind = max.col(p)
-          cns = colnames(p)
-          unname(factor(cns[ind], levels = cns))
-        }
-      }
-    }
+    predict(model$rmodel, newdata = data.matrix(newdata), ...)
   },
   
   model.extractors = list(
