@@ -44,17 +44,17 @@ mlr.learners$add(LearnerClassif$new(
     }
   },
   
-  model.extractors = list(
-    OOBPredictions = function(model, task, subset, ...) {
+  model.extractors = list( # FIXME: not working right now
+    OOBPredictions = function(model, task = NULL, subset = NULL, ...) {
       model$predictions
     },
-    featureImportance = function(model, task, subset, ...) {
+    featureImportance = function(model, task = NULL, subset = NULL, ...) { # FIXME: not working right now
       has.fiv = self$par.vals$importance
       if (is.null(has.fiv) || has.fiv == "none") {
         stop("You must set the parameter value for 'importance' to
         'impurity' or 'permutation' to compute feature importance.")
       }
-      ranger::importance(model)
+      ranger::importance(model$rmodel)
     }
   )
 ))
