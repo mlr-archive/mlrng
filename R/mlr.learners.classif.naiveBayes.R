@@ -12,9 +12,8 @@ mlr.learners$add(LearnerClassif$new(
     data = getTaskData(task, subset = subset, type = "train", props = self$properties)
     e1071::naiveBayes(task$formula, data = data, ...)
   },
-  predict = function(model, task, subset, ...) {
-    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
+  predict = function(model, newdata, ...) {
     type = ifelse(self$predict.type == "response", "class", "raw")
-    unname(predict(model, newdata = data, type = type, ...))
+    unname(predict(model$rmodel, newdata = newdata, type = type, ...))
   }
 ))
