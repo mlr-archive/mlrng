@@ -11,9 +11,8 @@ Split = R6Class("Split",
     train.set = NULL,
     test.set = NULL,
     initialize = function(train.set, test.set = NULL) {
-      assertAtomicVector(train.set, min.len = 1L, any.missing = FALSE)
-      self$train.set = train.set
-      self$test.set = test.set %??% vector(typeof(train.set), 0L)
+      self$train.set = as.bit(train.set)
+      self$test.set = if (is.null(test.set)) bit(length(train.set)) else as.bit(test.set)
     }
   )
 )

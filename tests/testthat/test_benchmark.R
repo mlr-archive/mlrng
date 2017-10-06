@@ -11,6 +11,6 @@ test_that("benchmark", {
   measures = list(mlr.measures$get("mmce"))
 
   bmr = benchmark(tasks, learners, resamplings, measures)
-  expect_r6dt2d(bmr, nrows = 12L)
+  expect_r6dt2d(bmr, nrow = 12L)
   #FIXME: maybe check colnames here
 })
