@@ -133,3 +133,10 @@ expect_r6dt2d = function(x, cl = "R6DT2D", nrow = NULL, ncol = NULL) {
     expect_equal(x$ncol, ncol)
 }
 
+expect_same_address = function(x, y) {
+  expect_identical(address(x), address(y))
+}
+
+expect_different_address = function(x, y) {
+  expect_false(identical(address(x), address(y)))
+}
