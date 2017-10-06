@@ -31,37 +31,36 @@ Resampling = R6Class("Resampling",
       self$pars = assertList(pars, names = "unique")
     },
 
-    train.set = function(task, i) {
+    train.set = function(i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      rows = task$view$active.rows
-      bit = self$instance[[i]]$train.set
-      assertBit(bit, len = length(rows))
-      rows[as.which(bit)]
+      assertInt(i, lower = 1L, upper = self$iters)
+      self$instance$train[[i]]
     },
 
-    test.set = function(task, i) {
+    test.set = function(i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      rows = task$view$active.rows
-      bit = self$instance[[i]]$test.set
-      assertBit(bit, len = length(rows))
-      rows[as.which(bit)]
+      assertInt(i, lower = 1L, upper = self$iters)
+      self$instance$test[[i]]
     },
 
     set = function(task, train.sets, test.sets = NULL) {
-      assertList(train.sets, type = "logical")
-      if (length(unique(lengths(train.sets))) != 1L)
-        stop("Train sets have different length")
+      assertList(train.sets, len = self$iters)
+      qassertr(train.sets, sprintf("X[1, %i]", task$nrow))
       if (is.null(test.sets)) {
-        test.sets = lapply(train.sets, function(x) !x)
+        test.sets = lapply(train.sets, setdiff, x = seq_len(task$nrow))
       } else {
-        assertList(test.sets, type = "logical")
-        if (length(unique(lengths(test.sets))) != 1L)
-          stop("Test sets have different length")
+        assertList(test.sets, len = self$iters)
+        qassertr(test.sets, sprintf("X[1, %i]", task$nrow))
       }
-      self$instance = Map(Split$new, train.set = train.sets, test.set = test.sets)
-      self$checksum = digest(list(task$id, task$view$active.rows, self$instance), algo = "murmur32")
+
+      rows = task$view$active.rows
+      self$instance = list(
+        train = lapply(train.sets, function(i) rows[i]),
+        test  = lapply(test.sets, function(i) rows[i])
+      )
+      self$checksum = digest(self$instance, algo = "murmur32")
       invisible(self)
     },
 
@@ -81,11 +80,3 @@ Resampling = R6Class("Resampling",
       !is.null(self$instance)
     })
 )
-
-#' @export
-as.data.table.Resampling = function(x, keep.rownames = FALSE, ...) {
-  data.table(
-    iter = seq_along(x),
-    split = x$instance
-  )
-}

@@ -6,8 +6,8 @@ runExperiment = function(task, learner, resampling, resampling.iter, measures, s
   gmessage("[Experiment]: task={task$id} | learner={learner$id} | resampling={resampling$id}: {resampling.iter}/{resampling$iters}")
 
   #FIXME: check later whether we want to construct this pipeline slightly better
-  result = train(task = task, learner = learner, subset = resampling$train.set(task, resampling.iter))
-  result = predict(result, subset = resampling$test.set(task, resampling.iter))
+  result = train(task = task, learner = learner, subset = resampling$train.set(resampling.iter))
+  result = predict(result, subset = resampling$test.set(resampling.iter))
   result = performance(result, measures = measures)
   if (!store.model)
     result$data[, "rmodel" := list(list(NULL))][]
