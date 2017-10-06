@@ -62,7 +62,7 @@ translateSubset = function(task, subset = NULL) {
 }
 
 createFallbackLearner = function(task) {
- mlr.learners$get(stri_paste(task$task.type, ".dummy"))
+  mlr.learners$get(stri_paste(task$task.type, ".dummy"))
 }
 
 `%nin%` = function(x, y) {
