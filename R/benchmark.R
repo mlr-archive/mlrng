@@ -38,14 +38,20 @@ benchmark = function(tasks, learners, resamplings, measures) {
 
   pm.level = "mlrng.resample"
   parallelLibrary(packages = "mlrng", master = FALSE, level = pm.level)
+  resampling.ids = sprintf("%s.%s", grid$task, grid$resampling)
+  resampling.checksums = BBmisc::vcapply(instances, function(x) x$checksum)
+
   experiments = parallelMap(
     fun = runExperiment,
     task = tasks[grid$task],
     learner = learners[grid$learner],
-    resampling = instances[sprintf("%s.%s", grid$task, grid$resampling)],
+    resampling = instances[resampling.ids],
     resampling.iter = grid$iter,
     more.args = list(measures = measures, store.model = FALSE),
     level = pm.level
   )
-  BenchmarkResult$new(experiments)
+  BenchmarkResult$new(
+    experiments,
+    resampling.ids = unname(resampling.checksums[resampling.ids]),
+    resampling.iters = grid$iter)
 }
