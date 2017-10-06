@@ -3,7 +3,7 @@
 #FIXME: we IGNORE ...? due to s3 inheritance, but check this
 
 #' @export
-predict.TrainResult = function(object, task = object$task, subset = NULL, newdata = NULL, ...) {
+predict.TrainResult = function(object, newdata = NULL, task = object$task, subset = NULL, ...) {
   if (length(list(...)) > 0L)
     stop("predict: dotargs currently unsupported!")
   learner = object$learner
