@@ -3,26 +3,28 @@
 #FIXME: we IGNORE ...? due to s3 inheritance, but check this
 
 #' @export
-predict.TrainResult = function(object, subset = NULL, ...) {
+predict.TrainResult = function(object, newdata = NULL, task = object$task, subset = NULL, ...) {
   if (length(list(...)) > 0L)
     stop("predict: dotargs currently unsupported!")
-  task = object$task
+  if (!is.null(newdata) && !is.null(subset))
+    stop("Use 'subset' only without 'newdata'")
   assertIndexSet(subset, for.task = task)
   subset = translateSubset(task, subset)
+  learner = object$learner
+  if (is.null(newdata))
+    newdata = getTaskData(task, subset = subset, type = "test", props = learner$properties)
   response = if (object$train.success)
-    predictWorker(object$rmodel, task, object$learner, subset = subset)
+    predictWorker(object, learner, newdata)
   else
-    predictFailureModel(object, task, subset = subset)
+    predictFailureModel(object, newdata)
   dispatchPrediction(object, subset, response)
 }
 
-predictWorker = function(rmodel, task, learner, subset) {
-  pars = c(list(model = rmodel, task = task, subset = subset), learner$par.vals)
-  do.call(learner$predict, pars)
+predictWorker = function(model, learner, newdata) {
+  learner$predict(model = model, newdata = newdata)
 }
 
-
-predictFailureModel = function(model, task, subset) {
+predictFailureModel = function(model, newdata) {
   fallback.learner = createFallbackLearner(task)
-  predictWorker(model$rmodel, task, fallback.learner, subset)
+  predictWorker(model, fallback.learner, newdata)
 }

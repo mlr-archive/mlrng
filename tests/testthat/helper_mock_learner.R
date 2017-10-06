@@ -8,8 +8,8 @@ lrn.mock.regr = LearnerRegr$new(
     ParamHelpers::makeLogicalParam("error", default = FALSE)
   ),
   par.vals = list(),
-  properties = c("missings", "factors", "numerics"),
-  train = function(task, subset, method = "mean", message = FALSE, warning = FALSE, error = FALSE,...) {
+  properties = c("missings", "feat.factor", "feat.numeric"),
+  train = function(task, subset, method = "mean", message = FALSE, warning = FALSE, error = FALSE, ...) {
     tn = unlist(task$data(subset, task$target))
     mod = switch(method,
       "mean" = mean(tn),
@@ -26,8 +26,8 @@ lrn.mock.regr = LearnerRegr$new(
     mod
   },
 
-  predict = function(model, task, subset, ...) {
-    as.numeric(model)
+  predict = function(model, newdata, ...) {
+    as.numeric(model$rmodel)
   }
 )
 

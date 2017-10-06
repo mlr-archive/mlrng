@@ -14,18 +14,18 @@ mlr.learners$add(LearnerClassif$new(
     makeIntegerLearnerParam(id = "maxdepth", default = 30L, lower = 1L, upper = 30L),
     makeIntegerLearnerParam(id = "xval", default = 10L, lower = 0L, tunable = FALSE)
   ),
-  par.vals = list(cp = 1),
+  par.vals = list(),
   properties = c("twoclass", "multiclass", "missings", "feat.numeric", "feat.factor", "feat.ordered", "prob", "weights", "featimp", "formula"),
   train = function(task, subset, ...) {
     data = getTaskData(task, subset = subset, type = "train", props = self$properties)
     rpart::rpart(task$formula, data, ...)
   },
-  predict = function(model, task, subset, ...) {
-    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
+  predict = function(model, newdata, ...) {
     pt = self$predict.type
     if (pt == "response")
-      as.character(predict(model, newdata = data, type = "class", ...)) else
-        predict(model, newdata = data, type = "prob", ...)
+      as.character(predict(model$rmodel, newdata = newdata, type = "class", ...)) 
+    else
+        predict(model$rmodel, newdata = newdata, type = "prob", ...)
   },
   # FIXME: can be removed, was just for testing
   model.extractors = list(residuals = function(model, task, subset, type = "usual", ...) {
