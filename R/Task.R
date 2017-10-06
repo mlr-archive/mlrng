@@ -27,10 +27,6 @@ Task = R6Class("Task",
       }
     },
 
-    deep_clone = function(name, value) {
-      if (name == "view") value$clone(deep = TRUE) else value
-    },
-
     data = function(rows = NULL, cols = NULL) {
       setDT(self$view$data(rows, cols))[]
     },
@@ -42,6 +38,13 @@ Task = R6Class("Task",
     head = function(n = 6L) {
       setDT(self$view$head(n))[]
     },
+
+    subset = function(subset) {
+      nt = self$clone(deep = TRUE)
+      nt$view$active.rows = translateSubset(task, subset)
+      return(nt)
+    },
+
     print = function(...) {
       cols = self$col.types
       n.miss = self$na.cols

@@ -142,3 +142,11 @@ expect_result = function(x) {
   expect_data_table(x$data, min.rows = 1L)
   expect_subset(cols, names(x$data))
 }
+
+expect_same_address = function(x, y) {
+  expect_identical(address(x), address(y))
+}
+
+expect_different_address = function(x, y) {
+  expect_false(identical(address(x), address(y)))
+}
