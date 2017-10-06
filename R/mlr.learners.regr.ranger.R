@@ -33,9 +33,8 @@ mlr.learners$add(LearnerRegr$new(
     ranger::ranger(formula = task$formula, data = data, ...)
   },
   
-  predict = function(model, task, subset, ...) {
-    data = getTaskData(task, subset = subset, type = "test", props = self$properties)
-    p = predict(object = model, data = data, ...)
+  predict = function(model, newdata, ...) {
+    p = predict(object = model$rmodel, data = newdata, ...)
     unname(p$predictions)
   },
   
