@@ -1,4 +1,4 @@
-PerforemanceResult = R6Class("PerforemanceResult",
+PerformanceResult = R6Class("PerformanceResult",
   inherit = PredictResult,
   public = list(
     initialize = function(pred.result, perf.vals) {
@@ -7,7 +7,9 @@ PerforemanceResult = R6Class("PerforemanceResult",
       self$dtgrow(
         perf.vals = assertNumeric(perf.vals, min.len = 1L)
       )
-    }
+    },
+    print = function(...)
+      gcat("[Performance]: task={self$task$id} | learner={self$learner$id} | {stri_peek(stri_pasteNames(self$perf.vals, sep = '='))}")
   ),
   active = list(
     perf.vals = function() self$dt$perf.vals[[1L]]

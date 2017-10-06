@@ -8,7 +8,6 @@
 #' Predefined resampling measures are stored in \code{\link{mlr.resamplings}}.
 #'
 #' @field id [\code{character(1)}]: Identifier of the measure.
-#' @field description [\code{character(1)}]: Name of the measure.
 #' @field task.types [\code{character}]: Set of compatible task types.
 #' @field fun [\code{function(truth, predicted)}]: function to compute the measure.
 #' @return [\code{Measure}].
@@ -16,16 +15,14 @@
 Resampling = R6Class("Resampling",
   public = list(
     id = NA_character_,
-    description = NA_character_,
     instantiate = NULL,
     iters = NA_integer_,
     checksum = NA_character_,
     pars = list(),
     instance = NULL,
 
-    initialize = function(id, description, instantiate, iters, pars = list()) {
+    initialize = function(id, instantiate, iters, pars = list()) {
       self$id = assertString(id)
-      self$description = assertString(description)
       if (!is.null(instantiate)) {
         self$instantiate = assertFunction(instantiate, args = "task")
         environment(self$instantiate) = environment(self$initialize)
@@ -34,32 +31,37 @@ Resampling = R6Class("Resampling",
       self$pars = assertList(pars, names = "unique")
     },
 
-    split = function(i) {
-      assertInt(i, lower = 1L, upper = self$iters)
-      self$instance[[i]]
-    },
-
-    train = function(i) {
+    train.set = function(task, i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      self$instance[[i]][["train"]]
+      rows = task$view$active.rows
+      bit = self$instance[[i]]$train.set
+      assertBit(bit, len = length(rows))
+      rows[as.which(bit)]
     },
 
-    test = function(i) {
+    test.set = function(task, i) {
       if (is.null(self$instance))
         stop("Resampling has not been instantiated yet")
-      self$instance[[i]][["test"]]
+      rows = task$view$active.rows
+      bit = self$instance[[i]]$test.set
+      assertBit(bit, len = length(rows))
+      rows[as.which(bit)]
     },
 
-    set = function(task, train, test = NULL) {
-      if (is.null(test))
-        test = lapply(train, function(x) !x)
-      ids = task$view$active.rows
-      train = lapply(train, function(x) ids[x])
-      test = lapply(test, function(x) ids[x])
-
-      self$instance = Map(Split$new, train = train, test = test)
-      self$checksum = digest(self$instance, algo = "murmur32")
+    set = function(task, train.sets, test.sets = NULL) {
+      assertList(train.sets, type = "logical")
+      if (length(unique(lengths(train.sets))) != 1L)
+        stop("Train sets have different length")
+      if (is.null(test.sets)) {
+        test.sets = lapply(train.sets, function(x) !x)
+      } else {
+        assertList(test.sets, type = "logical")
+        if (length(unique(lengths(test.sets))) != 1L)
+          stop("Test sets have different length")
+      }
+      self$instance = Map(Split$new, train.set = train.sets, test.set = test.sets)
+      self$checksum = digest(list(task$id, task$view$active.rows, self$instance), algo = "murmur32")
       invisible(self)
     },
 
@@ -67,8 +69,17 @@ Resampling = R6Class("Resampling",
       self$instance = NULL
       self$checksum = NA_character_
       invisible(self)
+    },
+
+    print = function(...) {
+      if (!self$is.instantiated) cat("(Uninstantiated) ")
+      gcat("Resampling: {self$id} with {self$iters} splits.")
     }
-  )
+  ),
+  active = list(
+    is.instantiated = function() {
+      !is.null(self$instance)
+    })
 )
 
 #' @export

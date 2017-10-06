@@ -28,12 +28,21 @@ assertIndexSet = function(subset, for.task = NULL) {
 }
 
 
-assertMeasures = function(measures, for.task = NULL) {
+assertMeasures = function(measures, for.task = NULL, for.learner = NULL) {
   assertList(measures, "Measure")
   if (!is.null(for.task)) {
     for (m in measures)
     if (for.task$task.type %nin% m$task.types)
       gstop("Types do not match: measure id={m$id}, task.types={collapse(m$task.types, ",")} vs task id={for.task$id}, task.type={for.task$task.type}")
   }
+  #FIXME: check that measure matches the learner output
   invisible(measures)
 }
+
+assertResampling = function(resampling, for.task = NULL) {
+  assertR6(resampling, "Resampling")
+  #FIXME: maybe add a check that resampling matches task?
+}
+
+
+

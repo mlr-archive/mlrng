@@ -3,7 +3,6 @@
 mlr.resamplings$add(
   Resampling$new(
     id = "subsampling",
-    description = "subsampling",
     iters = 30L,
     instantiate = function(task) {
       assertR6(task, "Task")

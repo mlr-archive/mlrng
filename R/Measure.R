@@ -25,6 +25,13 @@ Measure = R6Class("Measure",
       self$task.types = assertCharacter(task.types, min.len = 1L, any.missing = FALSE)
       self$fun = assertFunction(fun)
       environment(self$fun) = environment(self$initialize)
+    },
+    print = function(...) {
+      gcat("Measure {self$id}
+            Compatible task types: {stri_paste(self$task.types, collapse = ', ')}
+            Description: {stri_peek(self$description)}")
+      if (getOption("mlrng.debug", TRUE))
+        cat("\n", format(self), "\n")
     }
   )
 )

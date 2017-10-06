@@ -43,6 +43,13 @@ stri_peek = function(str, append = "...") {
   return(str)
 }
 
+stri_pasteNames = function(str, sep = " ", collapse = ", ", names.first = TRUE) {
+  if(names.first)
+    stri_paste(names(str), str, sep = sep, collapse = collapse)
+  else
+    stri_paste(str, names(str), sep = sep, collapse = collapse)
+}
+
 translateSubset = function(task, subset = NULL) {
   if (is.null(subset))
     return(task$view$active.rows)
@@ -80,3 +87,10 @@ createFallbackLearner = function(task) {
   !chmatch(x, y, nomatch = 0L)
 }
 
+plural = function(n) {
+  if (n != 1L) "s" else ""
+}
+
+copy_env = function(ee) {
+  list2env(as.list(ee), parent = emptyenv())
+}

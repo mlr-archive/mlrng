@@ -47,6 +47,5 @@ benchmark = function(tasks, learners, resamplings, measures) {
     more.args = list(measures = measures, store.model = FALSE),
     level = pm.level
   )
-
   BenchmarkResult$new(experiments)
 }
