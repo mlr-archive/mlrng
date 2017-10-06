@@ -39,7 +39,7 @@ train = function(task, learner, subset = NULL) {
     ginfo("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
   } else {
    if (getOption("mlrng.continue.on.learner.error", FALSE)) {
-      wrapped.model = trainFailureModel(task, subset)
+      wrapped.model = trainWorker(task, createFallbackLearner(task), subset)
       ginfo("Training {learner$id} on {task$id} failed, fallback to dummy model.")
     } else {
       gstop("Training {learner$id} on {task$id} failed with {train.log$errors[[1]]$message}.")
@@ -52,12 +52,8 @@ train = function(task, learner, subset = NULL) {
 trainWorker = function(task, learner, subset) {
   assertInteger(subset, lower = 1L, upper = task$nrow, any.missing = FALSE)
   pars = c(list(task = task, subset = subset), learner$par.vals)
+  requireNS(learner$packages)
   do.call(learner$train, pars)
-}
-
-trainFailureModel = function(task, subset) {
-  fallback.learner = createFallbackLearner(task)
-  trainWorker(task, fallback.learner, subset)
 }
 
 getTrainEvalString = function(encapsulation) {

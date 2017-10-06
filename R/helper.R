@@ -1,7 +1,7 @@
-requireNS = function(x) {
-  ok = vlapply(x, requireNamespace, quietly = TRUE)
+requireNS = function(pkgs) {
+  ok = vlapply(pkgs, requireNamespace, quietly = TRUE)
   if (!all(ok))
-    stop("Please install the following packages: ", stri_flatten(x[!ok], ", "))
+    stop("Please install the following packages: ", stri_flatten(pkgs[!ok], ", "))
 }
 
 gcat = function(..., .sep = "", .envir = parent.frame(), .file = "", .append = TRUE) {
