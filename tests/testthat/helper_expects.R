@@ -66,17 +66,6 @@ expect_regrtask = function(task) {
   expect_numeric(task$get(cols = task$target)[[1L]], any.missing = FALSE)
 }
 
-expect_learner = function(lrn) {
-  expect_is(lrn, "Learner")
-  expect_string(lrn$id, min.chars = 1L)
-  expect_character(lrn$packages, min.chars = 1L)
-  expect_subset(lrn$properties, mlrng$supported.learner.props)
-  expect_is(lrn$par.set, "ParamSet")
-  expect_list(lrn$par.vals, names = "unique")
-  expect_function(lrn$predict, args = c("model", "newdata"), ordered = TRUE)
-  expect_function(lrn$train, args = c("task", "subset"), ordered = TRUE)
-}
-
 expect_split = function(s, len = NULL) {
   expect_class(s, "Split")
   expect_atomic_vector(s$train.set, min.len = 1)
