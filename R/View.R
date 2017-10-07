@@ -137,6 +137,7 @@ View = R6Class("View",
     active.cols = function(cols) {
       if (missing(cols))
         return(private$view.cols)
+
       if (is.null(cols)) {
         private$view.cols = setdiff(colnames(self$raw.tbl), self$rowid.col)
       } else {
