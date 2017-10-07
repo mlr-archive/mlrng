@@ -1,3 +1,11 @@
+#' @title Class for Regr Learners
+#' @format \code{\link{R6Class}} object
+#'
+#' @description
+#' A \code{\link[R6]{R6Class}} to construct learners.
+#'
+#' @return [\code{\link{Learner}}].
+#' @family Learner
 #' @include Learner.R
 #' @export
 LearnerRegr = R6Class("LearnerRegr",

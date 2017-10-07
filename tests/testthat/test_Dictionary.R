@@ -7,7 +7,7 @@ test_that("Basic ops on Dictionary, no R6 els", {
 
   d$add(1, id = "x")
   expect_equal(d$length, 1L)
-  expect_error(d$add(1, id = "x"), "already present")
+  expect_error(d$add(1, id = "x", overwrite = FALSE), "already present")
   expect_error(d$add("x", id = "x"), "numeric")
   xs = as.list(d)
   expect_equal(xs, list(x = 1))

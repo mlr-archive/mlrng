@@ -62,6 +62,7 @@ Collate:
     'View.R'
     'asserts.R'
     'benchmark.R'
+    'expect_learner.R'
     'getTaskData.R'
     'helper.R'
     'mlr.learners.classif.dummy.R'

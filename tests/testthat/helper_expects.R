@@ -77,6 +77,12 @@ expect_learner = function(lrn) {
   expect_function(lrn$train, args = c("task", "subset"), ordered = TRUE)
 }
 
+expect_split = function(s, len = NULL) {
+  expect_class(s, "Split")
+  expect_atomic_vector(s$train.set, min.len = 1)
+  expect_atomic_vector(s$test.set, min.len = 1L)
+}
+
 # task == FALSE -> assert that r is not instantiated
 # task == [task] -> assert that r is instantiated with task
 expect_resampling = function(r, task = FALSE) {
