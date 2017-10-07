@@ -8,8 +8,8 @@ mlr.resamplings$add(
       assertR6(task, "Task")
       n = task$nrow
       seq_len0 = function(n) seq(from = 0L, to = n - 1L)
-      m = outer(X = sample(seq_len0(n) %% self$iters), Y = seq_len0(self$iters), "!=")
-      train.sets = lapply(seq_col(m), function(i) m[, i])
+      grp = sample.int(n) %% self$iters + 1L
+      train.sets = lapply(seq_len(self$iters), function(i) which(i != grp))
       self$set(task, train.sets)
     }
   )

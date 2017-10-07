@@ -1,14 +1,23 @@
 context("Resampling")
 
+no_intersects = function(r) {
+  all(lengths(Map(intersect, r$instance$train, r$instance$test)) == 0L)
+}
+
+ind_lengths = function(r, w) {
+  BBmisc::viapply(seq_len(r$iters), function(i) length(r$instance[[w]][[i]]))
+}
+
 test_that("resampling cv", {
   task = mlr.tasks$get("iris")
   r = mlr.resamplings$get("cv")
   r$instantiate(task)
+  expect_list(r$pars, len = 0L)
   expect_identical(r$iters, 10L)
   expect_resampling(r, task)
-  expect_equal(BBmisc::viapply(r$instance, function(x) sum(x$train.set)), rep(135, r$iters))
-  expect_equal(BBmisc::viapply(r$instance, function(x) sum(x$test.set)), rep(15, r$iters))
-  expect_true(all(BBmisc::vlapply(Map(xor, r$instance$train.set, r$instance$test.set), all)))
+  expect_true(all(ind_lengths(r, "train") == 135L))
+  expect_true(all(ind_lengths(r, "test") == 15L))
+  expect_true(no_intersects(r))
 })
 
 test_that("resampling holdout", {
@@ -17,9 +26,9 @@ test_that("resampling holdout", {
   expect_identical(r$iters, 1L)
   expect_equal(r$pars, list(ratio = 2/3))
   expect_resampling(r, task)
-  expect_equal(BBmisc::viapply(r$instance, function(x) sum(x$train.set)), 138L)
-  expect_equal(BBmisc::viapply(r$instance, function(x) sum(x$test.set)), 70L)
-  expect_true(all(BBmisc::vlapply(Map(xor, r$instance$train.set, r$instance$test.set), all)))
+  expect_true(all(ind_lengths(r, "train") == 138L))
+  expect_true(all(ind_lengths(r, "test") == 70L))
+  expect_true(no_intersects(r))
 })
 
 test_that("resampling subsample", {
@@ -28,7 +37,7 @@ test_that("resampling subsample", {
   expect_identical(r$iters, 30L)
   expect_equal(r$pars, list(ratio = 2/3))
   expect_resampling(r, task)
-  expect_equal(BBmisc::viapply(r$instance, function(x) sum(x$train.set)), rep(512L, r$iters))
-  expect_equal(BBmisc::viapply(r$instance, function(x) sum(x$test.set)), rep(256L, r$iters))
-  expect_true(all(BBmisc::vlapply(Map(xor, r$instance$train.set, r$instance$test.set), all)))
+  expect_true(all(ind_lengths(r, "train") == 512L))
+  expect_true(all(ind_lengths(r, "test") == 256L))
+  expect_true(no_intersects(r))
 })

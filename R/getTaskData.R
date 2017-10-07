@@ -1,6 +1,6 @@
 getTaskData = function(task, subset = NULL, type = "train", props = NULL, target.as = NULL) {
   assertR6(task, "TaskSupervised")
-  subset = translateSubset(task, subset)
+  # subset = translateSubset(task, subset)
   assertAtomicVector(subset, any.missing = FALSE)
   # FIXME: Maybe we want also 'target.as' to be logical or integer, however beware of typecast errors.
   assertSubset(target.as, c("factor", "character"), empty.ok = TRUE)

@@ -7,7 +7,7 @@ mlr.resamplings$add(
     instantiate = function(task) {
       assertR6(task, "Task")
       n = task$nrow
-      train.set = replace(logical(n), sample(n, floor(self$pars$ratio * n)), TRUE)
+      train.set = sample.int(n, floor(self$pars$ratio * n))
       self$set(task = task, train.sets = list(train.set))
     },
     pars = list(ratio = 2/3)

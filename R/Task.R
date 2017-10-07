@@ -28,11 +28,11 @@ Task = R6Class("Task",
     },
 
     data = function(rows = NULL, cols = NULL) {
-      setDT(self$view$data(rows, cols))[]
+      self$view$data(rows, cols)[]
     },
 
     truth = function(rows = NULL) {
-      self$data(rows, cols = self$target)
+      self$view$data(rows, cols = self$target)[]
     },
 
     head = function(n = 6L) {

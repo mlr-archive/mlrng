@@ -52,7 +52,6 @@ Collate:
     'PerformanceResult.R'
     'ResampleResult.R'
     'Resampling.R'
-    'Split.R'
     'Task.R'
     'TaskClassif.R'
     'TaskRegr.R'

@@ -1,6 +1,4 @@
-
 #FIXME: we should also do all syntactic sugar for auto-arg conversions here
-
 
 assertTask = function(task, subclass = "Task") {
   assert_r6(task, subclass)

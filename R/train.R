@@ -15,55 +15,56 @@ train = function(task, learner, subset = NULL) {
   assertTask(task)
   assertLearner(learner, for.task = task)
   assertIndexSet(subset, for.task = task)
+  row.ids = translateSubset(task, subset)
 
-  subset = translateSubset(task, subset)
-  wrapped.model = NULL
+  trainWorker(task, learner, row.ids)
+}
+
+trainWorker = function(task, learner, row.ids) {
   encapsulation = getOption("mlrng.train.encapsulation", 1L)
+  result = NULL
 
   start.time = proc.time()[3L]
-
   if (encapsulation == 0L) {
-    wrapped.model = trainWorker(task, learner, subset)
+    result = fitModel(task, learner, row.ids)
     raw.log = list()
   } else {
     eval.string = getTrainEvalString(encapsulation)
     raw.log = evaluate::evaluate(eval.string, new_device = FALSE)
   }
-
   train.time = proc.time()[3L] - start.time
 
   train.log = TrainLog$new(raw.log, train.time)
-  train.success = !is.null(wrapped.model) && train.log$n.errors == 0L
+  train.success = !is.null(result) && train.log$n.errors == 0L
 
   if (train.success) {
     ginfo("Trained {learner$id} on {task$id} with {train.log$n.errors} errors, {train.log$n.warnings} warnings and {train.log$n.messages} messages.")
   } else {
    if (getOption("mlrng.continue.on.learner.error", FALSE)) {
-      wrapped.model = trainWorker(task, createFallbackLearner(task), subset)
+      result = fitModel(task, createFallbackLearner(task), row.ids)
       ginfo("Training {learner$id} on {task$id} failed, fallback to dummy model.")
     } else {
       gstop("Training {learner$id} on {task$id} failed with {train.log$errors[[1]]$message}.")
     }
   }
 
-  TrainResult$new(task, learner, wrapped.model, subset, train.log)
+  TrainResult$new(task, learner, result, row.ids, train.log)
 }
 
-trainWorker = function(task, learner, subset) {
-  assertInteger(subset, lower = 1L, upper = task$nrow, any.missing = FALSE)
-  pars = c(list(task = task, subset = subset), learner$par.vals)
+fitModel = function(task, learner, row.ids) {
   requireNS(learner$packages)
+  pars = c(list(task = task, subset = row.ids), learner$par.vals)
   do.call(learner$train, pars)
 }
 
 getTrainEvalString = function(encapsulation) {
   assertInt(encapsulation, lower = 1L,  upper = 2L)
   if (encapsulation == 1L) {
-    "wrapped.model = trainWorker(task, learner, subset)"
+    "result = fitModel(task, learner, row.ids)"
   } else {
-     "wrapped.model = callr::r(function(task, learner, subset) {
+     "result = callr::r(function(task, learner, row.ids) {
         library(mlrng)
-        mlrng:::trainWorker(task, learner, subset)
-        }, list(task = task, learner = learner, subset = subset))"
+        mlrng:::fitModel(task, learner, row.ids)
+        }, list(task = task, learner = learner, row.ids = row.ids))"
   }
 }

@@ -32,7 +32,7 @@ expect_task = function(task) {
   expect_count(task$nrow)
   expect_count(task$ncol)
   expect_view(task$view)
-  expect_data_table(task$data(task$view$active.rows[1]))
+  expect_data_table(task$data(task$view$active.rows))
   expect_data_table(task$head(1))
   task.nas = task$na.cols
   expect_integer(task.nas, names = "unique", any.missing = FALSE, lower = 0L, upper = task$nrow)
@@ -66,17 +66,26 @@ expect_regrtask = function(task) {
   expect_numeric(task$get(cols = task$target)[[1L]], any.missing = FALSE)
 }
 
+expect_learner = function(lrn) {
+  expect_is(lrn, "Learner")
+  expect_string(lrn$id, min.chars = 1L)
+  expect_character(lrn$packages, min.chars = 1L)
+  expect_subset(lrn$properties, mlrng$supported.learner.props)
+  expect_is(lrn$par.set, "ParamSet")
+  expect_list(lrn$par.vals, names = "unique")
+  expect_function(lrn$predict, args = c("model", "newdata"), ordered = TRUE)
+  expect_function(lrn$train, args = c("task", "subset"), ordered = TRUE)
+}
+
 expect_split = function(s, len = NULL) {
   expect_class(s, "Split")
   expect_atomic_vector(s$train.set, min.len = 1)
   expect_atomic_vector(s$test.set, min.len = 1L)
 }
 
-# task == NULL -> do not run tests for instance
 # task == FALSE -> assert that r is not instantiated
-# task == TRUE -> assert that r is instantiated
 # task == [task] -> assert that r is instantiated with task
-expect_resampling = function(r, task = NULL) {
+expect_resampling = function(r, task = FALSE) {
   expect_is(r, "Resampling")
   expect_string(r$id, min.chars = 1L)
   expect_list(r$pars, names = "unique")
@@ -87,19 +96,19 @@ expect_resampling = function(r, task = NULL) {
     expect_null(r$instance)
   }
 
-  if (isTRUE(task) || inherits(task, "Task")) {
+  if (inherits(task, "Task")) {
     expect_string(r$checksum)
-    expect_list(r$instance, types = "Split", len = r$iters, names = "unnamed")
+    expect_list(r$instance, len = 2)
+    expect_list(r$instance$train, len = r$iters, names = "unnamed")
+    expect_list(r$instance$test, len = r$iters, names = "unnamed")
 
-    if (inherits(task, "Task")) {
-      n = task$nrow
-      for (i in seq_len(r$iters)) {
-        expect_split(r$instance[[i]], len = n)
-        expect_integer(r$train.set(task, i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
-        expect_integer(r$test.set(task, i), min.len = 1L, max.len = n - 1L, lower = 1L, upper = n, any.missing = FALSE, unique = TRUE, names = "unnamed")
-      }
-    } else {
-      for (i in seq_len(r$iters)) expect_split(r$instance[[i]])
+    n = task$nrow
+    rows = task$view$active.rows
+    for (i in seq_len(r$iters)) {
+      expect_atomic_vector(r$train.set(i), min.len = 1L, max.len = n - 1L, any.missing = FALSE, names = "unnamed")
+      expect_subset(r$train.set(i), rows)
+      expect_atomic_vector(r$test.set(i), min.len = 1L, max.len = n - 1L, any.missing = FALSE, names = "unnamed")
+      expect_subset(r$test.set(i), rows)
     }
   }
 }
@@ -129,4 +138,3 @@ expect_same_address = function(x, y) {
 expect_different_address = function(x, y) {
   expect_false(identical(address(x), address(y)))
 }
-
