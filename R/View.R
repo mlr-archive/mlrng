@@ -42,12 +42,13 @@ View = R6Class("View",
     name = NULL,
     rowid.col = NULL,
 
-    initialize = function(pars = list(), name, rowid.col) {
+    initialize = function(pars = list(), name, rowid.col, active.cols = NULL, active.rows = NULL) {
       self$pars = assertList(pars, names = "unique")
       self$name = assertString(name)
       self$rowid.col = assertString(rowid.col)
       private$cache = new.env(hash = FALSE, parent = emptyenv())
-      private$view.cols = setdiff(colnames(self$raw.tbl), rowid.col)
+      self$active.cols = active.cols
+      self$active.rows = active.rows
     },
 
     finalize = function() {
@@ -56,19 +57,34 @@ View = R6Class("View",
 
     data = function(rows = NULL, cols = NULL) {
       tbl = self$raw.tbl
-      tbl = private$filter(tbl, private$view.rows)
-      if (!is.null(rows)) {
-        if (anyDuplicated(rows)) {
-          y = tibble::tibble(id = rows)
-          names(y) = self$rowid.col
-          tbl = dplyr::inner_join(tbl, y, copy = TRUE, by = self$rowid.col)
-        } else {
-          tbl = private$filter(tbl, rows)
-        }
+
+      if (is.null(rows)) {
+        tbl = private$filter(tbl, self$active.rows)
+        unique.rows = TRUE
+      } else {
+        select.rows = private$view.rows[list(rows), nomatch = 0L, on = self$rowid.col]
+        if (nrow(select.rows) != length(rows))
+          stop("Invalid row ids provided")
+        select.rows = unique(select.rows, by = self$rowid.col)
+        unique.rows = nrow(select.rows) == length(rows)
+        tbl = private$filter(tbl, select.rows[[1L]])
       }
-      tbl = private$select(tbl, private$view.cols)
-      tbl = private$select(tbl, cols)
-      dplyr::collect(tbl)
+
+      if (is.null(cols)) {
+        cols = private$view.cols
+      } else {
+        assertCharacter(cols, any.missing = FALSE, unique = TRUE)
+        cols = intersect(cols, private$view.cols)
+      }
+
+      if (unique.rows) {
+        data = setDT(dplyr::collect(dplyr::select(tbl, cols)))
+      } else {
+        data = setDT(dplyr::collect(dplyr::select(tbl, c(self$rowid.col, cols))))
+        data = data[rows, !(self$rowid.col), on = self$rowid.col, with = FALSE]
+      }
+
+      return(data)
     },
 
     distinct = function(col) {
@@ -101,38 +117,36 @@ View = R6Class("View",
     },
 
     active.rows = function(rows) {
-      if (missing(rows)) {
-        if (!is.null(private$view.rows))
-          return(private$view.rows)
-        return(private$cached("active.rows",
-          dplyr::collect(dplyr::select_at(self$raw.tbl, self$rowid.col))[[1L]]
-        ))
+      if (missing(rows))
+        return(private$view.rows[[1L]])
+
+      if (is.null(rows)) {
+        rows = dplyr::collect(dplyr::select_at(self$raw.tbl, self$rowid.col))[[1L]]
+      } else {
+        assertAtomicVector(rows, any.missing = FALSE)
+        n = dplyr::tally(private$select(private$filter(self$raw.tbl, rows), self$rowid.col))
+        if (dplyr::collect(n)[[1L]] != length(rows))
+          stop("Invalid row ids provided")
       }
 
-      assertAtomicVector(rows, any.missing = FALSE)
-      n = dplyr::tally(private$select(private$filter(self$raw.tbl, rows), self$rowid.col))
-      if (dplyr::collect(n)[[1L]] != length(rows))
-        stop("Invalid row ids provided")
-
-      private$view.rows = rows
-      private$cache[["nrow"]] = length(rows)
-      private$invalidate(c("active.rows", "distinct", "na.cols", "checksum"))
+      private$view.rows = data.table(..id = rows, key = "..id")
+      setnames(private$view.rows, "..id", self$rowid.col)
+      private$invalidate(c("distinct", "na.cols", "checksum"))
     },
 
     active.cols = function(cols) {
-      if (missing(cols)) {
+      if (missing(cols))
         return(private$view.cols)
+      if (is.null(cols)) {
+        private$view.cols = setdiff(colnames(self$raw.tbl), self$rowid.col)
+      } else {
+        private$view.cols = assertSubset(cols, setdiff(colnames(self$raw.tbl), self$rowid.col))
       }
-      private$view.cols = assertSubset(cols, setdiff(colnames(self$raw.tbl), self$rowid.col))
       private$invalidate(c("types", "na.cols", "checksum"))
     },
 
     nrow = function() {
-      if (!is.null(private$view.rows))
-        return(length(private$view.rows))
-      private$cached("nrow",
-        dplyr::collect(dplyr::tally(private$filter(self$raw.tbl)))[[1L]]
-      )
+      nrow(private$view.rows)
     },
 
     ncol = function() {
@@ -188,7 +202,7 @@ View = R6Class("View",
       rm(list = name, envir = private$cache)
     },
 
-    filter = function(tbl, rows = private$view.rows) {
+    filter = function(tbl, rows = private$view.rows[[1L]]) {
       if (!is.null(rows))
         tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
       tbl

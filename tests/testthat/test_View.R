@@ -50,8 +50,6 @@ test_that("asView", {
 
 test_that("View: cache gets invalidated", {
   populate_cache = function(v) {
-    v$nrow
-    v$ncol
     v$types
     v$distinct("Species")
     v$na.cols
@@ -61,18 +59,17 @@ test_that("View: cache gets invalidated", {
   expect_set_equal(ls(private(v)$cache), character(0))
 
   populate_cache(v)
-  expect_set_equal(ls(private(v)$cache), c("nrow", "types", "distinct", "na.cols"))
+  expect_set_equal(ls(private(v)$cache), c("types", "distinct", "na.cols"))
   expect_set_equal(private(v)$cache$distinct$Species, levels(iris$Species))
 
   chk = v$checksum
-  expect_set_equal(ls(private(v)$cache), c("nrow", "types", "distinct", "na.cols", "active.rows", "checksum"))
+  expect_set_equal(ls(private(v)$cache), c("types", "distinct", "na.cols", "checksum"))
 
   v$active.rows = 1:40
-  expect_set_equal(ls(private(v)$cache), c("nrow", "types"))
-  expect_identical(private(v)$cache$nrow, 40L)
+  expect_set_equal(ls(private(v)$cache), c("types"))
   expect_false(identical(chk, v$checksum))
 
   populate_cache(v)
   v$active.cols = "Species"
-  expect_set_equal(ls(private(v)$cache), c("distinct", "nrow"))
+  expect_set_equal(ls(private(v)$cache), c("distinct"))
 })
