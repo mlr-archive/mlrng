@@ -1,9 +1,46 @@
+#' @title Abstract View on a Data Source
+#' @format \code{\link{R6Class}} object
+#'
+#' @description
+#' This class currently sits on top of \pkg{dplyr} and is intended to provide
+#' a view on a read-only data source.
+#'
+#' @field pars [\code{list()}]:\cr
+#'   Arguments for \code{\link[DBI]{dbConnect}} to establish a connection and re-connect if
+#'   necessary.
+#' @field name [\code{character(1)}]:\cr Name of the table in the data base.
+#' @field rowid.col [\code{character(1)}]:\cr Name of a unique id column in the table.
+#' @field con [\code{connection}]:\cr Connection to the data base.
+#' @field raw.tbl [\code{src_sql}]:\cr \pkg{dplyr} source of the data base table.
+#' @field tbl [\code{src_sql}]:\cr \pkg{dplyr} source of the data base table, pre-filtered
+#'   and pre-selected to the active view.
+#' @field data [\code{function(rows = NULL, cols = NULL}]\cr
+#'   Function to extract rows and columns from the subset of active rows and active cols.
+#' @field active.rows [\code{vector}]\cr
+#'   Subset of values in \code{rowid.col}. Can be overwritten to change the view.
+#' @field active.cols [\code{vector}]\cr
+#'   Subset of column names. Can be overwritten to change the view.
+#' @field checksum [\code{character(1)}]\cr
+#'   Hash of the active view.
+#' @field nrow [\code{integer(1)}]\cr
+#'   Number of rows in active view.
+#' @field ncol [\code{integer(1)}]\cr
+#'   Number of cols in active view.
+#' @field head [\code{function(n = 6)}]\cr
+#'   Get the first \code{n} rows of the active view.
+#' @field types [\code{named character}]\cr
+#'   Class information about all columns in the active view.
+#' @field na.cols [\code{named integer}]\cr
+#'   Number of missing values per column in the active view.
+#' @field distinct [\code{function(col)}]\cr
+#'   Levels of column \code{col} in the active view.
+#'
+#' @return [\code{View}].
 View = R6Class("View",
   public = list(
     pars = NULL,
     name = NULL,
     rowid.col = NULL,
-    internal.con = NULL,
 
     initialize = function(pars = list(), name, rowid.col) {
       self$pars = assertList(pars, names = "unique")
@@ -18,17 +55,19 @@ View = R6Class("View",
     },
 
     data = function(rows = NULL, cols = NULL) {
-      intersect_if_not_null = function(x, y) {
-        if (is.null(x))
-          return(y)
-        if (is.null(y))
-          return(x)
-        return(intersect(x, y))
-      }
-
       tbl = self$raw.tbl
-      tbl = private$filter(tbl, intersect_if_not_null(rows, private$view.rows))
-      tbl = private$select(tbl, intersect_if_not_null(cols, private$view.cols))
+      tbl = private$filter(tbl, private$view.rows)
+      if (!is.null(rows)) {
+        if (anyDuplicated(rows)) {
+          y = tibble::tibble(id = rows)
+          names(y) = self$rowid.col
+          tbl = dplyr::inner_join(tbl, y, copy = TRUE, by = self$rowid.col)
+        } else {
+          tbl = private$filter(tbl, rows)
+        }
+      }
+      tbl = private$select(tbl, private$view.cols)
+      tbl = private$select(tbl, cols)
       dplyr::collect(tbl)
     },
 
@@ -47,10 +86,10 @@ View = R6Class("View",
 
   active = list(
     con = function() {
-      ok = try(DBI::dbIsValid(self$internal.con), silent = TRUE)
-      if (inherits(ok, "try-error") || !isTRUE(ok) || is.null(self$internal.con))
-        self$internal.con = do.call(DBI::dbConnect, self$pars)
-      self$internal.con
+      ok = try(DBI::dbIsValid(private$internal.con), silent = TRUE)
+      if (inherits(ok, "try-error") || !isTRUE(ok) || is.null(private$internal.con))
+        private$internal.con = do.call(DBI::dbConnect, self$pars)
+      private$internal.con
     },
 
     tbl = function() {
@@ -125,6 +164,7 @@ View = R6Class("View",
     view.rows = NULL,
     view.cols = NULL,
     cache = NULL,
+    internal.con = NULL,
 
     cached = function(name, value, slot = NULL) {
       ee = private$cache
