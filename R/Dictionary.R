@@ -33,7 +33,7 @@ Dictionary = R6Class("Dictionary",
     # for the former we assume that obj$id works
     # FIXME: what happens if LazyElemet returns something wrong and not of eltype?
     # FIXME: we need to deep copy obj if the user adds stuff to it.
-    add = function(obj, id = NULL, overwrite = FALSE) {
+    add = function(obj, id = NULL, overwrite = TRUE) {
       if (!is.null(self$eltype) && !inherits(obj, "LazyElement")) # we cannot check type
         assertClass(obj, self$eltype)
       if (is.null(id)) id = obj$id else assertString(id)
