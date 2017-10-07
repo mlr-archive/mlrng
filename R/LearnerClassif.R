@@ -1,5 +1,5 @@
 #' @include Learner.R
-
+#' @export
 LearnerClassif = R6Class("LearnerClassif",
   inherit = Learner,
   public = list(
