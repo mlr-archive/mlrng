@@ -17,6 +17,7 @@ TaskSupervised = R6Class("TaskSupervised",
     initialize = function(task.type, id, data, target) {
       super$initialize(task.type = task.type, id = id, data = data)
       self$target = assertChoice(target, self$view$active.cols)
+      self$formula = reformulate(self$features, response = self$target)
     },
     print = function(...) {
         gcat("Supervised Task
@@ -28,11 +29,19 @@ TaskSupervised = R6Class("TaskSupervised",
 
   active = list(
     # [formula]. target ~ x1 + ... + xp
-    formula = function() {
-      reformulate(self$features, response = self$target)
+    formula = function(rhs) {
+      if (missing(rhs))
+        return(private$form)
+      assertClass(rhs, "formula")
+      environment(rhs) = environment(self$formula)
+      private$form = rhs
     },
 
     # [charvec]. featurenames without targetnames
     features = function() setdiff(self$view$active.cols, self$target)
+  ),
+
+  private = list(
+    form = NULL
   )
 )

@@ -73,3 +73,11 @@ test_that("Task$truth works", {
   expect_data_table(y, nrow = 10L, ncol = 1L, types = "character")
   expect_names(names(y), identical.to = task$target)
 })
+
+test_that("Task change formula", {
+  task = TaskClassif$new(id = "iris", data = iris, target = "Species")
+  expect_set_equal(all.vars(task$formula), colnames(iris))
+
+  task$formula = Species ~ Petal.Length
+  expect_set_equal(all.vars(task$formula), c("Species", "Petal.Length"))
+})
