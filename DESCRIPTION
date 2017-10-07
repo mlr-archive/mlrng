@@ -66,6 +66,7 @@ Collate:
     'getTaskData.R'
     'helper.R'
     'mlr.learners.classif.dummy.R'
+    'mlr.learners.classif.rpart.R'
     'mlr.learners.helper.R'
     'mlr.learners.regr.dummy.R'
     'mlr.measures.R'
