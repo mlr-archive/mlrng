@@ -55,7 +55,7 @@ Learner = R6Class("Learner",
       if (missing(rhs))
         return(private$pv)
       assertList(rhs, names = "unique")
-      assertSubset(names(rhs), getParamIds(self$par.set))
+      assertSubset(names(rhs), self$par.set$ids)
       private$pv[names(rhs)] = rhs
     },
     predict.type = function(rhs) {
