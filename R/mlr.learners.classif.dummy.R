@@ -2,11 +2,14 @@
 
 mlr.learners$add(LearnerClassif$new(
   name = "dummy",
-  par.set = makeParamSet(
-    makeDiscreteParam("method", values = c("mode", "sample"), default = "mode")
+  par.set = ParamSetFlat$new(
+    params = list(
+      ParamCategorical$new("method", values = c("mode", "sample"), default = "mode")
+    )
   ),
   par.vals = list(),
   properties = c("missings", "feat.factor", "feat.numeric"),
+
   train = function(task, subset, ...) {
     data = task$data(subset)
     tn = task$target

@@ -1,12 +1,12 @@
 # dummmy learner that can produce warnings/errors/messages
 lrn.mock.regr = LearnerRegr$new(
   name = "mock",
-  par.set = ParamHelpers::makeParamSet(
-    ParamHelpers::makeDiscreteParam("method", values = c("mean", "median"), default = "mean"),
-    ParamHelpers::makeLogicalParam("message", default = FALSE),
-    ParamHelpers::makeLogicalParam("warning", default = FALSE),
-    ParamHelpers::makeLogicalParam("error", default = FALSE)
-  ),
+  par.set = ParamSetFlat$new(params = list(
+    ParamCategorical$new("method", values = c("mean", "median"), default = "mean"),
+    ParamFlag$new("message", default = FALSE),
+    ParamFlag$new("warning", default = FALSE),
+    ParamFlag$new("error", default = FALSE)
+  )),
   par.vals = list(),
   properties = c("missings", "feat.factor", "feat.numeric"),
   train = function(task, subset, method = "mean", message = FALSE, warning = FALSE, error = FALSE, ...) {

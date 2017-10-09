@@ -2,7 +2,6 @@
 #' @import checkmate
 #' @import data.table
 #' @import stringi
-#' @import ParamHelpers
 #' @import evaluate
 #' @importFrom bit as.which as.bit bit
 #' @importFrom stats setNames predict

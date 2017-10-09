@@ -12,14 +12,14 @@ License: GPL-2
 NeedsCompilation: no
 Depends:
     R (>= 3.2.0),
-    data.table
+    data.table,
+    phng
 Imports:
     BBmisc,
     bit,
     callr,
     DBI,
     evaluate,
-    ParamHelpers,
     R6,
     RSQLite,
     backports (>= 1.1.1),
@@ -45,6 +45,7 @@ Collate:
     'Learner.R'
     'LearnerClassif.R'
     'LearnerRegr.R'
+    'LearnerTuned.R'
     'Measure.R'
     'Result.R'
     'TrainResult.R'
@@ -58,6 +59,7 @@ Collate:
     'TaskSupervised.R'
     'TrainLog.R'
     'TuneControl.R'
+    'TuneControlFake.R'
     'TuneControlGrid.R'
     'View.R'
     'asserts.R'

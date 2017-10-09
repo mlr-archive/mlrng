@@ -2,8 +2,10 @@
 
 mlr.learners$add(LearnerRegr$new(
   name = "dummy",
-  par.set = makeParamSet(
-    makeDiscreteParam("method", values = c("mean", "median"), default = "mean")
+  par.set = ParamSetFlat$new(
+    params = list(
+      ParamCategorical$new("method", values = c("mean", "median"), default = "mean")
+    )
   ),
   par.vals = list(),
   properties = c("missings", "feat.factor", "feat.numeric"),
