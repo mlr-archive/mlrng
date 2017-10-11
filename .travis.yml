@@ -7,6 +7,9 @@ env:
   global:
     - _R_CHECK_TESTS_NLINES_=999
 
+before_script:
+  - R --no-save <<< 'library("devtools"); document()'
+
 r:
   - 3.2
   - 3.3
