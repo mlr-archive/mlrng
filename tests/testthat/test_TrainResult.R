@@ -7,6 +7,6 @@ test_that("TrainResult creation",{
   expect_is(mod, "TrainResult")
   expect_equal(mod$learner, lrn)
   expect_equal(mod$task, task)
-  expect_equal(mod$train.set, task$view$active.rows)
+  expect_equal(mod$train.set, task$backend$rownames)
   expect_is(mod$train.log, "TrainLog")
 })

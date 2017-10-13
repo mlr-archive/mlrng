@@ -52,13 +52,13 @@ stri_pasteNames = function(str, sep = " ", collapse = ", ", names.first = TRUE) 
 
 translateSubset = function(task, subset = NULL) {
   if (is.null(subset))
-    return(task$view$active.rows)
+    return(task$backend$rownames)
   if (is.logical(subset)) {
     assertLogical(subset, len = task$nrow, any.missing = FALSE)
   } else {
     assertIntegerish(subset, any.missing = FALSE, lower = 1L, upper = task$nrow)
   }
-  task$view$active.rows[subset]
+  task$backend$rownames[subset]
 }
 
 createFallbackLearner = function(task) {

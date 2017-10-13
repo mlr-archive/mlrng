@@ -18,12 +18,11 @@
 TaskClassif = R6Class("TaskClassif",
   inherit = TaskSupervised,
   public = list(
+    task.type = "classif",
     positive = NA_character_,
     initialize = function(id = deparse(substitute(data)), data, target, positive) {
-      super$initialize("classif", id, data, target)
-      # FIXME: we can do this efficiently with dplyr
-      target = self$data(cols = self$target)[[1L]]
-      qassert(target, c("S", "F"))
+      super$initialize(id = id, data = data, target = target)
+      qassert(self$head(1L)[[self$target]], c("S", "F"))
     },
     print = function(...) {
       cat("Classification ")
@@ -32,8 +31,7 @@ TaskClassif = R6Class("TaskClassif",
   ),
 
   active = list(
-    # FIXME: we can do this efficiently with dplyr
-    classes = function() self$view$distinct(self$target),
+    classes = function() self$backend$distinct(self$target),
     nclasses = function() length(self$classes)
   )
 )

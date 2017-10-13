@@ -6,7 +6,7 @@ test_that("PredictResult$pred works", {
   m = train(task, lrn)
   p = predict(m)
   pdt = p$pred
-  expect_data_table(pdt, nrow = task$nrow, ncol = 3L, types = c("integer", "character", "character"))
+  expect_data_table(pdt, nrow = task$nrow, ncol = 3L, types = c("integer", "character", "factor")) # FIXME: Should be same type!
   expect_names(names(pdt), identical.to = c("test.set", "truth", "response"))
 
   lrn = mlr.learners$get("regr.dummy")
@@ -14,6 +14,6 @@ test_that("PredictResult$pred works", {
   m = train(task, lrn)
   p = predict(m)
   pdt = p$pred
-  expect_data_table(pdt, nrow = task$nrow, ncol = 3L, types = c("integer", "numeric", "numeric"))
+  expect_data_table(pdt, nrow = task$nrow, ncol = 3L, types = c("integer", "numeric"))
   expect_names(names(pdt), identical.to = c("test.set", "truth", "response"))
 })

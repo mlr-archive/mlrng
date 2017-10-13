@@ -1,64 +1,71 @@
-expect_view = function(v, data = NULL, rowid = NULL) {
-  expect_r6(v, "View",
-    cloneable = TRUE,
-    public = c("active.cols", "active.rows", "con", "tbl", "raw.tbl", "name", "pars", "rowid.col"),
-    private = c("view.cols", "view.rows"))
-  expect_character(v$active.cols, any.missing = FALSE, unique = TRUE)
-  if (!is.null(data))
-    expect_subset(v$active.cols, names(data))
-  expect_atomic_vector(v$active.rows, any.missing = FALSE, unique = TRUE)
-  if (!is.null(data) && !is.null(rowid))
-    expect_subset(v$active.rows, data[[rowid]])
-  expect_true(DBI::dbIsValid(v$con))
-  expect_class(v$tbl, c("tbl_sql", "tbl_lazy", "tbl"))
-  expect_class(v$raw.tbl, c("tbl_sql", "tbl_lazy", "tbl"))
-  expect_string(v$name)
-  expect_string(v$checksum)
-  expect_list(v$pars, names = "unique")
-  expect_string(v$rowid.col)
-  expect_integer(v$nrow, len = 1L, lower = 0L, upper = nrow(data) %??% Inf)
-  expect_integer(v$ncol, len = 1L, lower = 0L, upper = nrow(data) %??% Inf)
-  expect_character(v$types, names = "unique")
-  expect_subset(v$types, mlrng$supported.col.types)
-  if (!is.null(data))
-    expect_subset(names(v$types), names(data))
-  expect_tibble(dplyr::collect(head(v$tbl, 1L)), nrow = 1L)
-  expect_tibble(dplyr::collect(head(v$raw.tbl, 1L)), nrow = 1L)
+expect_backend = function(b) {
+  expect_r6(b, cloneable = TRUE, public = c("nrow", "ncol", "colnames", "rownames", "data", "head", "distinct", "missing.values", "types"))
+  n = b$nrow
+  p = b$ncol
+  expect_count(n)
+  expect_count(p)
+  expect_atomic_vector(b$rownames, any.missing = FALSE, len = n)
+  expect_character(b$colnames, any.missing = FALSE, len = p, min.chars = 1L, unique = TRUE)
+  expect_data_table(b$data, nrow = n, ncol = p, col.names = "unique")
+
+  cn = b$colnames[1L]
+  x = b$get(cols = cn)
+  expect_data_table(x, ncol = 1, nrow = n)
+  x = x[[cn]]
+  expect_atomic_vector(x, len = n)
+  expect_set_equal(b$distinct(cn), x)
+
+  types = b$types
+  expect_character(types, len = p, names = "unique")
+  expect_set_equal(names(types), b$colnames)
+  expect_subset(types, mlrng$supported.col.types)
+
+  mv = b$missing.values
+  expect_integer(mv, names = "unique", any.missing = FALSE, lower = 0, upper = n)
+  expect_set_equal(names(mv), b$colnames)
+
+  expect_data_table(b$head(3), nrow = 3, ncol = p)
 }
 
+
 expect_task = function(task) {
-  expect_r6(task, "Task")
+  expect_r6(task, "Task", cloneable = TRUE)
   expect_string(task$id, min.chars = 1L)
   expect_count(task$nrow)
   expect_count(task$ncol)
-  expect_view(task$view)
-  expect_data_table(task$data(task$view$active.rows))
-  expect_data_table(task$head(1))
-  task.nas = task$na.cols
-  expect_integer(task.nas, names = "unique", any.missing = FALSE, lower = 0L, upper = task$nrow)
-  expect_set_equal(names(task.nas), task$view$active.cols)
+  expect_backend(task$backend)
+  expect_data_table(task$data)
+  expect_data_table(task$get())
+  expect_data_table(task$head(1), nrow = 1L)
+  # task.nas = task$na.cols
+  # expect_integer(task.nas, names = "unique", any.missing = FALSE, lower = 0L, upper = task$nrow)
+  # expect_set_equal(names(task.nas), task$backend$colnames)
 }
 
 expect_supervisedtask = function(task) {
   expect_task(task)
   expect_is(task, "TaskSupervised")
-  expect_choice(task$target, task$view$active.cols)
+  expect_choice(task$target, task$backend$colnames)
 
   expect_class(task$formula, "formula")
   tf = terms(task$formula)
   expect_set_equal(labels(tf), task$features) # rhs
   expect_set_equal(setdiff(all.vars(tf), labels(tf)), task$target) # lhs
-  expect_subset(names(task$features), colnames(task$view$tbl))
+  expect_subset(names(task$features), colnames(task$backend$tbl))
 }
 
 expect_classiftask = function(task) {
   expect_supervisedtask(task)
-  expect_factor(task$data(cols = task$target)[[1L]], any.missing = FALSE)
-  expect_int(task$nlevels, lower = 2L)
-  if (task$nlevels > 2L)
+  x = task$truth()[[1L]]
+  expect_atomic_vector(x, any.missing = FALSE)
+  expect_true(is.character(x) || is.factor(r))
+  expect_int(task$nclasses, lower = 2L)
+  expect_atomic_vector(task$classes)
+  expect_subset(task$classes, x)
+  if (task$nclasses > 2L)
     expect_identical(task$positive, NA_character_)
   else
-    expect_string(task$positive, na.ok = TRUE)
+    expect_choice(task$positive, task$classes)
 }
 
 expect_regrtask = function(task) {
@@ -103,7 +110,7 @@ expect_resampling = function(r, task = FALSE) {
     expect_list(r$instance$test, len = r$iters, names = "unnamed")
 
     n = task$nrow
-    rows = task$view$active.rows
+    rows = task$backend$rownames
     for (i in seq_len(r$iters)) {
       expect_atomic_vector(r$train.set(i), min.len = 1L, max.len = n - 1L, any.missing = FALSE, names = "unnamed")
       expect_subset(r$train.set(i), rows)
