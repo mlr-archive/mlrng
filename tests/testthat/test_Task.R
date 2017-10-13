@@ -3,6 +3,12 @@ context("Task")
 test_that("Task Construction", {
   task = Task$new(id = "foo", iris)
   expect_task(task)
+
+  new.task = task$clone()
+  b = BackendLocal$new(task$backend$get(include.rowid.col = TRUE), task$backend$rowid.col)
+  new.task$backend = b
+  new.task$backend$internal.data$Sepal.Length = 1
+  expect_task(new.task)
 })
 
 test_that("TaskSupervised Construction", {

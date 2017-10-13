@@ -55,7 +55,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
       return(tbl)
     },
 
-    get = function(rows = NULL, cols = NULL, include.rowid = FALSE) {
+    get = function(rows = NULL, cols = NULL, include.rowid.col = FALSE) {
       tbl = self$tbl(filter = TRUE, select = TRUE)
 
       if (!is.null(rows)) {
@@ -76,7 +76,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
       if (!is.null(rows) && nrow(data) != length(rows))
         stop("Invalid row ids provided")
 
-      if (!isTRUE(include.rowid))
+      if (!isTRUE(include.rowid.col))
         data[[self$rowid.col]] = NULL
       return(data)
     },
@@ -174,7 +174,7 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
       self$writeable = TRUE
     },
 
-    get = function(rows = NULL, cols = NULL, include.rowid = FALSE) {
+    get = function(rows = NULL, cols = NULL, include.rowid.col = FALSE) {
       assertSubset(cols, colnames(self$internal.data))
       data = switch(is.null(rows) + 2L * is.null(cols) + 1L,
         self$internal.data[list(rows), c(self$rowid.col, cols), with = FALSE, on = self$rowid.col, nomatch = 0L],
@@ -184,13 +184,13 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
       )
       if (!is.null(rows) && nrow(data) != length(rows))
         stop("Invalid row ids provided")
-      if (!include.rowid)
+      if (!include.rowid.col)
         data[[self$rowid.col]] = NULL
       return(data)
     },
 
     subset = function(rows = NULL, cols = NULL) {
-      self$internal.data = self$get(rows, cols, include.rowid = TRUE)
+      self$internal.data = self$get(rows, cols, include.rowid.col = TRUE)
       invisible(self)
     },
 
@@ -207,7 +207,7 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
 
   active = list(
     data = function() {
-      self$internal.data[, !(self$rowid.col), with = FALSE]
+      return(self$internal.data[, !(self$rowid.col), with = FALSE])
     },
 
     colnames = function() {
