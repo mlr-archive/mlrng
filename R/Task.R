@@ -61,7 +61,7 @@ Task = R6Class("Task",
   ### ACTIVE ##################################################################
   active = list(
     data = function() {
-      task$backend$data
+      self$backend$data
     },
 
     nrow = function() {
