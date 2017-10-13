@@ -3,6 +3,7 @@
 #' @import data.table
 #' @import stringi
 #' @import evaluate
+#' @import phng
 #' @importFrom bit as.which as.bit bit
 #' @importFrom stats setNames predict
 #' @importFrom utils data
