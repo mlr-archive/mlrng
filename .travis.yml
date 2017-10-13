@@ -6,6 +6,7 @@ cache: packages
 env:
   global:
     - _R_CHECK_TESTS_NLINES_=999
+    - _R_CHECK_LENGTH_1_CONDITION_=true
 
 r_github_packages:
   - mlr-org/phng
