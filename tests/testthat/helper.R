@@ -1,6 +1,7 @@
 library(testthat)
 library(checkmate)
 library(stringi)
+library(phng)
 
 `[[.R6` = function(x, i, ...) {
   if (!backports:::hasName(x, i))

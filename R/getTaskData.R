@@ -5,14 +5,14 @@ getTaskData = function(task, subset = NULL, type = "train", props = NULL, target
   # FIXME: Maybe we want also 'target.as' to be logical or integer, however beware of typecast errors.
   assertSubset(target.as, c("factor", "character"), empty.ok = TRUE)
   assertChoice(type, choices = c("train", "test", "extra"))
-  x = task$data(rows = subset, cols = task$features)
+  x = task$get(rows = subset, cols = task$features)
   convertFeatures(x, props)
 
-  target = task$data(subset, task$target)
+  target = task$truth(subset)
   if (!is.null(target.as)) {
     # FIXME: what happens with multilabel when we have multiple target-factors with different levels?
     if (target.as == "factor") {
-      levs = task$view$distinct(col = task$target)
+      levs = task$backend$distinct(col = task$target)
       mutate_if(target, function(x) !is.factor(x), function(x) factor(x, levels = levs))
     } else if (target.as == "character") {
       mutate_if(target, function(x) !is.character(x), as.character)
@@ -20,7 +20,7 @@ getTaskData = function(task, subset = NULL, type = "train", props = NULL, target
   }
 
   switch(type,
-    train = set(x, j = task$target, value = target)[],
+    train = cbind(target, x),
     test = x,
     extra = list(y = target, x = x)
   )

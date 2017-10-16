@@ -12,72 +12,72 @@
 Task = R6Class("Task",
   public = list(
     ### SLOTS ##################################################################
-    task.type = NULL,
+    task.type = NA_character_,
     id = NULL,
-    view = NULL,
+    backend = NULL,
 
     ### METHODS ################################################################
-    initialize = function(task.type, id, data) {
-      self$task.type = assertString(task.type)
+    initialize = function(id, data) {
       self$id = assertString(id, min.chars = 1L)
       if (is.data.frame(data)) {
-        self$view = asView(name = id, data = data)
+        self$backend = BackendDBI$new(data = data, tbl.name = id)
       } else {
-        self$view = assertR6(data, "View")
+        self$backend = assertR6(data, "Backend")
       }
     },
 
-    data = function(rows = NULL, cols = NULL) {
-      self$view$data(rows, cols)[]
-    },
-
-    truth = function(rows = NULL) {
-      self$view$data(rows, cols = self$target)[]
+    get = function(rows = NULL, cols = NULL) {
+      self$backend$get(rows = rows, cols = cols)
     },
 
     head = function(n = 6L) {
-      setDT(self$view$head(n))[]
+      assertCount(n)
+      self$backend$head(n)
     },
 
-    subset = function(subset) {
-      nt = self$clone(deep = TRUE)
-      nt$view$active.rows = translateSubset(nt, subset)
-      return(nt)
+    truth = function(rows = NULL) {
+      self$backend$get(rows, cols = self$target)
+    },
+
+    subset = function(rows = NULL, cols = NULL) {
+      self$backend$subset(rows, cols)
+      invisible(self)
     },
 
     print = function(...) {
       cols = self$col.types
-      n.miss = self$na.cols
-      n.miss = n.miss[n.miss > 0]
-      if(!is.null(self$target))
+      if(hasName(self, "target"))
         cols = cols[names(cols) != self$target]
       tbl = table(cols)
       gcat("Task name: {self$id}
             {self$nrow} rows and {length(cols)} features.
             Features: {stri_peek(names(cols))}
-            Feature types: {stri_pasteNames(tbl, names.first = FALSE)}")
-      if (length(n.miss > 0))
-        gcat("Missings: {stri_pasteNames(n.miss)}")
+            Feature types: {stri_pasteNames(tbl, names.first = FALSE)}
+            Missings: {any(self$backend$missing.values) > 0L}")
       if (getOption("mlrng.debug", TRUE))
           cat("\n", format(self), "\n")
   }),
 
   ### ACTIVE ##################################################################
   active = list(
+    data = function() {
+      self$backend$data
+    },
+
     nrow = function() {
-      self$view$nrow
+      self$backend$nrow
     },
 
     ncol = function() {
-      self$view$ncol
+      self$backend$ncol
     },
 
     col.types = function() {
-      self$view$types
+      self$backend$types
     },
 
-    na.cols = function() {
-      self$view$na.cols
+    missing.values = function() {
+      self$backend$missing.values
     }
   )
 )

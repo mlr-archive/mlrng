@@ -39,6 +39,7 @@ Suggests:
     withr
 RoxygenNote: 6.0.1
 Collate: 
+    'Backends.R'
     'BenchmarkResult.R'
     'Dictionary.R'
     'Dictionaries.R'
@@ -59,7 +60,6 @@ Collate:
     'TrainLog.R'
     'TuneControl.R'
     'TuneControlGrid.R'
-    'View.R'
     'asserts.R'
     'benchmark.R'
     'expect_learner.R'

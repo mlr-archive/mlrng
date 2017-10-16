@@ -1,17 +1,18 @@
-library(mlbench)
-data(BostonHousing, package = "mlbench", envir = environment())
-
 test.tasks = DictionaryTasks$new()
 
 local({
   data = iris[seq(1, 150, 3), ]
   data$rowid = sprintf("row%03i", 1:nrow(data))
-  v = asView("iris", data, rowid.col = "rowid")
+  b = BackendLocal$new(data, "rowid")
   test.tasks$add(
-    TaskClassif$new(id = "clm.num", data = v, target = "Species")
+    TaskClassif$new(id = "clm.num", data = b, target = "Species")
   )
 })
 
-test.tasks$add(
-  TaskRegr$new(id = "regr.num", data = BostonHousing[1:30, 11:14], target = "medv")
-)
+local({
+  ee = new.env()
+  data(BostonHousing, package = "mlbench", envir = ee)
+  test.tasks$add(
+    TaskRegr$new(id = "regr.num", data = ee$BostonHousing[1:30, 11:14], target = "medv")
+  )
+})

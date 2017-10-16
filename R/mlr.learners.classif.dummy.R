@@ -11,7 +11,7 @@ mlr.learners$add(LearnerClassif$new(
   properties = c("missings", "feat.factor", "feat.numeric"),
 
   train = function(task, subset, ...) {
-    data = task$data(subset)
+    data = task$get(subset)
     tn = task$target
     mod = data[, .N, by = tn]
     class(mod) = c("dummy.model", class(mod))

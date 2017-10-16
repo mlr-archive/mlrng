@@ -16,9 +16,11 @@
 TaskRegr = R6Class("TaskRegr",
   inherit = TaskSupervised,
   public = list(
+    task.type = "regr",
     initialize = function(id = deparse(substitute(data)), data, target) {
-      super$initialize("regr", id, data, target)
-      assertNumeric(self$data(cols = self$target)[[1L]], finite = TRUE, any.missing = FALSE, .var.name = "target column")
+      assertString(target)
+      super$initialize(id = id, data = data, target = target)
+      assertNumeric(self$truth()[[1L]], finite = TRUE, any.missing = FALSE, .var.name = "target column")
     },
     print = function(...) {
       cat("Regression ")

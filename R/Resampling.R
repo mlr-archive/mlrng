@@ -55,7 +55,7 @@ Resampling = R6Class("Resampling",
         qassertr(test.sets, sprintf("X[1, %i]", task$nrow))
       }
 
-      rows = task$view$active.rows
+      rows = task$backend$rownames
       self$instance = list(
         train = lapply(train.sets, function(i) rows[i]),
         test  = lapply(test.sets, function(i) rows[i])

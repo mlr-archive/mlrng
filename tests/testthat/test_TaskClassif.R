@@ -3,6 +3,7 @@ context("TaskClassif")
 test_that("Basic ops on iris task", {
   dd = as.data.table(iris)
   task = mlr.tasks$get("iris")
+  expect_classiftask(task)
   expect_class(task, "TaskClassif")
   expect_equal(task$target, "Species")
 

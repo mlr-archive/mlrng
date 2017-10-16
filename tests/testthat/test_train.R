@@ -10,7 +10,7 @@ test_that("Training with default options", {
   expect_result(mod)
   p = predict(mod)
   expect_is(p, "PredictResult")
-  expect_subset(p$response, task$view$distinct(task$target))
+  expect_subset(p$response, task$backend$distinct(task$target))
   expect_result(mod)
 })
 
@@ -20,7 +20,7 @@ test_that("No training encapsulation works", {
     expect_is(mod, "TrainResult")
     expect_true(mod$train.success)
     p = predict(mod)
-    expect_subset(p$response, task$view$distinct(task$target))
+    expect_subset(p$response, task$backend$distinct(task$target))
   })
 })
 
@@ -31,7 +31,7 @@ test_that("No training encapsulation works", {
 #    expect_is(mod, "TrainResult")
 #    expect_true(mod$train.success)
 #    p = predict(mod, task)
-#    expect_subset(p$predicted, task$view$distinct(task$target))
+#    expect_subset(p$predicted, task$backend$distinct(task$target))
 #  })
 #})
 
