@@ -60,8 +60,15 @@ Task = R6Class("Task",
 
   ### ACTIVE ##################################################################
   active = list(
-    data = function() {
-      self$backend$data
+    data = function(newdata) {
+      if (missing(newdata)) {
+        return(self$backend$data)
+      }
+      if (self$backend$writeable) {
+        self$backend$data = newdata
+      } else {
+        self$backend = BackendLocal$new(data = newdata, rowid.col = self$backend$rowid.col)
+      }
     },
 
     nrow = function() {
@@ -81,3 +88,10 @@ Task = R6Class("Task",
     }
   )
 )
+
+if (FALSE) {
+  x = mlr.tasks$get("iris")
+  newdata = x$backend$get(include.rowid.col = TRUE)
+  x$data = newdata[1:50,]
+  x
+}

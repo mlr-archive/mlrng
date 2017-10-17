@@ -74,6 +74,28 @@ test_that("Task$truth works", {
   expect_names(names(y), identical.to = task$target)
 })
 
+test_that("Task$get() return duplicated rows", {
+  tasks = list(mlr.tasks$get("iris"), test.tasks$get("clm.num"))
+  for (task in tasks) {
+    ids = rep(head(task$backend$rownames, 6), 2)
+    x = task$get(rows = ids)
+    expect_data_table(x, nrow = length(ids))
+    expect_identical(x[1:6], x[7:12])
+    x = task$backend$get(rows = ids, include.rowid.col = TRUE)
+    expect_identical(x[[task$backend$rowid.col]], ids)
+  }
+})
+
+test_that("Tasks are auto-converted on change", {
+  task = mlr.tasks$get("iris")
+  expect_class(task$backend, "BackendDBI")
+  newdata = task$data
+  newdata[[task$backend$rowid.col]] = task$backend$rownames
+  task$data = newdata[1:15]
+  expect_class(task$backend, "BackendLocal")
+  expect_data_table(task$data, nrow = 15, ncol = 5, any.missing = FALSE)
+})
+
 # test_that("Task change formula", {
 #   task = TaskClassif$new(id = "iris", data = iris, target = "Species")
 #   expect_set_equal(all.vars(task$formula), colnames(iris))

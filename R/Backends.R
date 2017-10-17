@@ -107,8 +107,11 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
   ),
 
   active = list(
-    data = function() {
-      self$get()
+    data = function(newdata) {
+      if (missing(newdata)) {
+        return(self$get())
+      }
+      stop("Cannot write to DBI backend")
     },
 
     colnames = function() {
@@ -162,15 +165,18 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
 BackendLocal = R6Class("BackendLocal", inherit = Backend,
   public = list(
     internal.data = NULL,
+
     initialize = function(data, rowid.col = NULL) {
       assertDataFrame(data)
+      self$internal.data = as.data.table(data)
+
       if (is.null(rowid.col)) {
-        data[["..id"]] = seq_len(nrow(data))
+        self$internal.data[["..id"]] = seq_len(nrow(data))
         self$rowid.col = "..id"
       } else {
-        self$rowid.col = assertChoice(rowid.col, colnames(data))
+        assertNames(names(data), must.include = rowid.col)
+        self$rowid.col = rowid.col
       }
-      self$internal.data = as.data.table(data)
       self$writeable = TRUE
     },
 
@@ -206,8 +212,13 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
   ),
 
   active = list(
-    data = function() {
-      return(self$internal.data[, !(self$rowid.col), with = FALSE])
+    data = function(newdata) {
+      if (missing(newdata)) {
+        return(self$internal.data[, !(self$rowid.col), with = FALSE])
+      }
+      assertDataTable(newdata)
+      assertNames(names(newdata), must.include = self$rowid.col)
+      self$internal.data = as.data.table(newdata)
     },
 
     colnames = function() {
