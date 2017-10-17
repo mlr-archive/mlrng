@@ -85,7 +85,6 @@ DictionaryResamplings = R6Class("DictionaryResamplings", inherit = Dictionary,
     getElementSummary = function(x) {
       data.table(
         id = x$id,
-        description = x$description,
         pars = list(x$pars)
       )
     }

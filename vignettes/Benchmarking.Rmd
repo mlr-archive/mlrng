@@ -1,0 +1,156 @@
+---
+title: "Benchmarking Example"
+output:
+  pdf_document
+urlcolor: blue
+linkcolor: blue
+vignette: >
+  %\VignetteIndexEntry{Benchmarking}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r, include=FALSE}
+library(mlrng)
+```
+
+## Tasks
+
+Here, we first load a predefined task which comes with `mlrng`.
+Like most objects in `mlrng`, tasks are stored in a `Dictionary`:
+```{r}
+print(mlr.tasks)
+as.data.table(mlr.tasks)
+```
+We use the `$get()` function to retrieve the iris task, which is a multiclass classification task:
+```{r}
+iris.task = mlr.tasks$get("iris")
+print(iris.task)
+```
+Task objects come with some handy self-explanatory getters:
+```{r}
+# dimension
+c(iris.task$nrow, iris.task$ncol)
+
+# name of the target column
+iris.task$target
+
+# name of the feature columns
+iris.task$features
+
+# formula describing the task
+iris.task$formula
+
+# column types
+iris.task$col.types
+
+# class levels
+iris.task$classes
+
+# number of classes
+iris.task$nclasses
+
+# missing values per column
+iris.task$missing.values
+
+# complete data
+iris.task$data
+```
+
+The data itself is stored in an abstract class `Backend`.
+It is designed to transparently access in-memory data structures (`data.table` is used internally) as well as real DBMS via the `dplyr` package.
+Because most data bases can only be accessed read-only, the operations on these data base backend are limited.
+However, you can subset the data to a "view" by excluding rows and columns while the underlying data base must not be altered:
+```{r}
+# subset to 120 rows and remove column "Petal.Length"
+keep = setdiff(c(iris.task$target, iris.task$features), "Petal.Length")
+iris.task$subset(rows = 1:120, cols = keep)
+
+iris.task$nrow
+iris.task$features
+```
+Note that you may also alter the data.
+In the case of a data base backend, the data is then first fetched from the data base and then stored in a `data.table`.
+This affects only the respective rows you operate on.
+Thus, if you subsample your data first to only use 0.1% of all observations, you can keep the memory footprint reasonable.
+
+
+## Learners
+
+All learners are stored in a register called `mlr.learners` and can easily be listed:
+```{r}
+mlr.learners
+as.data.table(mlr.learners)
+```
+
+### Dummy classification learner
+
+You can retrieve learners from the dictionary `Learners`:
+```{r}
+lrn.dummy = mlr.learners$get("classif.dummy")
+```
+
+The parameter set is stored in the slot `par.set` and parameters deviating from the default are stored in `par.vals`:
+```{r}
+lrn.dummy$par.set
+lrn.dummy$par.vals
+```
+
+Now, we set the parameter `method` to `"sample"`, change the `id` and add the learner to the register:
+```{r}
+lrn.dummy$par.vals = list(method = "sample")
+lrn.dummy$id = "classif.dummy.sample"
+mlr.learners$add(lrn.dummy)
+as.data.table(mlr.learners)
+```
+From now on, we can just pass the id `"classif.dummy.sample"` to other functions to use this learner.
+
+### CART
+
+```{r}
+lrn.rpart = mlr.learners$get("classif.rpart")
+```
+
+## Measures
+
+```{r}
+as.data.table(mlr.measures)
+measure = mlr.measures$get("mmce")
+```
+
+## Resampling
+
+```{r}
+mlr.resamplings
+as.data.table(mlr.resamplings)
+r = mlr.resamplings$get("cv")
+print(r)
+
+# change to 3-fold cv
+r$iters = 3
+```
+
+## Resample
+
+```{r}
+rr = resample(task = iris.task, learner = lrn.dummy, resampling = r, measures = list(measure))
+rr$data
+rr$aggr
+```
+
+## Benchmark
+
+```{r}
+tasks = lapply(c("iris", "sonar"), mlr.tasks$get)
+learners = lapply(c("classif.dummy", "classif.rpart"), mlr.learners$get)
+resamplings = lapply("cv", mlr.resamplings$get)
+measures = lapply("mmce", mlr.measures$get)
+
+withr::with_options(list(mlrng.verbose = FALSE), {
+  bmr = benchmark(
+    tasks = tasks,
+    learners = learners,
+    resamplings = resamplings,
+    measures = measures)
+})
+bmr$data
+```

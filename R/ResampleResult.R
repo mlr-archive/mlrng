@@ -14,7 +14,7 @@ ResampleResult = R6Class(c("ResampleResult", "PerformanceResult", "PredictResult
     initialize = function(results, resampling.iters = seq_along(results)) {
       assertList(results, types = "PerformanceResult")
       self$data = rbindlist(lapply(results, function(x) x$data))
-      self$data[, "resampling.iter" := resampling.iters]
+      self$data[, "resampling.iter" := resampling.iters][]
     },
 
     print = function(...) {
@@ -27,6 +27,6 @@ ResampleResult = R6Class(c("ResampleResult", "PerformanceResult", "PredictResult
   ),
 
   active = list(
-    aggr = function() vnapply(rbindlist(self$data$performance), mean)
+    aggr = function() vnapply(rbindlist(lapply(self$data$perf.vals, as.list)), mean)
   )
 )

@@ -3,7 +3,7 @@ runExperiment = function(task, learner, resampling, resampling.iter, measures, s
   if (is.null(resampling$instance))
     stop("Resampling has not been instantiated yet")
 
-  gmessage("[Experiment]: task={task$id} | learner={learner$id} | resampling={resampling$id}: {resampling.iter}/{resampling$iters}")
+  ginfo("[Experiment]: task={task$id} | learner={learner$id} | resampling={resampling$id}: {resampling.iter}/{resampling$iters}")
 
   train.ids = resampling$train.set(resampling.iter)
   test.ids = resampling$test.set(resampling.iter)
