@@ -102,7 +102,8 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
     },
 
     head = function(n = 6L) {
-      setDT(dplyr::collect(head(dplyr::select(self$tbl(filter = TRUE, select = TRUE), -dplyr::one_of(self$rowid.col)), n)))
+      tab = dplyr::collect(head(dplyr::select(self$tbl(filter = TRUE, select = TRUE), -dplyr::one_of(self$rowid.col)), n))
+      setDT(tab)[]
     }
   ),
 
