@@ -26,6 +26,7 @@ Imports:
     digest,
     dplyr (>= 0.7.0),
     glue,
+    fastmatch,
     parallelMap,
     prettyunits,
     stringi

@@ -31,13 +31,13 @@ convertFeatures = function(x, props = NULL) {
   if (!is.null(props)) {
     assertSubset(props, mlrng$supported.learner.props)
 
-    if ("feat.logical" %chnin% props)
+    if ("feat.logical" %fnin% props)
       mutate_if(x, is.logical, as.integer)
-    if ("feat.integer" %chnin% props)
+    if ("feat.integer" %fnin% props)
       mutate_if(x, is.integer, as.double)
-    if ("feat.character" %chin% props && "factors" %chnin% props)
+    if ("feat.character" %fin% props && "factors" %fnin% props)
       mutate_if(x, is.factor, as.character)
-    if ("feat.factor" %chin% props && "characters" %chnin% props)
+    if ("feat.factor" %fin% props && "characters" %fnin% props)
       mutate_if(x, is.character, as.factor)
   }
 

@@ -121,11 +121,13 @@ expect_resampling = function(r, task = FALSE) {
 }
 
 expect_result = function(x) {
-  expect_r6(x, "Result", public = "data")
+  classes = head(mlrng$result.states, fastmatch::fmatch(class(x)[1L], mlrng$result.states))
+  expect_r6(x, rev(classes), ordered = TRUE, public = "data", cloneable = FALSE)
+  # check that classes are in the right order
   cols = list(
     TrainResult = c("task", "learner", "rmodel", "train.set", "train.log"),
-    PredictResult = c("test.set", "poutput"),
-    PerformanceResult = c("perf.vals"),
+    PredictResult = c("test.set", "predicted"),
+    PerformanceResult = c("measures", "perf.vals"),
     ResampleResult = c("resampling.iter"),
     BenchmarkResult = c("resampling.id")
   )
@@ -136,6 +138,56 @@ expect_result = function(x) {
     expect_output(print(x))
   expect_data_table(x$data, min.rows = 1L)
   expect_subset(cols, names(x$data))
+}
+
+expect_trainresult = function(x) {
+  expect_class(x, "TrainResult")
+  expect_result(x)
+  if (result_state(x) <= result_state("PerformanceResult")) {
+    expect_true(hasName(x, "rmodel"))
+    expect_is(x$learner, "Learner")
+    expect_is(x$task, "Task")
+    expect_subset(x$train.set, x$task$backend$rownames)
+    expect_is(x$train.log, "TrainLog")
+    expect_flag(x$train.success)
+  }
+}
+
+expect_predictresult = function(x) {
+  expect_class(x, "PredictResult")
+  expect_trainresult(x)
+
+  if (result_state(x) <= result_state("PerformanceResult")) {
+    expect_data_table(x$truth, ncol = length(x$task$target))
+    expect_data_table(x$pred, min.cols = 3, col.names = "unique")
+    expect_set_equal(names(x$pred), c("test.set", "truth", "response"))
+    expect_subset(x$test.set, x$task$backend$rownames)
+    if (x$task$task.type %in% c("classif", "regr"))
+      expect_atomic_vector(x$predicted)
+  }
+}
+
+expect_performanceresult = function(x) {
+  expect_class(x, "PerformanceResult")
+  expect_predictresult(x)
+
+  if (result_state(x) <= result_state("PerformanceResult")) {
+    pv = x$perf.vals
+    expect_numeric(pv, names = "unique", any.missing = FALSE, finite = TRUE)
+    expect_set_equal(unlist(lapply(x$data$perf.vals, names)), ids(x$data$measures))
+  }
+}
+
+expect_resampleresult = function(x) {
+  expect_class(x, "ResampleResult")
+  expect_result(x)
+  expect_set_equal(unlist(lapply(x$data$perf.vals, names)), ids(x$data$measures))
+  expect_numeric(x$aggr, names = "unique", any.missing = FALSE, finite = TRUE)
+}
+
+expect_benchmarkresult = function(x) {
+  expect_class(x, "BenchmarkResult")
+  expect_result(x)
 }
 
 expect_same_address = function(x, y) {

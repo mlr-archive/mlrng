@@ -14,6 +14,7 @@
 #'  Depending on the settings of \code{mlrng.continue.on.train.error} this can still be a valid model, but it uses a dummy fallback learner.
 TrainResult = R6Class("TrainResult",
   inherit = Result,
+  cloneable = FALSE,
   public = list(
     initialize = function(task, learner, rmodel, train.set, train.log) {
       super$initialize(data.table(
@@ -31,7 +32,7 @@ TrainResult = R6Class("TrainResult",
       if (!self$train.success)
         gcat("Training failed with error {stri_peek(self$train.log$errors[[1]]$message)}.
               Model will output constant predictions from dummy learner.")
-      if (getOption("mlrng.debug", TRUE))
+      if (getOption("mlrng.debug", FALSE))
         cat("\n", format(self), "\n")
     }
   ),

@@ -10,7 +10,7 @@ test_that("Training with default options", {
   expect_result(mod)
   p = predict(mod)
   expect_is(p, "PredictResult")
-  expect_subset(p$response, task$backend$distinct(task$target))
+  expect_subset(p$predicted, task$classes)
   expect_result(mod)
 })
 
@@ -20,7 +20,7 @@ test_that("No training encapsulation works", {
     expect_is(mod, "TrainResult")
     expect_true(mod$train.success)
     p = predict(mod)
-    expect_subset(p$response, task$backend$distinct(task$target))
+    expect_subset(p$predicted, task$classes)
   })
 })
 
@@ -37,8 +37,9 @@ test_that("No training encapsulation works", {
 
 test_that("warnings/messages are caught", {
   task = mlr.tasks$get("bh")
-  lrn.mock.regr$par.vals = list(warning = TRUE, message = TRUE)
-  mod = train(task, lrn.mock.regr)
+  lrn = test.learner$get("regr.mock")
+  lrn$par.vals = list(warning = TRUE, message = TRUE)
+  mod = train(task, lrn)
   expect_equal(mod$train.log$n.messages, 1)
   expect_equal(mod$train.log$n.warnings, 1)
   expect_equal(mod$train.log$messages[[1]]$message, "dummy message\n")
@@ -47,13 +48,14 @@ test_that("warnings/messages are caught", {
 
 test_that("continue on learner error works", {
   withr::with_options(new = list(mlrng.continue.on.learner.error = TRUE), code = {
+    lrn = test.learner$get("regr.mock")
+    lrn$par.vals = list(error = TRUE)
     task = mlr.tasks$get("bh")
-    lrn.mock.regr$par.vals = list(error = TRUE)
-    mod = train(task, lrn.mock.regr)
+    mod = train(task, lrn)
     expect_false(mod$train.success)
     expect_equal(mod$train.log$n.errors, 1)
     expect_equal(mod$train.log$errors[[1]]$message, "dummy error")
     p = predict(mod, subset = seq_len(task$nrow))
-    expect_numeric(p$response, len = task$nrow)
+    expect_numeric(p$predicted, len = task$nrow)
   })
 })

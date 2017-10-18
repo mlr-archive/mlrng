@@ -4,6 +4,7 @@
 #' @import evaluate
 #' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col isFALSE
 #' @importFrom digest digest
+#' @importFrom fastmatch fmatch %fin%
 #' @importFrom glue glue double_quote
 #' @importFrom parallelMap parallelMap parallelExport parallelLibrary
 #' @importFrom prettyunits pretty_sec
@@ -17,12 +18,13 @@
 
 .onLoad = function(libname, pkgname) { #nocov start
   backports::import(pkgname)
+  backports::import(pkgname, "hasName", force = TRUE)
   parallelMap::parallelRegisterLevels(package = "mlrng", levels = c("resample", "benchmark", "tune"))
 
   opts = options()
   opts.mlrng = list(
     mlrng.verbose = TRUE,
-    mlrng.debug = FALSE,
+    mlrng.debug = TRUE,
     mlrng.keep.train.output = FALSE,
     mlrng.continue.on.learner.error = FALSE,
     mlrng.train.encapsulation = 1
@@ -45,3 +47,4 @@ mlrng$supported.learner.props = c(
   "missings", "weights", "twoclass", "multiclass", "prob", "featimp", "parallel",
   "formula", "oobpreds", "se"
 )
+mlrng$result.states = c("Result", "TrainResult", "PredictResult", "PerformanceResult", "ResampleResult", "BenchmarkResult")

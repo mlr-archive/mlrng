@@ -29,7 +29,7 @@ TrainLog = R6Class("TrainLog",
     },
     print = function(...) {
      gcat("Training log with {self$n.errors} errors, {self$n.warnings} warnings and {self$n.messages} messages.")
-     if (getOption("mlrng.debug", TRUE))
+     if (getOption("mlrng.debug", FALSE))
       cat("\n", format(self),  "\n")
     }),
   active = list(

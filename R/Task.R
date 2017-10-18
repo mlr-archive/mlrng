@@ -81,7 +81,7 @@ Task = R6Class("Task",
             Features: {stri_peek(names(cols))}
             Feature types: {stri_pasteNames(tbl, names.first = FALSE)}
             Missings: {any(self$backend$missing.values) > 0L}")
-      if (getOption("mlrng.debug", TRUE))
+      if (getOption("mlrng.debug", FALSE))
           cat("\n", format(self), "\n")
   }),
 

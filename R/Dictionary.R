@@ -83,7 +83,7 @@ Dictionary = R6Class("Dictionary",
         Dictionary of {length(ids)} {self$eltype}
         Ids: {stri_peek(ids)}
       ")
-      if (getOption("mlrng.debug", TRUE))
+      if (getOption("mlrng.debug", FALSE))
         cat("\n", format(self), "\n")
     }
   ),

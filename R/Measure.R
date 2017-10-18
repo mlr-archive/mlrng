@@ -53,7 +53,7 @@ Measure = R6Class("Measure",
       gcat("Measure {self$id}
             Compatible task types: {stri_paste(self$task.types, collapse = ', ')}
             Description: {stri_peek(self$description)}")
-      if (getOption("mlrng.debug", TRUE))
+      if (getOption("mlrng.debug", FALSE))
         cat("\n", format(self), "\n")
     }
   )

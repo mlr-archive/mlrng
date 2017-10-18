@@ -6,10 +6,9 @@
 #'
 #' @field aggr [\code{named numeric}]: Aggregated performance measures.
 #' @field data [\code{data.table}]: Data stored in a tabular format.
-ResampleResult = R6Class(c("ResampleResult", "PerformanceResult", "PredictResult", "TrainingResult"),
+ResampleResult = R6Class(c("ResampleResult", "PerformanceResult", "PredictResult", "TrainResult"),
   inherit = Result,
   cloneable = FALSE,
-
   public = list(
     initialize = function(results, resampling.iters = seq_along(results)) {
       assertList(results, types = "PerformanceResult")
@@ -23,6 +22,9 @@ ResampleResult = R6Class(c("ResampleResult", "PerformanceResult", "PredictResult
       for (i in seq_len(iters))
         gcat("[{i}/{iters}]: {stri_pasteNames(self$data$perf.vals[[i]])}")
       gcat("[Aggregated]: {self$aggr}")
+
+      if (getOption("mlrng.debug", FALSE))
+        cat("\n", format(self), "\n")
     }
   ),
 
