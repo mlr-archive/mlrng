@@ -15,10 +15,12 @@ mlr.learners$add(LearnerClassif$new(
   )),
   par.vals = list(),
   properties = c("twoclass", "multiclass", "missings", "feat.numeric", "feat.factor", "feat.ordered", "prob", "weights", "featimp", "formula"),
+
   train = function(task, subset, ...) {
     data = getTaskData(task, subset = subset, type = "train", props = self$properties)
     rpart::rpart(task$formula, data, ...)
   },
+
   predict = function(model, newdata, ...) {
     pt = self$predict.type
     if (pt == "response")

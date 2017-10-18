@@ -1,7 +1,10 @@
 requireNS = function(pkgs) {
   ok = vlapply(pkgs, requireNamespace, quietly = TRUE)
-  if (!all(ok))
-    stop("Please install the following packages: ", stri_flatten(pkgs[!ok], ", "))
+  if (!all(ok)) {
+    gstop('Please install missing packages with
+      install.packages({stri_flatten(double_quote(pkgs[!ok]), ",")})
+    ', .call = FALSE)
+  }
 }
 
 gcat = function(..., .sep = "", .envir = parent.frame(), .file = "", .append = TRUE) {

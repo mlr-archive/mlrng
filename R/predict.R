@@ -4,15 +4,18 @@
 predict.TrainResult = function(object, newdata = NULL, subset = NULL, ...) {
   if (...length() > 0L)
     stop("predict: dotargs currently unsupported!")
-  if (!is.null(newdata) && !is.null(subset))
-    stop("Use 'subset' only without 'newdata'")
   task = object$task
   row.ids = translateSubset(task, subset)
 
-  predictWorker(object,
-    newdata = newdata %??% getTaskData(task, subset = row.ids, type = "test", props = object$learner$properties),
-    row.ids
-  )
+  if (is.null(newdata)) {
+    newdata = getTaskData(task, subset = row.ids, type = "test", props = object$learner$properties)
+  } else {
+    assertDataFrame(newdata)
+    if (!is.null(subset))
+      stop("Cannot use 'subset' together with 'newdata'")
+  }
+
+  predictWorker(object, newdata = newdata, row.ids)
 }
 
 predictWorker = function(train.result, newdata, row.ids) {

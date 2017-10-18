@@ -32,7 +32,7 @@ trainWorker = function(task, learner, row.ids) {
     eval.string = getTrainEvalString(encapsulation)
     raw.log = evaluate::evaluate(eval.string, new_device = FALSE)
   }
-  train.time = proc.time()[3L] - start.time
+  train.time = round(proc.time()[3L] - start.time, 6L)
 
   train.log = TrainLog$new(raw.log, train.time)
   train.success = !is.null(result) && train.log$n.errors == 0L

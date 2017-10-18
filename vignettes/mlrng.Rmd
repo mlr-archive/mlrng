@@ -141,12 +141,29 @@ print(r)
 r$iters = 3
 ```
 
-# Training a model
+# Train and Predict
 
-Here, we fit a simple CART on the iris task:
+Here, we fit a simple CART on a random subset of the iris task.
+The returned object is a `TrainResult`:
 ```{r}
 task = mlr.tasks$get("iris")
+lrn = mlr.learners$get("classif.rpart")
+set.seed(123); train = sample(task$nrow, 120)
+tr = train(task, lrn, subset = train)
+print(tr)
+tr$train.log
 ```
+We can access the returned `rpart` model via the slot `$rmodel`:
+```{r}
+print(tr$rmodel)
+```
+
+Next, we can use the `TrainResult` to predict on the left-out observations:
+```{r}
+test = setdiff(1:task$nrow, train)
+pr = predict(tr, subset = test)
+```
+
 
 
 # Resampling

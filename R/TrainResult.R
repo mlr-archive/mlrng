@@ -27,7 +27,7 @@ TrainResult = R6Class("TrainResult",
 
     print = function(...) {
       gcat("Training result of {self$learner$id} on {self$task$id}.")
-      gcat("Training took {self$train.log$train.time} seconds.")
+      gcat("Training took {pretty_sec(self$train.log$train.time)}.")
       if (!self$train.success)
         gcat("Training failed with error {stri_peek(self$train.log$errors[[1]]$message)}.
               Model will output constant predictions from dummy learner.")

@@ -28,7 +28,7 @@ assertMeasures = function(measures, for.task = NULL, for.learner = NULL) {
   if (!is.null(for.task)) {
     for (m in measures)
     if (for.task$task.type %nin% m$task.types)
-      gstop("Types do not match: measure id={m$id}, task.types={collapse(m$task.types, ",")} vs task id={for.task$id}, task.type={for.task$task.type}")
+      gstop("Types do not match: measure id={m$id}, task.types={stri_flatten(m$task.types, ",")} vs task id={for.task$id}, task.type={for.task$task.type}")
   }
   #FIXME: check that measure matches the learner output
   invisible(measures)

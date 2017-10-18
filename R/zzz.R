@@ -1,16 +1,17 @@
 #' @import callr
 #' @import checkmate
 #' @import data.table
-#' @import stringi
 #' @import evaluate
-#' @import phng
+#' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col isFALSE
+#' @importFrom digest digest
+#' @importFrom glue glue double_quote
+#' @importFrom parallelMap parallelMap parallelExport parallelLibrary
+#' @importFrom prettyunits pretty_sec
+#' @importFrom R6 R6Class
 #' @importFrom stats setNames predict
 #' @importFrom utils data
-#' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col isFALSE
-#' @importFrom parallelMap parallelMap parallelExport parallelLibrary
-#' @importFrom glue glue collapse single_quote
-#' @importFrom R6 R6Class
-#' @importFrom digest digest
+#' @import phng
+#' @import stringi
 #' @keywords internal
 "_PACKAGE"
 
