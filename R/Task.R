@@ -1,3 +1,30 @@
+#' @include Dictionary.R
+DictionaryTasks = R6Class("DictionaryTasks", inherit = Dictionary,
+  public = list(
+    initialize = function() {
+      super$initialize("Task")
+    },
+    getElementSummary = function(x) {
+      data.table(
+        task.type = x$task.type,
+        nrow = x$nrow,
+        ncol = x$ncol
+        )
+    }
+  )
+)
+
+#' @title Registered Tasks
+#' @docType class
+#' @format \code{\link{R6Class}} object
+#'
+#' @description
+#' \code{Tasks} is a \code{\link{Dictionary}} used to manage tasks.
+#'
+#' @export
+mlr.tasks = DictionaryTasks$new()
+
+
 #' @title Base Class for Tasks
 #' @format \code{\link{R6Class}} object
 #'

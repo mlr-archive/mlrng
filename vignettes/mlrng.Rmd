@@ -1,17 +1,29 @@
 ---
-title: "Benchmarking Example"
+title: "mlrng"
 output:
-  pdf_document
+  pdf_document:
+    toc: true
 urlcolor: blue
 linkcolor: blue
 vignette: >
-  %\VignetteIndexEntry{Benchmarking}
+  %\VignetteIndexEntry{mlrng}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 ```{r, include=FALSE}
 library(mlrng)
 ```
+# Building Blocks
+
+The package provides R6 classes for the building blocks of machine learning:
+
+* Tasks
+* Learners
+* Resamplings
+* Performance Measures
+
+All objects are stored in dictionaries (a.k.a. hash maps):
+`mlr.tasks` comes with some predefined toy tasks, `mlr.learners` with learners, `mlr.resamplings` with different resampling methods and `mlr.measures` with some popular performance measures.
 
 ## Tasks
 
@@ -129,7 +141,15 @@ print(r)
 r$iters = 3
 ```
 
-## Resample
+# Training a model
+
+Here, we fit a simple CART on the iris task:
+```{r}
+task = mlr.tasks$get("iris")
+```
+
+
+# Resampling
 
 ```{r}
 rr = resample(task = iris.task, learner = lrn.dummy, resampling = r, measures = list(measure))
@@ -137,7 +157,7 @@ rr$data
 rr$aggr
 ```
 
-## Benchmark
+# Benchmarking
 
 ```{r}
 tasks = lapply(c("iris", "sonar"), mlr.tasks$get)

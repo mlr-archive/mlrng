@@ -27,7 +27,9 @@ A \code{\link[R6]{R6Class}} to construct classification tasks.
 
 \item{\code{positive}}{[\code{character(1)}]: Only for binary classification: Level of the positive class (\code{NA} otherwise).}
 
-\item{\code{levels}}{[\code{character()}]: Levels of class labels.}
+\item{\code{classes}}{[\code{character()}]: Levels of class labels.}
+
+\item{\code{nclasses}}{[\code{integer(1)}]: Number of levels of class labels.}
 }}
 
 \examples{

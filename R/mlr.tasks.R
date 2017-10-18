@@ -1,4 +1,6 @@
-#' @include Dictionaries.R
+#' @include TaskClassif.R
+#' @include TaskRegr.R
+
 getDataBackend = function(name, rowid.col = "rowid") {
   fn = system.file("extdata", sprintf("%s.sqlite", name), package = "mlrng", mustWork = TRUE)
   BackendDBI$new(data = list(drv = RSQLite::SQLite(), dbname = fn, flags = RSQLite::SQLITE_RO), rowid.col, name)

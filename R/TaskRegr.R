@@ -8,6 +8,7 @@
 #' @template fields-supervisedtask
 #'
 #' @return [\code{\link{TaskRegr}}].
+#' @include TaskSupervised.R
 #' @family Tasks
 #' @export
 #' @examples

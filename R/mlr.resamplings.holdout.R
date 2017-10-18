@@ -1,5 +1,4 @@
-#' @include Dictionaries.R
-
+#' @include Resampling.R
 mlr.resamplings$add(
   Resampling$new(
     id = "holdout",

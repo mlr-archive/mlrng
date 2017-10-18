@@ -1,6 +1,4 @@
-#' @include Dictionaries.R
-
-
+#' @include Measure.R
 mlr.measures$add(Measure$new(
   id = "mmce",
   description = "Mean misclassification error",

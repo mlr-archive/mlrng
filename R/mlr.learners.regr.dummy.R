@@ -1,5 +1,4 @@
-#' @include Dictionaries.R
-
+#' @include LearnerRegr.R
 mlr.learners$add(LearnerRegr$new(
   name = "dummy",
   par.set = ParamSetFlat$new(

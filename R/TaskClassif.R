@@ -7,11 +7,13 @@
 #' @template fields-task
 #' @template fields-supervisedtask
 #' @field positive [\code{character(1)}]: Only for binary classification: Level of the positive class (\code{NA} otherwise).
-#' @field levels [\code{character()}]: Levels of class labels.
+#' @field classes [\code{character()}]: Levels of class labels.
+#' @field nclasses [\code{integer(1)}]: Number of levels of class labels.
 #'
 #' @return [\code{\link{TaskClassif}}].
-#' @family Tasks
+#' @include TaskSupervised.R
 #' @export
+#' @family Tasks
 #' @examples
 #' task = TaskClassif$new("iris", data = iris, target = "Species")
 #' task$formula

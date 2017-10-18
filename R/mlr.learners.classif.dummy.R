@@ -1,5 +1,4 @@
-#' @include Dictionaries.R
-
+#' @include LearnerClassif.R
 mlr.learners$add(LearnerClassif$new(
   name = "dummy",
   par.set = ParamSetFlat$new(
