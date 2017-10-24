@@ -39,8 +39,10 @@ Suggests:
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate:
-    'Backends.R'
+Collate: 
+    'Backend.R'
+    'BackendDBI.R'
+    'BackendLocal.R'
     'BenchmarkResult.R'
     'Dictionary.R'
     'Learner.R'

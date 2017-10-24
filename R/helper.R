@@ -46,6 +46,12 @@ stri_peek = function(str, append = "...") {
   return(str)
 }
 
+insert = function(x, y) {
+  if (length(y))
+    x[names(y)] = y
+  x
+}
+
 stri_pasteNames = function(str, sep = " ", collapse = ", ", names.first = TRUE) {
   if(names.first)
     stri_paste(names(str), str, sep = sep, collapse = collapse)
@@ -82,4 +88,8 @@ plural = function(n) {
 
 copy_env = function(ee) {
   list2env(as.list(ee), parent = emptyenv())
+}
+
+filterNull = function(x) {
+  x[!vlapply(x, is.null)]
 }
