@@ -122,7 +122,17 @@ extractSummary = function(self, ids, fun) {
 
 #' @export
 as.list.Dictionary = function(x, ...) {
+  # FIXME: need to copy?
   as.list(x$env)
+}
+
+#' @export
+as.data.table.Dictionary = function(x, keep.rownames = FALSE, ...) {
+  ids = x$ids
+  data.table(
+    id = ids,
+    object = lapply(ids, x$get, clone = TRUE)
+  )
 }
 
 # class to define lazy objects, which can be expanded / allocated later
