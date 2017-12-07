@@ -19,6 +19,10 @@ A \code{\link[R6]{R6Class}} to construct classification tasks.
 \describe{
 \item{\code{id}}{[\code{character(1)}]: Identifier of the task.}
 
+\item{\code{backend}}{[\code{Backend}]: Internal abstraction for data access. Leave this alone unless you know exactly what you are doing.}
+
+\item{\code{get}}{[\code{function(rows = NULL, cols = NULL)}]: Names of the features.}
+
 \item{\code{features}}{[\code{character}]: Names of the features.}
 
 \item{\code{formula}}{[\code{character}]: Formula describing the learning task.}
@@ -37,7 +41,6 @@ task = TaskClassif$new("iris", data = iris, target = "Species")
 task$formula
 }
 \seealso{
-Other Tasks: \code{\link{TaskRegr}},
-  \code{\link{TaskSupervised}}, \code{\link{Task}}
+Other Tasks: \code{\link{TaskRegr}}
 }
 \keyword{datasets}

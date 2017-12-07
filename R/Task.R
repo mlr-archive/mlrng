@@ -1,15 +1,5 @@
-#' @title Base Class for Tasks
-#' @format \code{\link{R6Class}} object
-#'
-#' @description
-#' A \code{\link[R6]{R6Class}} to construct tasks.
-#' This is the abstract base class, do not use directly!
-#'
-#' @template fields-task
-#' @field task.type [\code{character(1)}]: Type of task (\dQuote{classif}).
-#' @return [\code{\link{Task}}].
-#' @family Tasks
 Task = R6Class("Task",
+  # Base Class for Tasks
   public = list(
     ### SLOTS ##################################################################
     task.type = NA_character_,

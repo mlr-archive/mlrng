@@ -1,16 +1,6 @@
-#' @title Base Class for Supervised Tasks
-#'
-#' @description
-#' A \code{\link[R6]{R6Class}} to construct supervised tasks.
-#' This is the abstract base class, do not use directly!
-#'
-#' @template fields-task
-#' @template fields-supervisedtask
-#' @return [\code{\link{TaskSupervised}}].
-#' @family Tasks
 #' @include Task.R
-#' @export
 TaskSupervised = R6Class("TaskSupervised",
+  # Base Class for Supervised Tasks
   inherit = Task,
   public = list(
     target = NA_character_,
