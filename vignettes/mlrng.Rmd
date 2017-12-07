@@ -31,9 +31,10 @@ Here, we first load a predefined task which comes with `mlrng`.
 Like most objects in `mlrng`, tasks are stored in a `Dictionary`:
 ```{r}
 print(mlr.tasks)
+print(mlr.tasks$ids)
 as.data.table(mlr.tasks)
 ```
-We use the `$get()` function to retrieve the iris task, which is a multiclass classification task:
+We use the `$get()` function to retrieve a specific task, here a multiclass classification task based on the dataset `iris`:
 ```{r}
 iris.task = mlr.tasks$get("iris")
 print(iris.task)

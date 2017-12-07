@@ -23,7 +23,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
         dplyr::copy_to(con, data, name = tbl.name, temporary = FALSE, overwrite = TRUE, row.names = FALSE, unique_indexes = list(self$rowid.col))
         DBI::dbDisconnect(con)
         self$con.pars = list(drv = RSQLite::SQLite(), dbname = path, flags = RSQLite::SQLITE_RO)
-        self$transformators = getDefaultTransformators(data)
+        self$mutators = getDefaultMutators(data)
       } else {
         self$rowid.col = assertString(rowid.col, min.chars = 1L)
         self$con.pars = assertList(data, names = "unique")
@@ -73,7 +73,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
 
       if (!isTRUE(include.rowid.col))
         data[[self$rowid.col]] = NULL
-      return(private$transform(data))
+      return(private$mutate(data))
     },
 
     subset = function(rows = NULL, cols = NULL) {
@@ -98,7 +98,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
 
     head = function(n = 6L) {
       tab = dplyr::collect(head(dplyr::select(self$tbl(filter = TRUE, select = TRUE), -dplyr::one_of(self$rowid.col)), n))
-      private$transform(setDT(tab)[])
+      private$mutate(setDT(tab)[])
     }
   ),
 
@@ -135,7 +135,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
     },
 
     types = function() {
-      vcapply(private$transform(self$head(1L)), class)
+      vcapply(private$mutate(self$head(1L)), class)
     },
 
     missing.values = function() {

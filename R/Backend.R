@@ -2,19 +2,19 @@ Backend = R6Class("Backend",
   public = list(
     rowid.col = NULL,
     writeable = NULL,
-    transformators = list()
+    mutators = list()
   ),
   private = list(
-    transform = function(data) {
-      nms = intersect(names(self$transformators), names(data))
+    mutate = function(data) {
+      nms = intersect(names(self$mutators), names(data))
       for (n in nms)
-        set(data, j = n, value = self$transformators[[n]](data[[n]]))
+        set(data, j = n, value = self$mutators[[n]](data[[n]]))
       data
     }
   )
 )
 
-getDefaultTransformators = function(data) {
+getDefaultMutators = function(data) {
   getTrafo = function(x) {
     switch(class(x),
       character = function(x) as.character(x),

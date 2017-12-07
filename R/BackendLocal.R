@@ -29,7 +29,7 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
         stop("Invalid row ids provided")
       if (!include.rowid.col)
         data[[self$rowid.col]] = NULL
-      return(private$transform(data))
+      return(private$mutate(data))
     },
 
     subset = function(rows = NULL, cols = NULL) {
@@ -44,14 +44,14 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
     },
 
     head = function(n = 6L) {
-      private$transform(head(self$internal.data[, !(self$rowid.col), with = FALSE], n))
+      private$mutate(head(self$internal.data[, !(self$rowid.col), with = FALSE], n))
     }
   ),
 
   active = list(
     data = function(newdata) {
       if (missing(newdata)) {
-        return(private$transform(self$internal.data[, !(self$rowid.col), with = FALSE]))
+        return(private$mutate(self$internal.data[, !(self$rowid.col), with = FALSE]))
       }
       assertDataTable(newdata)
       assertNames(names(newdata), must.include = self$rowid.col)
