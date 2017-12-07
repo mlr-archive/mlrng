@@ -1,3 +1,4 @@
+#' @include mlr.learners.R
 #' @include LearnerRegr.R
 mlr.learners$add(LearnerRegr$new(
   name = "dummy",

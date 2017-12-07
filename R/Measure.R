@@ -1,26 +1,3 @@
-#' @include Dictionary.R
-DictionaryMeasures = R6Class("DictionaryMeasures", inherit = Dictionary,
-  public = list(
-    initialize = function() {
-      super$initialize("Measure")
-    },
-    getElementSummary = function(x) {
-      data.table(task.types = list(x$task.types))
-    }
-  )
-)
-
-#' @title Registered Resampling Methods
-#' @docType class
-#' @format \code{\link{R6Class}} object
-#'
-#' @description
-#' \code{mlr.measures} is a \code{\link{Dictionary}} used to manage performance measures.
-#'
-#' @export
-mlr.measures = DictionaryMeasures$new()
-
-
 #' @title Base Class for Measures
 #' @format \code{\link{R6Class}} object
 #'

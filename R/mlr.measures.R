@@ -1,19 +1,22 @@
-#' @include Measure.R
-mlr.measures$add(Measure$new(
-  id = "mmce",
-  description = "Mean misclassification error",
-  task.types = c("classif"),
-  fun = function(pred) {
-    mean(pred$truth[[1L]] != pred$predicted)
-  }
-))
+#' @include Dictionary.R
+DictionaryMeasures = R6Class("DictionaryMeasures", inherit = Dictionary,
+  public = list(
+    initialize = function() {
+      super$initialize("Measure")
+    },
+    summary = function(ids = NULL) {
+      extractSummary(self, ids,
+        function(obj) list(task.types = list(obj$task.types)))
+    }
+  )
+)
 
-mlr.measures$add(Measure$new(
-  id = "mse",
-  description = "Mean squared error",
-  task.types = c("regr"),
-  fun = function(pred) {
-    mean((pred$truth[[1L]] - pred$predicted)^2)
-  }
-))
-
+#' @title Registered Resampling Methods
+#' @docType class
+#' @format \code{\link{R6Class}} object
+#'
+#' @description
+#' \code{mlr.measures} is a \code{\link{Dictionary}} used to manage performance measures.
+#'
+#' @export
+mlr.measures = DictionaryMeasures$new()

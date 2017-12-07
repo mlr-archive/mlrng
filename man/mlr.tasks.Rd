@@ -15,8 +15,8 @@ mlr.tasks
 # List task ids:
 mlr.tasks$ids
 
-# Get a summary as data.table:
-as.data.table(mlr.tasks)
+# Get a briew summary:
+mlr.tasks$summary()
 
 # Retrieve a specific task:
 mlr.tasks$get("iris")

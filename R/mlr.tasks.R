@@ -6,12 +6,10 @@ DictionaryTasks = R6Class("DictionaryTasks", inherit = Dictionary,
     initialize = function() {
       super$initialize("Task")
     },
-    getElementSummary = function(x) {
-      data.table(
-        task.type = x$task.type,
-        nrow = x$nrow,
-        ncol = x$ncol
-        )
+
+    summary = function(ids = NULL) {
+      extractSummary(self, ids,
+        function(obj) list(task.type = obj$task.type, nrow = obj$nrow, ncol = obj$ncol))
     }
   )
 )
@@ -28,8 +26,8 @@ DictionaryTasks = R6Class("DictionaryTasks", inherit = Dictionary,
 #' # List task ids:
 #' mlr.tasks$ids
 #'
-#' # Get a summary as data.table:
-#' as.data.table(mlr.tasks)
+#' # Get a briew summary:
+#' mlr.tasks$summary()
 #'
 #' # Retrieve a specific task:
 #' mlr.tasks$get("iris")

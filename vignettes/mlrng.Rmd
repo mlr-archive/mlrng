@@ -32,7 +32,7 @@ Like most objects in `mlrng`, tasks are stored in a `Dictionary`:
 ```{r}
 print(mlr.tasks)
 print(mlr.tasks$ids)
-as.data.table(mlr.tasks)
+print(mlr.tasks$summary())
 ```
 We use the `$get()` function to retrieve a specific task, here a multiclass classification task based on the dataset `iris`:
 ```{r}
@@ -92,7 +92,7 @@ Thus, if you subsample your data first to only use 0.1% of all observations, you
 All learners are stored in a register called `mlr.learners` and can easily be listed:
 ```{r}
 mlr.learners
-as.data.table(mlr.learners)
+mlr.learners$summary()
 ```
 
 ### Dummy classification learner
@@ -113,7 +113,7 @@ Now, we set the parameter `method` to `"sample"`, change the `id` and add the le
 lrn.dummy$par.vals = list(method = "sample")
 lrn.dummy$id = "classif.dummy.sample"
 mlr.learners$add(lrn.dummy)
-as.data.table(mlr.learners)
+mlr.learners$summary()
 ```
 From now on, we can just pass the id `"classif.dummy.sample"` to other functions to use this learner.
 
@@ -126,7 +126,7 @@ lrn.rpart = mlr.learners$get("classif.rpart")
 ## Measures
 
 ```{r}
-as.data.table(mlr.measures)
+mlr.measures$summary()
 measure = mlr.measures$get("mmce")
 ```
 
@@ -134,7 +134,7 @@ measure = mlr.measures$get("mmce")
 
 ```{r}
 mlr.resamplings
-as.data.table(mlr.resamplings)
+mlr.resamplings$summary()
 r = mlr.resamplings$get("cv")
 print(r)
 
