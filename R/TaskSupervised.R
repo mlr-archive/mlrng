@@ -25,11 +25,11 @@ TaskSupervised = R6Class("TaskSupervised",
   active = list(
     # [formula]. target ~ x1 + ... + xp
     formula = function() {
-      reformulate(self$feature.names, response = self$target)
+      reformulate(self$features, response = self$target)
     },
 
     # [charvec]. feature names without target names
-    feature.names = function() {
+    features = function() {
       setdiff(self$backend$colnames, self$target)
     }
   )

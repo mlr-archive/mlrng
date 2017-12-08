@@ -76,12 +76,12 @@ Task = R6Class("Task",
     },
 
     # [charvec]. feature names without target names
-    feature.names = function() {
+    features = function() {
       self$backend$colnames
     },
 
     formula = function() {
-      reformulate(self$feature.names)
+      reformulate(self$features)
     },
 
     nrow = function() {

@@ -6,7 +6,7 @@
 #'  Get (a subset of) the task data. Rows must be specified by row ids (defaulting to integers if not specified otherwise), columns must be addressed by name.
 #' @field head [\code{function(n = 6L)}]\cr
 #'  Fetches the first \code{n} rows of the data and returns a \code{data.table}.
-#' @field feature.names [\code{character}]\cr
+#' @field features [\code{character}]\cr
 #'  Names of the features.
 #' @field formula [\code{character}]\cr
 #'  Formula describing the learning task.

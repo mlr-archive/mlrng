@@ -49,9 +49,9 @@ expect_supervisedtask = function(task) {
 
   expect_class(task$formula, "formula")
   tf = terms(task$formula)
-  expect_set_equal(labels(tf), task$feature.names) # rhs
+  expect_set_equal(labels(tf), task$features) # rhs
   expect_set_equal(setdiff(all.vars(tf), labels(tf)), task$target) # lhs
-  expect_subset(task$feature.names, colnames(task$backend$head()))
+  expect_subset(task$features, colnames(task$backend$head()))
 }
 
 expect_classiftask = function(task) {
