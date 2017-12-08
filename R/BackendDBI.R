@@ -28,7 +28,6 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
         self$rowid.col = assertString(rowid.col, min.chars = 1L)
         self$con.pars = assertList(data, names = "unique")
       }
-      self$local = FALSE
     },
 
     finalizer = function() {

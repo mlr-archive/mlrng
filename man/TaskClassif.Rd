@@ -41,6 +41,6 @@ task = TaskClassif$new("iris", data = iris, target = "Species")
 task$formula
 }
 \seealso{
-Other Tasks: \code{\link{TaskRegr}}
+Other Tasks: \code{\link{TaskRegr}}, \code{\link{Task}}
 }
 \keyword{datasets}

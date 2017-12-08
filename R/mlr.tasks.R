@@ -37,7 +37,9 @@ DictionaryTasks = R6Class("DictionaryTasks", inherit = Dictionary,
 #' data$Species = ifelse(data$Species == "setosa", "1", "0")
 #' task = TaskClassif$new("iris.binary", data = data, target = "Species")
 #' task$nclasses
-#' mlr.tasks$add()
+#' mlr.tasks$add(task)
+#' mlr.tasks$summary()
+#' mlr.tasks$remove("iris.binary")
 mlr.tasks = DictionaryTasks$new()
 
 getExampleTaskBackend = function(name, rowid.col = "rowid") {

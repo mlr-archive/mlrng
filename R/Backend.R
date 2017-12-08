@@ -1,7 +1,6 @@
 Backend = R6Class("Backend",
   public = list(
     rowid.col = NULL,
-    local = TRUE,
     mutators = list()
   ),
   private = list(

@@ -1,3 +1,19 @@
+#' @title Basic Tasks
+#' @format \code{\link{R6Class}} object
+#'
+#' @description
+#' This is the abstract base class for task objects.
+#' Use \code{\link{TaskClassif}} or \code{\link{TaskRegr}} to construct tasks instead of this class.
+#'
+#' @template fields-task
+#' @template fields-supervisedtask
+#'
+#' @return [\code{\link{Task}}].
+#' @export
+#' @family Tasks
+#' @examples
+#' task = TaskClassif$new("iris", data = iris, target = "Species")
+#' task$formula
 Task = R6Class("Task",
   # Base Class for Tasks
   public = list(
@@ -54,11 +70,11 @@ Task = R6Class("Task",
       if (missing(newdata)) {
         return(self$backend$data)
       }
-      if (self$backend$local) {
+      if (inherits(self$backend, "BackendLocal")) {
         self$backend$data = newdata
       } else {
         if (getOption("mlrng.debug"))
-          gmessage("Creating an in-memory copy of the task '{task$id}'")
+          gmessage("Creating an in-memory copy of task '{self$id}'")
         self$backend = BackendLocal$new(data = newdata, rowid.col = self$backend$rowid.col)
       }
     },
