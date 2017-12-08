@@ -1,6 +1,5 @@
 #' @import checkmate
 #' @import data.table
-#' @import evaluate
 #' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col isFALSE
 #' @importFrom digest digest
 #' @importFrom fastmatch fmatch %fin%
