@@ -12,6 +12,7 @@ vignette: >
 ---
 ```{r, include=FALSE}
 library(mlrng)
+set.seed(123)
 ```
 # Building Blocks
 
@@ -27,20 +28,16 @@ All objects are stored in dictionaries (a.k.a. hash maps):
 
 ## Tasks
 
-Here, we first load a predefined task which comes with `mlrng`.
-Like most objects in `mlrng`, tasks are stored in a `Dictionary`:
+We use the `iris` data set to create a multilabel classification task:
 ```{r}
-print(mlr.tasks)
-print(mlr.tasks$ids)
-print(mlr.tasks$summary())
+iris.task = TaskClassif$new(data = iris, target = "Species")
 ```
-We use the `$get()` function to retrieve a specific task, here a multiclass classification task based on the dataset `iris`:
-```{r}
-iris.task = mlr.tasks$get("iris")
-print(iris.task)
-```
+
 Task objects come with some handy self-explanatory getters:
 ```{r}
+# id
+iris.task$id
+
 # dimension
 c(iris.task$nrow, iris.task$ncol)
 
@@ -56,19 +53,44 @@ iris.task$formula
 # column types
 iris.task$col.types
 
+# number of classes
+iris.task$nclasses
+
 # class levels
 iris.task$classes
 
-# number of classes
-iris.task$nclasses
+# positive class (not feasible for multilabel classification)
+iris.task$positive
 
 # missing values per column
 iris.task$missing.values
 
+# peek into the data
+iris.task$head()
+
 # complete data
 iris.task$data
 ```
+In `mlrng`, tasks can rely on different data backends to hold tabular data.
+Per default, data is stored in SQLite data bases where the data does not occupy any memory unless fetched from the data base.
+This allows you to work with hundreds of tasks simultaneously or to conveniently learn on subsets of "big data".
+If not configured differently, the temp directory of R is used to store the data base.
+Alternatively, you can opt to hold the data in memory (for a small performance boost) or to connect to a real DBMS like PostgresSQL or MariaDB.
+This is covered in the help (FIXME).
 
+
+Here, we first load a predefined task which comes with `mlrng`.
+Like most objects in `mlrng`, tasks are stored in a `Dictionary`:
+```{r}
+print(mlr.tasks)
+print(mlr.tasks$ids)
+print(mlr.tasks$summary())
+```
+We use the `$get()` function to retrieve a specific task, here a multiclass classification task based on the dataset `iris`:
+```{r}
+iris.task = mlr.tasks$get("iris")
+print(iris.task)
+```
 The data itself is stored in an abstract class `Backend`.
 It is designed to transparently access in-memory data structures (`data.table` is used internally) as well as real DBMS via the `dplyr` package.
 Because most data bases can only be accessed read-only, the operations on these data base backend are limited.

@@ -15,21 +15,23 @@ Depends:
     data.table,
     phng
 Imports:
+    backports (>= 1.1.1),
     BBmisc,
     callr,
-    DBI,
-    evaluate,
-    R6,
-    RSQLite,
-    backports (>= 1.1.1),
     checkmate (>= 1.8.4),
+    DBI,
     digest,
     dplyr (>= 0.7.0),
-    glue,
+    evaluate,
     fastmatch,
+    glue,
     parallelMap,
     prettyunits,
-    stringi
+    R6,
+    rappdirs,
+    RSQLite,
+    stringi,
+    yaml
 Suggests:
     dbplyr,
     knitr,
@@ -39,7 +41,7 @@ Suggests:
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate: 
+Collate:
     'Backend.R'
     'BackendDBI.R'
     'BackendLocal.R'
