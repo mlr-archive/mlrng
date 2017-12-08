@@ -74,8 +74,8 @@ test_that("Task$truth works", {
   expect_names(names(y), identical.to = task$target)
 })
 
-test_that("Task$get() return duplicated rows", {
-  tasks = list(mlr.tasks$get("iris"), test.tasks$get("clm.num"))
+test_that("Task$get() returns duplicated rows", {
+  tasks = list(test.tasks$get("regr.num"), test.tasks$get("clm.num"))
   for (task in tasks) {
     ids = rep(head(task$backend$rownames, 6), 2)
     x = task$get(rows = ids)

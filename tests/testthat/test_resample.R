@@ -1,7 +1,7 @@
 context("resample")
 
 test_that("Basic resampling", {
-  task = mlr.tasks$get("iris")
+  task = test.tasks$get("clm.num")
   learner = mlr.learners$get("classif.rpart")
   resampling = mlr.resamplings$get("cv")
   resampling$iters = 3
