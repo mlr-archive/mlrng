@@ -3,6 +3,7 @@ title: "mlrng"
 output:
   pdf_document:
     toc: true
+    toc_depth: 3
 urlcolor: blue
 linkcolor: blue
 vignette: >
@@ -12,6 +13,10 @@ vignette: >
 ---
 ```{r, include=FALSE}
 library(mlrng)
+knitr::opts_chunk$set(
+  datatable.print.class = TRUE,
+  R.options = list(mlrng.debug = FALSE)
+)
 set.seed(123)
 ```
 # Building Blocks
@@ -28,10 +33,13 @@ All objects are stored in dictionaries (a.k.a. hash maps):
 
 ## Tasks
 
+### Task Creation
 We use the `iris` data set to create a multilabel classification task:
 ```{r}
 iris.task = TaskClassif$new(data = iris, target = "Species")
 ```
+
+### Task Object
 
 Task objects come with some handy self-explanatory getters:
 ```{r}
@@ -76,25 +84,10 @@ Per default, data is stored in SQLite data bases where the data does not occupy 
 This allows you to work with hundreds of tasks simultaneously or to conveniently learn on subsets of "big data".
 If not configured differently, the temp directory of R is used to store the data base.
 Alternatively, you can opt to hold the data in memory (for a small performance boost) or to connect to a real DBMS like PostgresSQL or MariaDB.
-This is covered in the help (FIXME).
+This is covered in detail in the help (FIXME).
 
-
-Here, we first load a predefined task which comes with `mlrng`.
-Like most objects in `mlrng`, tasks are stored in a `Dictionary`:
-```{r}
-print(mlr.tasks)
-print(mlr.tasks$ids)
-print(mlr.tasks$summary())
-```
-We use the `$get()` function to retrieve a specific task, here a multiclass classification task based on the dataset `iris`:
-```{r}
-iris.task = mlr.tasks$get("iris")
-print(iris.task)
-```
-The data itself is stored in an abstract class `Backend`.
-It is designed to transparently access in-memory data structures (`data.table` is used internally) as well as real DBMS via the `dplyr` package.
-Because most data bases can only be accessed read-only, the operations on these data base backend are limited.
-However, you can subset the data to a "view" by excluding rows and columns while the underlying data base must not be altered:
+The backend treats the data as immutable.
+While some operations work without touching or querying the data (filtering rows or selecting columns), other (preprocessing) operations will create an in-memory copy of the data (or subset) on the fly.
 ```{r}
 # subset to 120 rows and remove column "Petal.Length"
 keep = setdiff(c(iris.task$target, iris.task$features), "Petal.Length")
@@ -103,13 +96,60 @@ iris.task$subset(rows = 1:120, cols = keep)
 iris.task$nrow
 iris.task$features
 ```
-Note that you may also alter the data.
-In the case of a data base backend, the data is then first fetched from the data base and then stored in a `data.table`.
-This affects only the respective rows you operate on.
-Thus, if you subsample your data first to only use 0.1% of all observations, you can keep the memory footprint reasonable.
+If you for example subsample your data first to only use 0.1% of all observations before preprocessing and feeding it into a model, you can keep the memory footprint reasonable.
+
+
+### Predefined Tasks
+
+The package ships with some popular tasks to toy around with.
+Like most objects in `mlrng`, tasks are stored in a `Dictionary` which is called `mlr.tasks` here:
+```{r}
+print(mlr.tasks)
+print(mlr.tasks$summary())
+```
+We use the `$get()` function to retrieve a specific task, here a regression task based on the dataset `BostonHousing`:
+```{r}
+bh.task = mlr.tasks$get("bh")
+bh.task$head()
+```
 
 
 ## Learners
+
+Learners interface statistical learning algorithms which implement two steps:
+In the first step, they are provided some training data to fit a model.
+In the second step, this model is used to predict on data where the outcome is unknown.
+Many popular learners a connected to `mlrng` in the package `mlrnglearners` (FIXME) to keep the dependency chain reasonable.
+
+### Create Learners
+Users and package authors can define their own learners (but be sure to check if someone else already did the job for you!).
+
+Here, we create a new, simple learner which takes a classification problem and predicts the majority class.
+Learners must follow the these conventions:
+* The training function `train()` takes a task and a training subset.
+  The `train()` function should only use the respective subset of the task to build the model.
+  The return value can be an arbitrary R object which will be passed to `predict()`.
+* The predict function `predict()` gets the return value of the train function as argument `model` and
+  the data to predict on as argument `newdata`.
+
+```{r}
+lrn = LearnerClassif$new(
+  name = "majority",
+  properties = c("missings", "feat.factor", "feat.numeric"),
+
+  train = function(task, subset, ...) {
+    truth = task$get(subset, task$target)[[1L]]
+    list(majority.class = names(which.max(table(truth))))
+  },
+
+  predict = function(model, newdata, ...) {
+    rep.int(model$majority.class, nrow(newdata))
+  }
+)
+```
+
+
+### Predefined Learners
 
 All learners are stored in a register called `mlr.learners` and can easily be listed:
 ```{r}
@@ -138,12 +178,6 @@ mlr.learners$add(lrn.dummy)
 mlr.learners$summary()
 ```
 From now on, we can just pass the id `"classif.dummy.sample"` to other functions to use this learner.
-
-### CART
-
-```{r}
-lrn.rpart = mlr.learners$get("classif.rpart")
-```
 
 ## Measures
 

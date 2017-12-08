@@ -54,9 +54,11 @@ Task = R6Class("Task",
       if (missing(newdata)) {
         return(self$backend$data)
       }
-      if (self$backend$writeable) {
+      if (self$backend$local) {
         self$backend$data = newdata
       } else {
+        if (getOption("mlrng.debug"))
+          gmessage("Creating an in-memory copy of the task '{task$id}'")
         self$backend = BackendLocal$new(data = newdata, rowid.col = self$backend$rowid.col)
       }
     },

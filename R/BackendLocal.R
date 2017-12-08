@@ -14,7 +14,6 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
         assertNames(names(data), must.include = rowid.col)
         self$rowid.col = rowid.col
       }
-      self$writeable = TRUE
     },
 
     get = function(rows = NULL, cols = NULL, include.rowid.col = FALSE) {

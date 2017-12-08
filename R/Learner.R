@@ -20,7 +20,7 @@ Learner = R6Class("Learner",
     model.extractors = list(),
     allowed.predict.types = NULL,
 
-    initialize = function(task.type, name, par.set, par.vals = list(), packages = character(0L), properties = character(0L), train, predict, model.extractors, allowed.predict.types, predict.type) {
+    initialize = function(task.type, name, par.set, par.vals, packages, properties, train, predict, model.extractors, allowed.predict.types, predict.type) {
       self$task.type = assertString(task.type)
       self$name = assertString(name)
       self$id = stri_paste(task.type, ".", name)
