@@ -37,7 +37,7 @@ test_that("No training encapsulation works", {
 
 test_that("warnings/messages are caught", {
   task = test.tasks$get("regr.num")
-  lrn = test.learner$get("regr.mock")
+  lrn = test.learners$get("regr.mock.conditions")
   lrn$par.vals = list(warning = TRUE, message = TRUE)
   mod = train(task, lrn)
   expect_equal(mod$train.log$n.messages, 1)
@@ -48,7 +48,7 @@ test_that("warnings/messages are caught", {
 
 test_that("continue on learner error works", {
   withr::with_options(new = list(mlrng.continue.on.learner.error = TRUE), code = {
-    lrn = test.learner$get("regr.mock")
+    lrn = test.learners$get("regr.mock.conditions")
     lrn$par.vals = list(error = TRUE)
     task = test.tasks$get("regr.num")
     mod = train(task, lrn)

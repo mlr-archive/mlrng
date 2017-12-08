@@ -53,7 +53,7 @@ test_that("Tasks can be loaded from the fs", {
 })
 
 test_that("Task$subset works", {
-  task = TaskClassif$new(id = "iris", data = iris, target = "Species")
+  task = mlr.tasks$get("iris")
   expect_identical(task$nrow, 150L)
   nt = task$clone(TRUE)$subset(1:90)
 
@@ -61,6 +61,10 @@ test_that("Task$subset works", {
   expect_different_address(task, nt)
   expect_identical(task$nrow, 150L)
   expect_identical(nt$nrow, 90L)
+
+  # re-grow the task
+  nt$subset(1:150)
+  expect_identical(nt$nrow, 150L)
 })
 
 test_that("Task$truth works", {
