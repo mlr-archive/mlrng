@@ -30,7 +30,7 @@ Get (a subset of) the task data. Rows must be specified by row ids (defaulting t
 \item{\code{head}}{[\code{function(n = 6L)}]\cr
 Fetches the first \code{n} rows of the data and returns a \code{data.table}.}
 
-\item{\code{feature.names}}{[\code{character}]\cr
+\item{\code{features}}{[\code{character}]\cr
 Names of the features.}
 
 \item{\code{formula}}{[\code{character}]\cr
