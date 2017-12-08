@@ -52,8 +52,8 @@ c(iris.task$nrow, iris.task$ncol)
 # name of the target column
 iris.task$target
 
-# name of the feature columns
-iris.task$features
+# names of the feature columns
+iris.task$feature.names
 
 # formula describing the task
 iris.task$formula
@@ -90,11 +90,11 @@ The backend treats the data as immutable.
 While some operations work without touching or querying the data (filtering rows or selecting columns), other (preprocessing) operations will create an in-memory copy of the data (or subset) on the fly.
 ```{r}
 # subset to 120 rows and remove column "Petal.Length"
-keep = setdiff(c(iris.task$target, iris.task$features), "Petal.Length")
+keep = setdiff(c(iris.task$target, iris.task$feature.names), "Petal.Length")
 iris.task$subset(rows = 1:120, cols = keep)
 
 iris.task$nrow
-iris.task$features
+iris.task$feature.names
 ```
 If you for example subsample your data first to only use 0.1% of all observations before preprocessing and feeding it into a model, you can keep the memory footprint reasonable.
 

@@ -6,9 +6,12 @@
 #'
 #' @template fields-task
 #' @template fields-supervisedtask
-#' @field positive [\code{character(1)}]: Only for binary classification: Level of the positive class (\code{NA} otherwise).
-#' @field classes [\code{character()}]: Levels of class labels.
-#' @field nclasses [\code{integer(1)}]: Number of levels of class labels.
+#' @field positive [\code{character(1)}]\cr
+#'  Only for binary classification: Level of the positive class (\code{NA} otherwise).
+#' @field classes [\code{character()}]\cr
+#'  Levels of class labels.
+#' @field nclasses [\code{integer(1)}]\cr
+#'  Number of levels of class labels.
 #'
 #' @return [\code{\link{TaskClassif}}].
 #' @include TaskSupervised.R

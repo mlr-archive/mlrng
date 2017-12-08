@@ -12,7 +12,7 @@
 #' @export
 #' @family Tasks
 #' @examples
-#' task = TaskClassif$new("iris", data = iris, target = "Species")
+#' task = Task$new("iris", data = iris)
 #' task$formula
 Task = R6Class("Task",
   # Base Class for Tasks
@@ -39,10 +39,6 @@ Task = R6Class("Task",
     head = function(n = 6L) {
       assertCount(n)
       self$backend$head(n)
-    },
-
-    truth = function(rows = NULL) {
-      self$backend$get(rows, cols = self$target)
     },
 
     subset = function(rows = NULL, cols = NULL) {
@@ -77,6 +73,15 @@ Task = R6Class("Task",
           gmessage("Creating an in-memory copy of task '{self$id}'")
         self$backend = BackendLocal$new(data = newdata, rowid.col = self$backend$rowid.col)
       }
+    },
+
+    # [charvec]. feature names without target names
+    feature.names = function() {
+      self$backend$colnames
+    },
+
+    formula = function() {
+      reformulate(self$feature.names)
     },
 
     nrow = function() {

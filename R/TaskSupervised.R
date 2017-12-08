@@ -4,6 +4,7 @@ TaskSupervised = R6Class("TaskSupervised",
   inherit = Task,
   public = list(
     target = NA_character_,
+
     initialize = function(id, data, target) {
       super$initialize(id = id, data = data)
       self$target = assertChoice(target, self$backend$colnames)
@@ -13,17 +14,22 @@ TaskSupervised = R6Class("TaskSupervised",
         gcat("Supervised Task
               Target: {self$target}")
         super$print()
+    },
+
+    truth = function(rows = NULL) {
+      self$backend$get(rows, cols = self$target)
     }
+
   ),
 
   active = list(
     # [formula]. target ~ x1 + ... + xp
     formula = function() {
-      reformulate(self$features, response = self$target)
+      reformulate(self$feature.names, response = self$target)
     },
 
-    # [charvec]. featurenames without targetnames
-    features = function() {
+    # [charvec]. feature names without target names
+    feature.names = function() {
       setdiff(self$backend$colnames, self$target)
     }
   )

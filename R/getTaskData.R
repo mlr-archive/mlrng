@@ -5,7 +5,7 @@ getTaskData = function(task, subset = NULL, type = "train", props = NULL, target
   # FIXME: Maybe we want also 'target.as' to be logical or integer, however beware of typecast errors.
   assertSubset(target.as, c("factor", "character"), empty.ok = TRUE)
   assertChoice(type, choices = c("train", "test", "extra"))
-  x = task$get(rows = subset, cols = task$features)
+  x = task$get(rows = subset, cols = task$feature.names)
   convertFeatures(x, props)
 
   target = task$truth(subset)
