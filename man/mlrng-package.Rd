@@ -6,7 +6,9 @@
 \alias{mlrng-package}
 \title{mlrng: Machine Learning in R - Next Generation}
 \description{
-Machine Learning in R. Next Gen.
+For bug reports and feature requests please use the tracker:
+\url{https://github.com/mlr-org/mlrng}.
+Package options are convered in \link{mlrng-config}.
 }
 \author{
 \strong{Maintainer}: Bernd Bischl \email{bernd_bischl@gmx.de}
@@ -17,4 +19,3 @@ Authors:
 }
 
 }
-\keyword{internal}

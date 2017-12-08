@@ -41,7 +41,7 @@ Suggests:
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'Backend.R'
     'BackendDBI.R'
     'BackendLocal.R'
@@ -66,6 +66,7 @@ Collate:
     'TuneControlGrid.R'
     'asserts.R'
     'benchmark.R'
+    'config.R'
     'expect_learner.R'
     'getTaskData.R'
     'helper.R'

@@ -1,3 +1,4 @@
+#' @import stringi
 #' @import checkmate
 #' @import data.table
 #' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col isFALSE
@@ -10,10 +11,13 @@
 #' @importFrom stats setNames predict
 #' @importFrom utils data
 #' @import phng
-#' @import stringi
-#' @keywords internal
+#'
+#' @description
+#' For bug reports and feature requests please use the tracker:
+#' \url{https://github.com/mlr-org/mlrng}.
+#' Package options are convered in \link{mlrng-config}.
+#'
 "_PACKAGE"
-
 
 mlrng = new.env(parent = emptyenv())
 mlrng$supported.col.types = c(
@@ -47,16 +51,7 @@ mlrng$default.opts = list(
     options(mlrng$default.opts[unset])
 
   # read config file
-  fn = file.path(rappdirs::user_config_dir("mlrng"), "config.yml")
-  if (file.exists(fn)) {
-    opts = try(yaml::read_yaml(fn))
-    if (inherits(opts, "try-error") || !testList(opts, names = "unique")) {
-      gwarn("Config file {fn} seems to be syntactically invalid")
-    } else {
-      names(opts) = sprintf("mlrng.%s", names(opts))
-      options(opts)
-    }
-  }
+  options(readMlrngConfig())
 
 } #nocov end
 
