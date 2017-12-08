@@ -1,4 +1,3 @@
-#' @import callr
 #' @import checkmate
 #' @import data.table
 #' @import evaluate

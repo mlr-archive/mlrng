@@ -62,6 +62,7 @@ getTrainEvalString = function(encapsulation) {
   if (encapsulation == 1L) {
     "result = fitModel(task, learner, row.ids)"
   } else {
+    requireNS("callr")
      "result = callr::r(function(task, learner, row.ids) {
         library(mlrng)
         mlrng:::fitModel(task, learner, row.ids)

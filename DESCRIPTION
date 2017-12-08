@@ -17,7 +17,6 @@ Depends:
 Imports:
     backports (>= 1.1.1),
     BBmisc,
-    callr,
     checkmate (>= 1.8.4),
     DBI,
     digest,
@@ -33,6 +32,7 @@ Imports:
     stringi,
     yaml
 Suggests:
+    callr,
     dbplyr,
     knitr,
     mlbench,
