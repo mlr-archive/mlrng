@@ -10,7 +10,7 @@ test_that("benchmark", {
   resamplings[[1]]$iters = 3L
   measures = list(mlr.measures$get("mmce"))
 
-  withr::with_options(list(mlrng.train.encapsulation = 0L), {
+  withr::with_options(list(mlrng.train.encapsulation = "none"), {
     bmr = benchmark(tasks, learners, resamplings, measures)
   })
   expect_result(bmr)

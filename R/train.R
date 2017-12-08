@@ -21,11 +21,11 @@ train = function(task, learner, subset = NULL) {
 }
 
 trainWorker = function(task, learner, row.ids) {
-  encapsulation = getOption("mlrng.train.encapsulation", 1L)
+  encapsulation = assertString(getOption("mlrng.train.encapsulation", "evaluate"))
   result = NULL
 
   start.time = proc.time()[3L]
-  if (encapsulation == 0L) {
+  if (encapsulation == "none") {
     result = fitModel(task, learner, row.ids)
     raw.log = list()
   } else {
@@ -58,14 +58,15 @@ fitModel = function(task, learner, row.ids) {
 }
 
 getTrainEvalString = function(encapsulation) {
-  assertInt(encapsulation, lower = 1L,  upper = 2L)
-  if (encapsulation == 1L) {
+  if (encapsulation == "evaluate") {
     "result = fitModel(task, learner, row.ids)"
-  } else {
+  } else if (encapsulation == "callr") {
     requireNS("callr")
      "result = callr::r(function(task, learner, row.ids) {
         library(mlrng)
         mlrng:::fitModel(task, learner, row.ids)
         }, list(task = task, learner = learner, row.ids = row.ids))"
+  } else {
+    gstop("Invalid encapsulation setting '{encapsulation}'", .call = FALSE)
   }
 }

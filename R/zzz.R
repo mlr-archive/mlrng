@@ -36,7 +36,7 @@ mlrng$default.opts = list(
   mlrng.debug = TRUE,
   mlrng.keep.train.output = FALSE,
   mlrng.continue.on.learner.error = FALSE,
-  mlrng.train.encapsulation = 1L
+  mlrng.train.encapsulation = "evaluate"
 )
 
 .onLoad = function(libname, pkgname) { #nocov start

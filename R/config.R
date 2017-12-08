@@ -20,9 +20,9 @@
 #'     Keep running if a learner encounters a problem. The resulting model will be a model fitted by a dummy learner.
 #'   }
 #'   \item{\code{mlrng.train.encapsulation}}{
-#'     Control how the training of learners is encapsulated. \dQuote{0} means no encapsulation but also no logging (fastest).
-#'     If set to \dQuote{1} (default), the package \pkg{evaluate} is used to run the model fit.
-#'     If set to \dQuote{2}, the package \pkg{callr} starts the training in a separate R process to guard your session against segfaults.
+#'     Control how the training of learners is encapsulated. \dQuote{none} means no encapsulation but also no logging (fastest).
+#'     If set to \dQuote{evaluate} (default), the package \pkg{evaluate} is used to run the model fit.
+#'     If set to \dQuote{callr}, the package \pkg{callr} starts the training in a separate R process to guard your session against segfaults.
 #'   }
 #' }
 #'

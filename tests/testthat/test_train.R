@@ -15,7 +15,7 @@ test_that("Training with default options", {
 })
 
 test_that("No training encapsulation works", {
-  withr::with_options(new = list(mlrng.train.encapsulation = 0), code = {
+  withr::with_options(new = list(mlrng.train.encapsulation = "none"), code = {
     mod = train(task, lrn)
     expect_is(mod, "TrainResult")
     expect_true(mod$train.success)
