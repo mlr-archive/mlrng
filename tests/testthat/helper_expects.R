@@ -1,3 +1,5 @@
+library(checkmate)
+
 expect_backend = function(b) {
   expect_r6(b, cloneable = TRUE, public = c("nrow", "ncol", "colnames", "rownames", "data", "head", "distinct", "missing.values", "types"))
   n = b$nrow

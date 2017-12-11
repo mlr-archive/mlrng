@@ -1,19 +1,36 @@
 Backend = R6Class("Backend",
   public = list(
     rowid.col = NULL,
-    mutators = list()
+    view.rows = NULL,
+    view.cols = NULL,
+    transformators = list()
+  ),
+  active = list(
+    types = function() {
+      vcapply(self$head(1L), class)
+    }
   ),
   private = list(
-    mutate = function(data) {
-      nms = intersect(names(self$mutators), names(data))
+    transform = function(data) {
+      nms = intersect(names(self$transformators), names(data))
       for (n in nms)
-        set(data, j = n, value = self$mutators[[n]](data[[n]]))
+        set(data, j = n, value = self$transformators[[n]](data[[n]]))
       data
+    },
+
+    deep_clone = function(name, value) {
+      if (name == "view.rows") {
+        if (is.null(value)) NULL else copy(value)
+      } else if (name == "con") {
+        NULL
+      } else {
+        value
+      }
     }
   )
 )
 
-getDefaultMutators = function(data) {
+getDefaultTransformators = function(data) {
   getTrafo = function(x) {
     switch(class(x),
       character = function(x) as.character(x),
