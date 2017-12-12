@@ -1,3 +1,4 @@
+#' @include mlr.resamplings.R
 #' @include Resampling.R
 mlr.resamplings$add(
   Resampling$new(

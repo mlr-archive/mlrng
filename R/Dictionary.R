@@ -44,11 +44,15 @@ Dictionary = R6Class("Dictionary",
 
     # get object from dict by id
     # [string] x [bool] --> eltype
-    get = function(id, deep = FALSE) {
+    get = function(id, clone = TRUE, deep = FALSE) {
       assertString(id)
       assertContains(self, id)
       obj = get0(id, envir = self$env, inherits = FALSE)
-      if (inherits(obj, "LazyElement")) obj$get() else obj$clone(deep = deep)
+      if (inherits(obj, "LazyElement"))
+        return(obj$get())
+      if (clone)
+        return(obj$clone(deep = deep))
+      return(obj)
     },
 
     # are ids present in dict?
@@ -73,8 +77,9 @@ Dictionary = R6Class("Dictionary",
       invisible(self)
     },
 
-    getElementSummary = function(x) {
-      data.table()
+    summary = function(ids) {
+      assertContains(self, ids)
+      data.table(id = ids, key = "id")
     },
 
     print = function(...) {
@@ -104,21 +109,30 @@ Dictionary = R6Class("Dictionary",
   )
 )
 
+extractSummary = function(self, ids, fun) {
+  if (is.null(ids)) {
+    ids = self$ids
+  } else {
+    assertContains(self, ids)
+  }
+  fun = match.fun(fun)
+  s = lapply(ids, function(id) c(list(id = id), fun(self$get(id, clone = FALSE))))
+  setkeyv(rbindlist(s), "id")[]
+}
+
 #' @export
 as.list.Dictionary = function(x, ...) {
+  # FIXME: need to copy?
   as.list(x$env)
 }
 
 #' @export
-as.data.table.Dictionary = function(x, keep.rownames = FALSE, ..., with.obj = TRUE) {
-  tab = rbindlist(eapply(x$env, function(e) {
-    ee = if (inherits(e, "LazyElement")) e$get() else e$clone()
-    row = cbind(data.table(id = e$id), x$getElementSummary(ee))
-    if (with.obj)
-      row[, "obj" := list(list(ee))]
-    return(row)
-  }, USE.NAMES = FALSE), fill = TRUE)
-  setkeyv(tab, "id")[]
+as.data.table.Dictionary = function(x, keep.rownames = FALSE, ...) {
+  ids = x$ids
+  data.table(
+    id = ids,
+    object = lapply(ids, x$get, clone = TRUE)
+  )
 }
 
 # class to define lazy objects, which can be expanded / allocated later

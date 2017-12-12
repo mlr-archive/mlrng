@@ -1,7 +1,7 @@
 context("runExperiment")
 
 test_that("runExperiment worker", {
-  task = mlr.tasks$get("iris")
+  task = test.tasks$get("clm.num")
   learner = mlr.learners$get("classif.rpart")
   resampling = mlr.resamplings$get("cv")
   resampling$instantiate(task)

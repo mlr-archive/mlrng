@@ -1,9 +1,9 @@
-test.learner = DictionaryLearners$new()
+test.learners = DictionaryLearners$new()
 
 local({
   # dummmy learner that can produce warnings/errors/messages
   lrn = LearnerRegr$new(
-    name = "mock",
+    name = "mock.conditions",
     par.set = ParamSetFlat$new(params = list(
       ParamCategorical$new("method", values = c("mean", "median"), default = "mean"),
       ParamFlag$new("message", default = FALSE),
@@ -27,5 +27,25 @@ local({
       return(rep(0, nrow(newdata)))
     }
   )
-  test.learner$add(lrn)
+  test.learners$add(lrn)
+
+  # dummy learner that stores training ids
+  # lrn = LearnerClassif$new(
+  #   name = "mock.rowids",
+  #   par.vals = list(),
+  #   properties = c("missings", "feat.factor", "feat.numeric"),
+
+  #   train = function(task, subset, ...) {
+  #     list(
+  #       rowids = task$backend$get(include.rowid.col = TRUE)[[task$backend$rowid.col]],
+  #       label = task$classes[1L]
+  #     )
+
+  #   },
+  #   predict = function(model, newdata, ...) {
+  #     rep.int(model$label, nrow(newdata))
+  #   }
+  # )
+
+  # test.learners$add(lrn)
 })

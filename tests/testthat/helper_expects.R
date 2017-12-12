@@ -1,3 +1,5 @@
+library(checkmate)
+
 expect_backend = function(b) {
   expect_r6(b, cloneable = TRUE, public = c("nrow", "ncol", "colnames", "rownames", "data", "head", "distinct", "missing.values", "types"))
   n = b$nrow
@@ -51,7 +53,7 @@ expect_supervisedtask = function(task) {
   tf = terms(task$formula)
   expect_set_equal(labels(tf), task$features) # rhs
   expect_set_equal(setdiff(all.vars(tf), labels(tf)), task$target) # lhs
-  expect_subset(names(task$features), colnames(task$backend$tbl))
+  expect_subset(task$features, colnames(task$backend$head()))
 }
 
 expect_classiftask = function(task) {

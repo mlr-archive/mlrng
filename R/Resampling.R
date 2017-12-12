@@ -1,29 +1,3 @@
-#' @include Dictionary.R
-DictionaryResamplings = R6Class("DictionaryResamplings", inherit = Dictionary,
-  public = list(
-    initialize = function() {
-      super$initialize("Resampling")
-    },
-    getElementSummary = function(x) {
-      data.table(
-        id = x$id,
-        pars = list(x$pars)
-      )
-    }
-  )
-)
-
-#' @title Registered Resampling Methods
-#' @docType class
-#' @format \code{\link{R6Class}} object
-#'
-#' @description
-#' \code{Resamplings} is a \code{\link{Dictionary}} used to manage resampling methods.
-#'
-#' @export
-mlr.resamplings = DictionaryResamplings$new()
-
-
 #' @title Base Class for Resampling Measures
 #' @format \code{\link{R6Class}} object
 #'

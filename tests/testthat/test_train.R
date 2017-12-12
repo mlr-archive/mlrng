@@ -1,6 +1,6 @@
 context("train")
 
-task = mlr.tasks$get("iris")
+task = test.tasks$get("clm.num")
 lrn = mlr.learners$get("classif.rpart")
 
 test_that("Training with default options", {
@@ -15,7 +15,7 @@ test_that("Training with default options", {
 })
 
 test_that("No training encapsulation works", {
-  withr::with_options(new = list(mlrng.train.encapsulation = 0), code = {
+  withr::with_options(new = list(mlrng.train.encapsulation = "none"), code = {
     mod = train(task, lrn)
     expect_is(mod, "TrainResult")
     expect_true(mod$train.success)
@@ -36,8 +36,8 @@ test_that("No training encapsulation works", {
 #})
 
 test_that("warnings/messages are caught", {
-  task = mlr.tasks$get("bh")
-  lrn = test.learner$get("regr.mock")
+  task = test.tasks$get("regr.num")
+  lrn = test.learners$get("regr.mock.conditions")
   lrn$par.vals = list(warning = TRUE, message = TRUE)
   mod = train(task, lrn)
   expect_equal(mod$train.log$n.messages, 1)
@@ -48,9 +48,9 @@ test_that("warnings/messages are caught", {
 
 test_that("continue on learner error works", {
   withr::with_options(new = list(mlrng.continue.on.learner.error = TRUE), code = {
-    lrn = test.learner$get("regr.mock")
+    lrn = test.learners$get("regr.mock.conditions")
     lrn$par.vals = list(error = TRUE)
-    task = mlr.tasks$get("bh")
+    task = test.tasks$get("regr.num")
     mod = train(task, lrn)
     expect_false(mod$train.success)
     expect_equal(mod$train.log$n.errors, 1)

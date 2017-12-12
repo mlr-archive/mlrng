@@ -1,19 +1,10 @@
-#' @title Base Class for Supervised Tasks
-#'
-#' @description
-#' A \code{\link[R6]{R6Class}} to construct supervised tasks.
-#' This is the abstract base class, do not use directly!
-#'
-#' @template fields-task
-#' @template fields-supervisedtask
-#' @return [\code{\link{TaskSupervised}}].
-#' @family Tasks
 #' @include Task.R
-#' @export
 TaskSupervised = R6Class("TaskSupervised",
+  # Base Class for Supervised Tasks
   inherit = Task,
   public = list(
     target = NA_character_,
+
     initialize = function(id, data, target) {
       super$initialize(id = id, data = data)
       self$target = assertChoice(target, self$backend$colnames)
@@ -23,7 +14,12 @@ TaskSupervised = R6Class("TaskSupervised",
         gcat("Supervised Task
               Target: {self$target}")
         super$print()
+    },
+
+    truth = function(rows = NULL) {
+      self$backend$get(rows, cols = self$target)
     }
+
   ),
 
   active = list(
@@ -32,7 +28,7 @@ TaskSupervised = R6Class("TaskSupervised",
       reformulate(self$features, response = self$target)
     },
 
-    # [charvec]. featurenames without targetnames
+    # [charvec]. feature names without target names
     features = function() {
       setdiff(self$backend$colnames, self$target)
     }

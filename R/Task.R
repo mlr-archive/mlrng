@@ -1,42 +1,21 @@
-#' @include Dictionary.R
-DictionaryTasks = R6Class("DictionaryTasks", inherit = Dictionary,
-  public = list(
-    initialize = function() {
-      super$initialize("Task")
-    },
-    getElementSummary = function(x) {
-      data.table(
-        task.type = x$task.type,
-        nrow = x$nrow,
-        ncol = x$ncol
-        )
-    }
-  )
-)
-
-#' @title Registered Tasks
-#' @docType class
+#' @title Basic Tasks
 #' @format \code{\link{R6Class}} object
 #'
 #' @description
-#' \code{Tasks} is a \code{\link{Dictionary}} used to manage tasks.
-#'
-#' @export
-mlr.tasks = DictionaryTasks$new()
-
-
-#' @title Base Class for Tasks
-#' @format \code{\link{R6Class}} object
-#'
-#' @description
-#' A \code{\link[R6]{R6Class}} to construct tasks.
-#' This is the abstract base class, do not use directly!
+#' This is the abstract base class for task objects.
+#' Use \code{\link{TaskClassif}} or \code{\link{TaskRegr}} to construct tasks instead of this class.
 #'
 #' @template fields-task
-#' @field task.type [\code{character(1)}]: Type of task (\dQuote{classif}).
+#' @template fields-supervisedtask
+#'
 #' @return [\code{\link{Task}}].
+#' @export
 #' @family Tasks
+#' @examples
+#' task = Task$new("iris", data = iris)
+#' task$formula
 Task = R6Class("Task",
+  # Base Class for Tasks
   public = list(
     ### SLOTS ##################################################################
     task.type = NA_character_,
@@ -60,10 +39,6 @@ Task = R6Class("Task",
     head = function(n = 6L) {
       assertCount(n)
       self$backend$head(n)
-    },
-
-    truth = function(rows = NULL) {
-      self$backend$get(rows, cols = self$target)
     },
 
     subset = function(rows = NULL, cols = NULL) {
@@ -91,11 +66,22 @@ Task = R6Class("Task",
       if (missing(newdata)) {
         return(self$backend$data)
       }
-      if (self$backend$writeable) {
+      if (inherits(self$backend, "BackendLocal")) {
         self$backend$data = newdata
       } else {
+        if (getOption("mlrng.debug"))
+          gmessage("Creating an in-memory copy of task '{self$id}'")
         self$backend = BackendLocal$new(data = newdata, rowid.col = self$backend$rowid.col)
       }
+    },
+
+    # [charvec]. feature names without target names
+    features = function() {
+      self$backend$colnames
+    },
+
+    formula = function() {
+      reformulate(self$features)
     },
 
     nrow = function() {
@@ -115,10 +101,3 @@ Task = R6Class("Task",
     }
   )
 )
-
-if (FALSE) {
-  x = mlr.tasks$get("iris")
-  newdata = x$backend$get(include.rowid.col = TRUE)
-  x$data = newdata[1:50,]
-  x
-}

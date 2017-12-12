@@ -53,7 +53,7 @@ test_that("Tasks can be loaded from the fs", {
 })
 
 test_that("Task$subset works", {
-  task = TaskClassif$new(id = "iris", data = iris, target = "Species")
+  task = mlr.tasks$get("iris")
   expect_identical(task$nrow, 150L)
   nt = task$clone(TRUE)$subset(1:90)
 
@@ -61,6 +61,10 @@ test_that("Task$subset works", {
   expect_different_address(task, nt)
   expect_identical(task$nrow, 150L)
   expect_identical(nt$nrow, 90L)
+
+  # re-grow the task
+  nt$subset(1:150)
+  expect_identical(nt$nrow, 150L)
 })
 
 test_that("Task$truth works", {
@@ -74,8 +78,8 @@ test_that("Task$truth works", {
   expect_names(names(y), identical.to = task$target)
 })
 
-test_that("Task$get() return duplicated rows", {
-  tasks = list(mlr.tasks$get("iris"), test.tasks$get("clm.num"))
+test_that("Task$get() returns duplicated rows", {
+  tasks = list(test.tasks$get("regr.num"), test.tasks$get("clm.num"))
   for (task in tasks) {
     ids = rep(head(task$backend$rownames, 6), 2)
     x = task$get(rows = ids)

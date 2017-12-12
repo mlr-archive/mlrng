@@ -1,7 +1,7 @@
 context("Learners")
 
-test_that("as.data.table", {
-  x = as.data.table(mlr.learners)
+test_that("summary", {
+  x = mlr.learners$summary()
   expect_data_table(x, min.rows = 2, key = "id")
   expect_character(x$name, any.missing = FALSE)
   expect_character(x$task.type, any.missing = FALSE)

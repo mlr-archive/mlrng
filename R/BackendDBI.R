@@ -2,8 +2,6 @@
 BackendDBI = R6Class("BackendDBI", inherit = Backend,
   public = list(
     tbl.name = NULL,
-    view.rows = NULL,
-    view.cols = NULL,
     con.pars = NULL,
 
     initialize = function(data, rowid.col = NULL, tbl.name) {
@@ -28,7 +26,6 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
         self$rowid.col = assertString(rowid.col, min.chars = 1L)
         self$con.pars = assertList(data, names = "unique")
       }
-      self$writeable = FALSE
     },
 
     finalizer = function() {
@@ -93,7 +90,10 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
 
     distinct = function(col) {
       assertChoice(col, self$colnames)
-      dplyr::collect(dplyr::distinct(dplyr::select_at(self$tbl(filter = TRUE), col)))[[1L]]
+      x = private$transform(dplyr::collect(dplyr::distinct(dplyr::select_at(self$tbl(filter = TRUE), col))))[[1L]]
+      if (is.factor(x))
+        return(as.character(unique(x)))
+      return(unique(x))
     },
 
     head = function(n = 6L) {
@@ -134,10 +134,6 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
       length(colnames(self$tbl())) - 1L
     },
 
-    types = function() {
-      vcapply(private$transform(self$head(1L)), class)
-    },
-
     missing.values = function() {
       query = dplyr::summarize_at(self$tbl(filter = TRUE), self$colnames, dplyr::funs(sum(is.na(.))))
       unlist(dplyr::collect(query))
@@ -145,16 +141,6 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
   ),
 
   private = list(
-    con = NULL,
-    deep_clone = function(name, value) {
-      if (name == "view.rows") {
-        if (is.null(value)) NULL else copy(value)
-      } else if (name == "con") {
-        NULL
-      } else {
-        value
-      }
-    }
+    con = NULL
   )
 )
-

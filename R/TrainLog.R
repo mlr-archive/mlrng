@@ -17,9 +17,7 @@ TrainLog = R6Class("TrainLog",
     errors = NULL,
     output = NULL,
     initialize = function(output, train.time) {
-
         assertList(output)
-
         if(getOption("mlrng.keep.train.output", FALSE))
           self$output = assertList(output)
         self$errors = output[vlapply(output, evaluate::is.error)]
