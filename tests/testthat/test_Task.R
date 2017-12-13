@@ -2,7 +2,10 @@ context("Task")
 
 test_that("Task Construction", {
   task = Task$new(id = "foo", iris)
+  task$rows("training")
   expect_task(task)
+
+  task$get(cols = task$cols(role = "predictor"), rows = task$rows(role = "target"))
 
   new.task = task$clone()
   b = BackendLocal$new(task$backend$get(include.rowid.col = TRUE), task$backend$rowid.col)

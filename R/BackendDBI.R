@@ -3,6 +3,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
   public = list(
     tbl.name = NULL,
     con.pars = NULL,
+    transformators = list(),
 
     initialize = function(data, rowid.col = NULL, tbl.name) {
       self$tbl.name = assertString(tbl.name, min.chars = 1L)
@@ -32,77 +33,62 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
       DBI::dbDisconnect(private$con)
     },
 
-    tbl = function(filter = FALSE, select = FALSE) {
-      ok = try(DBI::dbIsValid(private$con), silent = TRUE)
-      if (inherits(ok, "try-error") || !isTRUE(ok) || is.null(private$con))
-        private$con = do.call(DBI::dbConnect, self$con.pars)
-      tbl = dplyr::tbl(self$tbl.name, src = private$con)
 
-      if (filter && !is.null(self$view.rows))
-        tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% self$view.rows[[1L]]))
-
-      if (select && !is.null(self$view.cols))
-        tbl = dplyr::select_at(tbl, c(self$rowid.col, self$view.cols))
-
-      return(tbl)
-    },
-
-    get = function(rows = NULL, cols = NULL, include.rowid.col = FALSE) {
-      tbl = self$tbl(filter = TRUE, select = TRUE)
+    get = function(rows = NULL, cols = NULL) {
+      tbl = self$tbl
 
       if (!is.null(rows)) {
+        assertAtomicVector(rows, min.len = 1L)
         tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
       }
 
       if (!is.null(cols)) {
-        assertSubset(cols, colnames(tbl))
-        tbl = dplyr::select_at(tbl, c(self$rowid.col, cols))
+        assertSubset(cols, colnames(tbl), empty.ok = FALSE)
+        tbl = dplyr::select_at(tbl, union(self$rowid.col, cols))
       }
 
       data = setDT(dplyr::collect(tbl), key = self$rowid.col)
-      if (!is.null(rows))
+
+      if (!is.null(rows) && anyDuplicated(rows))
         data = data[list(rows), on = self$rowid.col, nomatch = 0L]
-      else if (!is.null(self$view.rows))
-        data = data[self$view.rows, on = self$rowid.col, nomatch = 0L]
+      if (!is.null(cols) && self$rowid.col %nin% cols)
+        data[[self$rowid.col]] = NULL
 
       if (!is.null(rows) && nrow(data) != length(rows))
         stop("Invalid row ids provided")
 
-      if (!isTRUE(include.rowid.col))
-        data[[self$rowid.col]] = NULL
       return(private$transform(data))
     },
 
-    subset = function(rows = NULL, cols = NULL) {
-      if (!is.null(rows)) {
-        assertAtomicVector(rows, any.missing = FALSE)
-        self$view.rows = data.table(..id = rows, key = "..id")
-        setnames(self$view.rows, "..id", self$rowid.col)
-      }
-
-      if (!is.null(cols)) {
-        assertSubset(cols, colnames(self$tbl()))
-        self$view.cols = setdiff(cols, self$rowid.col)
-      }
-
-      invisible(self)
-    },
-
     distinct = function(col) {
-      assertChoice(col, self$colnames)
-      x = private$transform(dplyr::collect(dplyr::distinct(dplyr::select_at(self$tbl(filter = TRUE), col))))[[1L]]
+      tbl = self$tbl
+      assertChoice(col, colnames(tbl))
+      x = private$transform(setDT(dplyr::collect(dplyr::distinct(dplyr::select_at(tbl, col)))))[[1L]]
       if (is.factor(x))
         return(as.character(unique(x)))
       return(unique(x))
     },
 
+    missing.values = function(col) {
+      tbl = self$tbl
+      assertChoice(col, colnames(tbl))
+      dplyr::collect(dplyr::summarize_at(tbl, col, dplyr::funs(sum(is.na(.)))))[[1L]]
+    },
+
     head = function(n = 6L) {
-      tab = dplyr::collect(head(dplyr::select(self$tbl(filter = TRUE, select = TRUE), -dplyr::one_of(self$rowid.col)), n))
+      tab = dplyr::collect(head(self$tbl, n))
       private$transform(setDT(tab)[])
     }
   ),
 
   active = list(
+    tbl = function() {
+      ok = try(DBI::dbIsValid(private$con), silent = TRUE)
+      if (inherits(ok, "try-error") || !isTRUE(ok) || is.null(private$con))
+        private$con = do.call(DBI::dbConnect, self$con.pars)
+      dplyr::tbl(self$tbl.name, src = private$con)
+    },
+
     data = function(newdata) {
       if (missing(newdata)) {
         return(self$get())
@@ -111,36 +97,47 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
     },
 
     colnames = function() {
-      if (!is.null(self$view.cols))
-        return(self$view.cols)
-      return(setdiff(colnames(self$tbl()), self$rowid.col))
+      colnames(self$tbl)
     },
 
     rownames = function() {
-      if (!is.null(self$view.rows))
-        return(self$view.rows[[1L]])
-      dplyr::collect(dplyr::select_at(self$tbl(), self$rowid.col))[[1L]]
+      dplyr::collect(dplyr::select_at(self$tbl, self$rowid.col))[[1L]]
     },
 
     nrow = function() {
-      if (!is.null(self$view.rows))
-        return(nrow(self$view.rows))
-      dplyr::collect(dplyr::tally(self$tbl()))[[1L]]
+      dplyr::collect(dplyr::tally(self$tbl))[[1L]]
     },
 
     ncol = function() {
-      if (!is.null(self$view.cols))
-        return(length(self$view.cols))
-      length(colnames(self$tbl())) - 1L
-    },
-
-    missing.values = function() {
-      query = dplyr::summarize_at(self$tbl(filter = TRUE), self$colnames, dplyr::funs(sum(is.na(.))))
-      unlist(dplyr::collect(query))
+      ncol(self$tbl)
     }
   ),
 
   private = list(
-    con = NULL
+    con = NULL,
+
+    deep_clone = function(name, value) {
+      if (name == "con") NULL else  value
+    },
+
+    transform = function(data) {
+      nms = intersect(names(self$transformators), names(data))
+      for (n in nms)
+        set(data, j = n, value = self$transformators[[n]](data[[n]]))
+      data
+    }
   )
 )
+
+getDefaultTransformators = function(data) {
+  getTrafo = function(x) {
+    switch(class(x),
+      character = function(x) as.character(x),
+      factor = function(x) factor(x),
+      integer = function(x) as.integer(x),
+      logical = function(x) as.logical(x),
+      NULL
+    )
+  }
+  filterNull(lapply(data, getTrafo))
+}

@@ -12,20 +12,14 @@ expect_backend = function(b) {
 
   cn = b$colnames[1L]
   x = b$get(cols = cn)
-  expect_data_table(x, ncol = 1, nrow = n)
+  expect_data_table(x, ncol = 1L, nrow = n)
   x = x[[cn]]
   expect_atomic_vector(x, len = n)
   expect_set_equal(b$distinct(cn), x)
 
-  types = b$types
-  expect_character(types, len = p, names = "unique")
-  expect_set_equal(names(types), b$colnames)
-  expect_subset(types, mlrng$supported.col.types)
-
-  mv = b$missing.values
+  mv = sapply(b$colnames, b$missing.values)
   expect_integer(mv, names = "unique", any.missing = FALSE, lower = 0, upper = n)
   expect_set_equal(names(mv), b$colnames)
-
   expect_data_table(b$head(3), nrow = 3, ncol = p)
 }
 
@@ -39,6 +33,11 @@ expect_task = function(task) {
   expect_data_table(task$data)
   expect_data_table(task$get())
   expect_data_table(task$head(1), nrow = 1L)
+
+  # types = b$types
+  # expect_character(types, len = p, names = "unique")
+  # expect_set_equal(names(types), b$colnames)
+  # expect_subset(types, mlrng$supported.col.types)
   # task.nas = task$na.cols
   # expect_integer(task.nas, names = "unique", any.missing = FALSE, lower = 0L, upper = task$nrow)
   # expect_set_equal(names(task.nas), task$backend$colnames)

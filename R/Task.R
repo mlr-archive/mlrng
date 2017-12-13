@@ -1,3 +1,21 @@
+rowintersect = function(x, y, key) {
+  # y is data.table, x is atomic vector
+  if (is.null(x))
+    return(y[[1L]])
+  if (is.null(y))
+    return(x)
+  y[list(x), nomatch = 0L, on = key][[1L]]
+}
+
+colintersect = function(x, y) {
+  if (is.null(x))
+    return(y)
+  if (is.null(y))
+    return(x)
+  unique(y[chmatch(x, y, 0L)])
+}
+
+
 #' @title Basic Tasks
 #' @format \code{\link{R6Class}} object
 #'
@@ -21,6 +39,7 @@ Task = R6Class("Task",
     task.type = NA_character_,
     id = NULL,
     backend = NULL,
+    roles = NULL,
 
     ### METHODS ################################################################
     initialize = function(id, data) {
@@ -30,10 +49,19 @@ Task = R6Class("Task",
       } else {
         self$backend = assertR6(data, "Backend")
       }
+      self$roles = list(
+        cols = data.table(name = self$backend$colnames, key = "name"),
+        rows = data.table(name = self$backend$rownames, role = "training", key = "role")
+      )
+      self$roles$cols$role = ifelse(self$roles$cols$name == self$backend$rowid.col, "primary", "predictor")
     },
 
     get = function(rows = NULL, cols = NULL) {
       self$backend$get(rows = rows, cols = cols)
+    },
+
+    rows = function(role = NULL) {
+      self$roles$rows[..(role), "name", with = FALSE][[1L]]
     },
 
     head = function(n = 6L) {
