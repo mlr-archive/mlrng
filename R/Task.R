@@ -50,23 +50,40 @@ Task = R6Class("Task",
         self$backend = assertR6(data, "Backend")
       }
       self$roles = list(
-        cols = data.table(name = self$backend$colnames, key = "name"),
-        rows = data.table(name = self$backend$rownames, role = "training", key = "role")
+        cols = data.table(id = self$backend$colnames, key = "id"),
+        rows = data.table(id = self$backend$rownames, role = "training", key = "id")
       )
-      self$roles$cols$role = ifelse(self$roles$cols$name == self$backend$rowid.col, "primary", "predictor")
+      self$roles$cols$role = ifelse(self$roles$cols$id == self$backend$rowid.col, "primary.id", "feature")
+      types = vcapply(self$backend$head(1L), class)
+      self$roles$cols$type = types[match(self$roles$cols$id, names(types), 0L)]
     },
 
     get = function(rows = NULL, cols = NULL) {
       self$backend$get(rows = rows, cols = cols)
     },
 
-    rows = function(role = NULL) {
-      self$roles$rows[..(role), "name", with = FALSE][[1L]]
+    rows = function(roles = NULL) {
+      if (is.null(roles))
+        return(self$roles$rows[["id"]])
+      assertCharacter(roles, any.missing = FALSE)
+      self$roles$rows[role %in% roles, "id", with = FALSE][[1L]]
+    },
+
+    cols = function(roles = NULL, types = NULL) {
+      assertCharacter(roles, any.missing = FALSE, null.ok = TRUE)
+      assertCharacter(types, any.missing = FALSE, null.ok = TRUE)
+
+      switch((!is.null(roles)) + 2L * (!is.null(types)) + 1L,
+        self$roles$cols,
+        self$roles$cols[role %in% roles],
+        self$roles$cols[type %in% types],
+        self$roles$cols[role %in% roles & type %in% types],
+      )[, "id", with = FALSE][[1L]]
     },
 
     head = function(n = 6L) {
       assertCount(n)
-      self$backend$head(n)
+      self$backend$head(n)[, self$cols(roles = "feature"), with = FALSE]
     },
 
     subset = function(rows = NULL, cols = NULL) {
@@ -75,15 +92,12 @@ Task = R6Class("Task",
     },
 
     print = function(...) {
-      cols = self$col.types
-      if(hasName(self, "target"))
-        cols = cols[names(cols) != self$target]
-      tbl = table(cols)
+      feats = self$cols(roles = "feature")
+      types = glue_data(self$roles$cols[feats, .N, keyby = "type"], "{N} {type}")
       gcat("Task name: {self$id}
-            {self$nrow} rows and {length(cols)} features.
-            Features: {stri_peek(names(cols))}
-            Feature types: {stri_pasteNames(tbl, names.first = FALSE)}
-            Missings: {any(self$backend$missing.values) > 0L}")
+            {self$nrow} rows and {length(feats)} features.
+            Features: {stri_peek(feats)}
+            Types: {stri_flatten(types, \", \")}")
       if (getOption("mlrng.debug", FALSE))
           cat("\n", format(self), "\n")
   }),

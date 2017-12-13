@@ -2,13 +2,17 @@ context("Task")
 
 test_that("Task Construction", {
   task = Task$new(id = "foo", iris)
-  task$rows("training")
   expect_task(task)
 
-  task$get(cols = task$cols(role = "predictor"), rows = task$rows(role = "target"))
+  data = iris
+  data$..row.id = 1:150
+  b = BackendDBI$new(data, rowid.col = "..row.id", tbl.name = "iris")
+  Task$new(id = "iris", data = b)
+
+  task$get(cols = task$cols(role = "predictor"), rows = task$rows(role = "training"))
 
   new.task = task$clone()
-  b = BackendLocal$new(task$backend$get(include.rowid.col = TRUE), task$backend$rowid.col)
+  b = BackendLocal$new(task$backend$get(), task$backend$rowid.col)
   new.task$backend = b
   new.task$backend$internal.data$Sepal.Length = 1
   expect_task(new.task)

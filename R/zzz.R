@@ -23,14 +23,25 @@ mlrng = new.env(parent = emptyenv())
 mlrng$supported.col.types = c(
   "logical", "integer", "numeric", "character", "factor", "ordered"
 )
+
+mlrng$supported.col.roles = c(
+  c("primary.id", "id", "feature", "target", "grouping")
+)
+
+mlrng$supported.row.roles = c(
+  c("training", "evaluation")
+)
+
 mlrng$supported.learner.props = c(
   sprintf("feat.%s", mlrng$supported.col.types),
   "missings", "weights", "twoclass", "multiclass", "prob", "featimp", "parallel",
   "formula", "oobpreds", "se"
 )
+
 mlrng$result.states = c(
   "Result", "TrainResult", "PredictResult", "PerformanceResult", "ResampleResult", "BenchmarkResult"
 )
+
 mlrng$default.opts = list(
   mlrng.verbose = TRUE,
   mlrng.debug = TRUE,

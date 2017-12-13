@@ -38,12 +38,12 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
       tbl = self$tbl
 
       if (!is.null(rows)) {
-        assertAtomicVector(rows, min.len = 1L)
+        assertAtomicVector(rows)
         tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
       }
 
       if (!is.null(cols)) {
-        assertSubset(cols, colnames(tbl), empty.ok = FALSE)
+        assertSubset(cols, colnames(tbl))
         tbl = dplyr::select_at(tbl, union(self$rowid.col, cols))
       }
 

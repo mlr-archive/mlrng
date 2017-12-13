@@ -19,9 +19,9 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
 
     get = function(rows = NULL, cols = NULL) {
       if (!is.null(rows))
-        assertAtomicVector(rows, min.len = 1L)
+        assertAtomicVector(rows)
       if (!is.null(cols))
-        assertSubset(cols, colnames(self$internal.data), empty.ok = FALSE)
+        assertSubset(cols, colnames(self$internal.data))
 
       data = switch(is.null(rows) + 2L * is.null(cols) + 1L,
         self$internal.data[list(rows), c(self$rowid.col, cols), with = FALSE, on = self$rowid.col, nomatch = 0L],
