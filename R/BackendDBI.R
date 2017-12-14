@@ -34,28 +34,23 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
     },
 
 
-    get = function(rows = NULL, cols = NULL) {
+    get = function(rows, cols) {
       tbl = self$tbl
+      assertAtomicVector(rows)
+      assertSubset(cols, colnames(tbl))
 
-      if (!is.null(rows)) {
-        assertAtomicVector(rows)
-        tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
-      }
-
-      if (!is.null(cols)) {
-        assertSubset(cols, colnames(tbl))
-        tbl = dplyr::select_at(tbl, union(self$rowid.col, cols))
-      }
-
+      tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
+      tbl = dplyr::select_at(tbl, union(self$rowid.col, cols))
       data = setDT(dplyr::collect(tbl), key = self$rowid.col)
 
-      if (!is.null(rows) && anyDuplicated(rows))
-        data = data[list(rows), on = self$rowid.col, nomatch = 0L]
-      if (!is.null(cols) && self$rowid.col %nin% cols)
+      if (anyDuplicated(rows))
+        data = data[.(rows), on = self$rowid.col, nomatch = 0L]
+      if (self$rowid.col %nin% cols)
         data[[self$rowid.col]] = NULL
-
-      if (!is.null(rows) && nrow(data) != length(rows))
+      if (nrow(data) != length(rows))
         stop("Invalid row ids provided")
+      if (ncol(data) != length(cols))
+        stop("Invalid col ids provided")
 
       return(private$transform(data))
     },
@@ -83,16 +78,21 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
 
   active = list(
     tbl = function() {
-      ok = try(DBI::dbIsValid(private$con), silent = TRUE)
-      if (inherits(ok, "try-error") || !isTRUE(ok) || is.null(private$con))
+      if (is.null(private$con)) {
         private$con = do.call(DBI::dbConnect, self$con.pars)
+      } else {
+        ok = try(DBI::dbIsValid(private$con), silent = TRUE)
+        if (inherits(ok, "try-error") || !isTRUE(ok)) {
+          suppressWarnings(DBI::dbDisconnect(private$con))
+          private$con = do.call(DBI::dbConnect, self$con.pars)
+        }
+      }
+
       dplyr::tbl(self$tbl.name, src = private$con)
     },
 
     data = function(newdata) {
-      if (missing(newdata)) {
-        return(self$get())
-      }
+        return(setDT(dplyr::collect(self$tbl), key = self$rowid.col))
       stop("Cannot write to DBI backend")
     },
 

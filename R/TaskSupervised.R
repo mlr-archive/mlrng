@@ -3,11 +3,10 @@ TaskSupervised = R6Class("TaskSupervised",
   # Base Class for Supervised Tasks
   inherit = Task,
   public = list(
-    target = NA_character_,
-
     initialize = function(id, data, target) {
       super$initialize(id = id, data = data)
-      self$target = assertChoice(target, self$backend$colnames)
+      assertChoice(target, self$cols(roles = "feature")) # FIXME: use data.table
+      self$col.roles[id == target, "role" := "target"]
     },
 
     print = function(...) {
@@ -16,13 +15,16 @@ TaskSupervised = R6Class("TaskSupervised",
         super$print()
     },
 
-    truth = function(rows = NULL) {
+    truth = function(rows = self$rows("training")) {
       self$backend$get(rows, cols = self$target)
     }
-
   ),
 
   active = list(
+    target = function() {
+      self$cols(roles = "target")
+    },
+
     # [formula]. target ~ x1 + ... + xp
     formula = function() {
       reformulate(self$features, response = self$target)

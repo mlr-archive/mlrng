@@ -27,7 +27,7 @@ TaskClassif = R6Class("TaskClassif",
     positive = NA_character_,
     initialize = function(id = deparse(substitute(data)), data, target, positive) {
       super$initialize(id = id, data = data, target = target)
-      qassert(self$head(1L)[[self$target]], c("S", "F"))
+      # qassert(self$head(1L)[[self$target]], c("S", "F"))
     },
     print = function(...) {
       cat("Classification ")

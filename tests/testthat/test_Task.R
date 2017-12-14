@@ -2,17 +2,17 @@ context("Task")
 
 test_that("Task Construction", {
   task = Task$new(id = "foo", iris)
+  self = task
   expect_task(task)
 
   data = iris
   data$..row.id = 1:150
   b = BackendDBI$new(data, rowid.col = "..row.id", tbl.name = "iris")
   Task$new(id = "iris", data = b)
-
-  task$get(cols = task$cols(role = "predictor"), rows = task$rows(role = "training"))
+  expect_task(task)
 
   new.task = task$clone()
-  b = BackendLocal$new(task$backend$get(), task$backend$rowid.col)
+  b = BackendLocal$new(task$backend$data, task$backend$rowid.col)
   new.task$backend = b
   new.task$backend$internal.data$Sepal.Length = 1
   expect_task(new.task)
@@ -92,7 +92,7 @@ test_that("Task$get() returns duplicated rows", {
     x = task$get(rows = ids)
     expect_data_table(x, nrow = length(ids))
     expect_identical(x[1:6], x[7:12])
-    x = task$backend$get(rows = ids, include.rowid.col = TRUE)
+    x = task$backend$get(rows = ids, cols = task$col.roles$ids)
     expect_identical(x[[task$backend$rowid.col]], ids)
   }
 })
@@ -106,11 +106,3 @@ test_that("Tasks are auto-converted on change", {
   expect_class(task$backend, "BackendLocal")
   expect_data_table(task$data, nrow = 15, ncol = 5, any.missing = FALSE)
 })
-
-# test_that("Task change formula", {
-#   task = TaskClassif$new(id = "iris", data = iris, target = "Species")
-#   expect_set_equal(all.vars(task$formula), colnames(iris))
-
-#   task$formula = Species ~ Petal.Length
-#   expect_set_equal(all.vars(task$formula), c("Species", "Petal.Length"))
-# })

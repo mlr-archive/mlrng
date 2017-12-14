@@ -20,7 +20,7 @@ ResampleResult = R6Class(c("ResampleResult", "PerformanceResult", "PredictResult
       iters = nrow(self$data)
       gcat("[Resample result]: task={self$data$task[[1]]$id} | learner={self$data$learner[[1]]$id}")
       for (i in seq_len(iters))
-        gcat("[{i}/{iters}]: {stri_pasteNames(self$data$perf.vals[[i]])}")
+        gcat("[{i}/{iters}]: {stri_paste_names(self$data$perf.vals[[i]])}")
       gcat("[Aggregated]: {self$aggr}")
 
       if (getOption("mlrng.debug", FALSE))

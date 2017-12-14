@@ -4,7 +4,7 @@
 #' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col isFALSE
 #' @importFrom digest digest
 #' @importFrom fastmatch fmatch %fin%
-#' @importFrom glue glue double_quote
+#' @importFrom glue glue double_quote glue_data
 #' @importFrom parallelMap parallelMap parallelExport parallelLibrary
 #' @importFrom prettyunits pretty_sec
 #' @importFrom R6 R6Class
@@ -25,11 +25,11 @@ mlrng$supported.col.types = c(
 )
 
 mlrng$supported.col.roles = c(
-  c("primary.id", "id", "feature", "target", "grouping")
+  c("primary.id", "feature", "target", "grouping", "ignore")
 )
 
 mlrng$supported.row.roles = c(
-  c("training", "evaluation")
+  c("training", "evaluation", "ignore")
 )
 
 mlrng$supported.learner.props = c(

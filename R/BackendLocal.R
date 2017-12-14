@@ -17,23 +17,18 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
       setkeyv(self$internal.data, rowid.col)
     },
 
-    get = function(rows = NULL, cols = NULL) {
-      if (!is.null(rows))
-        assertAtomicVector(rows)
-      if (!is.null(cols))
-        assertSubset(cols, colnames(self$internal.data))
+    get = function(rows, cols) {
+      assertAtomicVector(rows)
+      assertSubset(cols, colnames(self$internal.data))
 
-      data = switch(is.null(rows) + 2L * is.null(cols) + 1L,
-        self$internal.data[list(rows), c(self$rowid.col, cols), with = FALSE, on = self$rowid.col, nomatch = 0L],
-        self$internal.data[, c(self$rowid.col, cols), with = FALSE],
-        self$internal.data[list(rows), on = self$rowid.col, nomatch = 0L],
-        copy(self$internal.data)
-      )
+      data = self$internal.data[list(rows), union(self$rowid.col, cols), with = FALSE, on = self$rowid.col, nomatch = 0L]
 
-      if (!is.null(rows) && nrow(data) != length(rows))
-        stop("Invalid row ids provided")
-      if (!is.null(cols) && self$rowid.col %nin% cols)
+      if (self$rowid.col %nin% cols)
         data[[self$rowid.col]] = NULL
+      if (nrow(data) != length(rows))
+        stop("Invalid row ids provided")
+      if (ncol(data) != length(cols))
+        stop("Invalid col ids provided")
 
       return(data)
     },
@@ -55,10 +50,9 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
   ),
 
   active = list(
-    # FIXME: rename -> set_data?
     data = function(newdata) {
       if (missing(newdata))
-        return(self$get())
+        return(copy(self$internal.data))
       assertDataTable(newdata)
       assertNames(names(newdata), must.include = self$rowid.col)
       self$internal.data = as.data.table(newdata)

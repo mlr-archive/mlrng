@@ -11,15 +11,16 @@ expect_backend = function(b) {
   expect_data_table(b$data, nrow = n, ncol = p, col.names = "unique")
 
   cn = b$colnames[1L]
-  x = b$get(cols = cn)
+  rn = b$rownames
+  x = b$get(rows = rn, cols = cn)
   expect_data_table(x, ncol = 1L, nrow = n)
   x = x[[cn]]
   expect_atomic_vector(x, len = n)
   expect_set_equal(b$distinct(cn), x)
 
-  mv = sapply(b$colnames, b$missing.values)
-  expect_integer(mv, names = "unique", any.missing = FALSE, lower = 0, upper = n)
-  expect_set_equal(names(mv), b$colnames)
+  # mv = sapply(b$colnames, b$missing.values)
+  # expect_integer(mv, names = "unique", any.missing = FALSE, lower = 0, upper = n)
+  # expect_set_equal(names(mv), b$colnames)
   expect_data_table(b$head(3), nrow = 3, ncol = p)
 }
 

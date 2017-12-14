@@ -12,7 +12,7 @@ PerformanceResult = R6Class("PerformanceResult",
     },
 
     print = function(...) {
-      gcat("[Performance]: task={self$task$id} | learner={self$learner$id} | {stri_peek(stri_pasteNames(self$perf.vals, sep = '='))}")
+      gcat("[Performance]: task={self$task$id} | learner={self$learner$id} | {stri_peek(stri_paste_names(self$perf.vals, sep = '='))}")
       if (getOption("mlrng.debug", FALSE))
         cat("\n", format(self), "\n")
     }
