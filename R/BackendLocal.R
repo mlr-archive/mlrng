@@ -17,18 +17,32 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
       setkeyv(self$internal.data, rowid.col)
     },
 
-    get = function(rows, cols) {
-      assertAtomicVector(rows)
-      assertSubset(cols, colnames(self$internal.data))
+    get = function(rows = NULL, cols = NULL) {
+      nnr = !is.null(rows)
+      nnc = !is.null(cols)
+      if (nnr)
+        assertAtomicVector(rows)
+      if (nnc)
+        assertSubset(cols, colnames(self$internal.data))
 
-      data = self$internal.data[list(rows), union(self$rowid.col, cols), with = FALSE, on = self$rowid.col, nomatch = 0L]
+      data = switch(nnr + 2L * nnc + 1L,
+        copy(self$internal.data),
+        self$internal.data[list(rows), on = self$rowid.col, nomatch = 0L],
+        self$internal.data[, c(self$rowid.col, cols), with = FALSE],
+        self$internal.data[list(rows), c(self$rowid.col, cols), with = FALSE, on = self$rowid.col, nomatch = 0L]
+      )
 
-      if (self$rowid.col %nin% cols)
+      if (nnr) {
+        if (nrow(data) != length(rows))
+          stop("Invalid row ids provided")
+      }
+
+      if (nnc) {
+        if (self$rowid.col %nin% cols)
+          data[[self$rowid.col]] = NULL
+      } else {
         data[[self$rowid.col]] = NULL
-      if (nrow(data) != length(rows))
-        stop("Invalid row ids provided")
-      if (ncol(data) != length(cols))
-        stop("Invalid col ids provided")
+      }
 
       return(data)
     },
@@ -50,6 +64,7 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
   ),
 
   active = list(
+    # FIXME: rename -> set_data?
     data = function(newdata) {
       if (missing(newdata))
         return(copy(self$internal.data))

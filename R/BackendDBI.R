@@ -34,23 +34,36 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
     },
 
 
-    get = function(rows, cols) {
+    get = function(rows = NULL, cols = NULL) {
       tbl = self$tbl
-      assertAtomicVector(rows)
-      assertSubset(cols, colnames(tbl))
 
-      tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
-      tbl = dplyr::select_at(tbl, union(self$rowid.col, cols))
+      if (!is.null(rows)) {
+        assertAtomicVector(rows)
+        tbl = dplyr::filter_at(tbl, self$rowid.col, dplyr::all_vars(. %in% rows))
+      }
+
+      if (!is.null(cols)) {
+        assertSubset(cols, colnames(tbl))
+        tbl = dplyr::select_at(tbl, union(self$rowid.col, cols))
+      }
+
       data = setDT(dplyr::collect(tbl), key = self$rowid.col)
 
-      if (anyDuplicated(rows))
-        data = data[.(rows), on = self$rowid.col, nomatch = 0L]
-      if (self$rowid.col %nin% cols)
+      if (!is.null(rows)) {
+        if (anyDuplicated(rows))
+          data = data[.(rows), on = self$rowid.col, nomatch = 0L]
+        if (nrow(data) != length(rows))
+          stop("Invalid row ids provided")
+      }
+
+      if (!is.null(cols)) {
+        if (self$rowid.col %nin% cols)
+          data[[self$rowid.col]] = NULL
+        if (ncol(data) != length(cols))
+          stop("Invalid col ids provided")
+      } else {
         data[[self$rowid.col]] = NULL
-      if (nrow(data) != length(rows))
-        stop("Invalid row ids provided")
-      if (ncol(data) != length(cols))
-        stop("Invalid col ids provided")
+      }
 
       return(private$transform(data))
     },

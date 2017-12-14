@@ -35,10 +35,10 @@ expect_task = function(task) {
   expect_data_table(task$get())
   expect_data_table(task$head(1), nrow = 1L)
 
-  # types = b$types
-  # expect_character(types, len = p, names = "unique")
-  # expect_set_equal(names(types), b$colnames)
-  # expect_subset(types, mlrng$supported.col.types)
+  types = task$col.types
+  expect_character(types, len = task$ncol, names = "unique")
+  expect_set_equal(names(types), task$cols(roles = c("feature", "target")))
+  expect_subset(types, mlrng$supported.col.types, fmatch = TRUE)
   # task.nas = task$na.cols
   # expect_integer(task.nas, names = "unique", any.missing = FALSE, lower = 0L, upper = task$nrow)
   # expect_set_equal(names(task.nas), task$backend$colnames)
@@ -79,7 +79,7 @@ expect_learner = function(lrn) {
   expect_is(lrn, "Learner")
   expect_string(lrn$id, min.chars = 1L)
   expect_character(lrn$packages, min.chars = 1L)
-  expect_subset(lrn$properties, mlrng$supported.learner.props)
+  expect_subset(lrn$properties, mlrng$supported.learner.props, fmatch = TRUE)
   expect_is(lrn$par.set, "ParamSet")
   expect_list(lrn$par.vals, names = "unique")
   expect_function(lrn$predict, args = c("model", "newdata"), ordered = TRUE)

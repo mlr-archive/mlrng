@@ -2,7 +2,6 @@ context("Task")
 
 test_that("Task Construction", {
   task = Task$new(id = "foo", iris)
-  self = task
   expect_task(task)
 
   data = iris
@@ -59,18 +58,18 @@ test_that("Tasks can be loaded from the fs", {
   expect_supervisedtask(task)
 })
 
-test_that("Task$subset works", {
+test_that("Task subsetting works", {
   task = mlr.tasks$get("iris")
   expect_identical(task$nrow, 150L)
-  nt = task$clone(TRUE)$subset(1:90)
-
+  nt = task$clone(TRUE)
+  nt$row.roles[id %in% 31:50, role := "ignore"]
   expect_task(nt)
   expect_different_address(task, nt)
+  expect_identical(nt$nrow, 130L)
   expect_identical(task$nrow, 150L)
-  expect_identical(nt$nrow, 90L)
 
   # re-grow the task
-  nt$subset(1:150)
+  nt$row.roles[, role := "training"]
   expect_identical(nt$nrow, 150L)
 })
 

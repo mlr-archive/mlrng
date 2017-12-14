@@ -29,7 +29,7 @@ getTaskData = function(task, subset = NULL, type = "train", props = NULL, target
 convertFeatures = function(x, props = NULL) {
   assertDataTable(x)
   if (!is.null(props)) {
-    assertSubset(props, mlrng$supported.learner.props)
+    assertSubset(props, mlrng$supported.learner.props, fmatch = TRUE)
 
     if ("feat.logical" %fnin% props)
       mutate_if(x, is.logical, as.integer)

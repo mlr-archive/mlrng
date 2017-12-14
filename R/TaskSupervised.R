@@ -16,6 +16,7 @@ TaskSupervised = R6Class("TaskSupervised",
     },
 
     truth = function(rows = self$rows("training")) {
+      # FIXME: could be optimized to not select all rows
       self$backend$get(rows, cols = self$target)
     }
   ),
@@ -25,14 +26,14 @@ TaskSupervised = R6Class("TaskSupervised",
       self$cols(roles = "target")
     },
 
+    # [charvec]. feature names without target names
+    features = function() {
+      self$cols(roles = "feature")
+    },
+
     # [formula]. target ~ x1 + ... + xp
     formula = function() {
       reformulate(self$features, response = self$target)
-    },
-
-    # [charvec]. feature names without target names
-    features = function() {
-      setdiff(self$backend$colnames, self$target)
     }
   )
 )

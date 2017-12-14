@@ -44,7 +44,12 @@ Task = R6Class("Task",
 
     get = function(rows = NULL, cols = NULL) {
       if (is.null(rows)) {
-        selected.rows = self$row.roles[role == "training", "id"][[1L]]
+        if (self$row.roles[role == "training", .N] == nrow(self$row.roles)) {
+          # not necessarily required ... but lessens the burden on the data base
+          selected.rows = NULL
+        } else {
+          selected.rows = self$row.roles[role == "training", "id"][[1L]]
+        }
       } else {
         selected.rows = self$row.roles[role == "training"][.(rows), "id"][[1L]]
         if (length(selected.rows) != length(rows))
@@ -60,10 +65,8 @@ Task = R6Class("Task",
       self$backend$get(rows = selected.rows, cols = selected.cols)
     },
 
-    rows = function(roles = NULL) {
-      if (is.null(roles))
-        return(self$row.roles[["id"]])
-      assertCharacter(roles, any.missing = FALSE)
+    rows = function(roles = "training") {
+      assertSubset(roles, mlrng$supported.row.roles, fmatch = TRUE)
       self$row.roles[role %in% roles, "id", with = FALSE][[1L]]
     },
 
@@ -134,6 +137,11 @@ Task = R6Class("Task",
     col.types = function() {
       cols = self$col.roles[role %in% c("feature", "target"), c("id", "type")]
       setNames(cols$type, cols$id)
+    }
+  ),
+  private = list(
+    deep_clone = function(name, value) {
+      if (name %chin% c("row.roles", "col.roles")) copy(value) else value
     }
   )
 )
