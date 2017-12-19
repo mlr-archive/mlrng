@@ -35,7 +35,7 @@ test_that("Tasks are cloned", {
   task2 = task1$clone(deep = TRUE)
 
   expect_different_address(task1, task2)
-  expect_different_address(task1$backend, task2$backend)
+  expect_same_address(task1$backend, task2$backend)
 
   data = data.table(x = 1:30, y = factor(sample(letters[1:2], 30, replace = TRUE)))
   task = TaskSupervised$new("testthat-example", data, "y")
@@ -45,7 +45,7 @@ test_that("Tasks are cloned", {
 
   rtask = mlr.tasks$get("testthat-example")
   expect_different_address(task, rtask)
-  expect_different_address(task$backend, rtask$backend)
+  expect_same_address(task$backend, rtask$backend)
 })
 
 test_that("Tasks can be loaded from the fs", {
@@ -91,7 +91,7 @@ test_that("Task$get() returns duplicated rows", {
     x = task$get(rows = ids)
     expect_data_table(x, nrow = length(ids))
     expect_identical(x[1:6], x[7:12])
-    x = task$backend$get(rows = ids, cols = task$col.roles$ids)
+    x = task$backend$get(rows = ids, cols = task$col.roles$id)
     expect_identical(x[[task$backend$rowid.col]], ids)
   }
 })

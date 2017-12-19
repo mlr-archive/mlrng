@@ -61,8 +61,6 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
           data[[self$rowid.col]] = NULL
         if (ncol(data) != length(cols))
           stop("Invalid col ids provided")
-      } else {
-        data[[self$rowid.col]] = NULL
       }
 
       return(private$transform(data))
@@ -130,7 +128,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
     con = NULL,
 
     deep_clone = function(name, value) {
-      if (name == "con") NULL else  value
+      if (name == "con") NULL else value
     },
 
     transform = function(data) {

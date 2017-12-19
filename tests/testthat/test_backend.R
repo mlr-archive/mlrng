@@ -17,8 +17,8 @@ expect_test_data = function(b) {
   expect_data_table(b$get(), nrow = 150, ncol = length(cols) + 1L)
   expect_data_table(b$get(rows = 5, "Species"), nrow = 1, ncol = 1)
   expect_data_table(b$head(3), nrow = 3, ncol = length(cols) + 1L)
-  expect_identical(b$missing.values("Species"), 0L)
-  expect_identical(b$missing.values("na.col"), 50L)
+  # expect_identical(b$missing.values("Species"), 0L)
+  # expect_identical(b$missing.values("na.col"), 50L)
 }
 
 test_that("SQLite backend", {

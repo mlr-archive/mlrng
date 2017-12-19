@@ -24,7 +24,6 @@ expect_backend = function(b) {
   expect_data_table(b$head(3), nrow = 3, ncol = p)
 }
 
-
 expect_task = function(task) {
   expect_r6(task, "Task", cloneable = TRUE)
   expect_string(task$id, min.chars = 1L)

@@ -40,8 +40,8 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
       if (nnc) {
         if (self$rowid.col %nin% cols)
           data[[self$rowid.col]] = NULL
-      } else {
-        data[[self$rowid.col]] = NULL
+        if (ncol(data) != length(cols))
+          stop("Invalid col ids provided")
       }
 
       return(data)
@@ -89,5 +89,12 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
     ncol = function() {
       ncol(self$internal.data)
     }
+  ),
+
+  private = list(
+    deep_clone = function(name, value) {
+      if (name == "internal.data") copy(name) else value
+    }
+
   )
 )
