@@ -20,16 +20,21 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
     get = function(rows = NULL, cols = NULL) {
       nnr = !is.null(rows)
       nnc = !is.null(cols)
-      if (nnr)
+
+      if (nnr) {
         assertAtomicVector(rows)
-      if (nnc)
+      }
+      if (nnc) {
         assertSubset(cols, colnames(self$internal.data))
+        if (anyDuplicated(cols))
+          stop("Duplicated col ids provided")
+      }
 
       data = switch(nnr + 2L * nnc + 1L,
         copy(self$internal.data),
         self$internal.data[list(rows), on = self$rowid.col, nomatch = 0L],
-        self$internal.data[, c(self$rowid.col, cols), with = FALSE],
-        self$internal.data[list(rows), c(self$rowid.col, cols), with = FALSE, on = self$rowid.col, nomatch = 0L]
+        self$internal.data[, union(self$rowid.col, cols), with = FALSE],
+        self$internal.data[list(rows), union(self$rowid.col, cols), with = FALSE, on = self$rowid.col, nomatch = 0L]
       )
 
       if (nnr) {

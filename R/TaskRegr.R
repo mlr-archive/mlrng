@@ -22,10 +22,6 @@ TaskRegr = R6Class("TaskRegr",
       assertString(target)
       super$initialize(id = id, data = data, target = target)
       assertNumeric(self$truth()[[1L]], finite = TRUE, any.missing = FALSE, .var.name = "target column")
-    },
-    print = function(...) {
-      cat("Regression ")
-      super$print()
     }
   )
 )

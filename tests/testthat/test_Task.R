@@ -2,12 +2,12 @@ context("Task")
 
 test_that("Task Construction", {
   task = Task$new(id = "foo", iris)
+  b = task$backend
   expect_task(task)
 
   data = iris
   data$..row.id = 1:150
   b = BackendDBI$new(data, rowid.col = "..row.id", tbl.name = "iris")
-  Task$new(id = "iris", data = b)
   expect_task(task)
 
   new.task = task$clone()
@@ -26,7 +26,6 @@ test_that("Registered Tasks are valid", {
   for (id in mlr.tasks$ids) {
     task = mlr.tasks$get(id)
     expect_supervisedtask(task)
-    expect_data_table(task$head(1L), types = mlrng$supported.col.types)
   }
 })
 

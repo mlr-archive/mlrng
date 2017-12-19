@@ -44,6 +44,8 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
 
       if (!is.null(cols)) {
         assertSubset(cols, colnames(tbl))
+        if (anyDuplicated(cols))
+          stop("Duplicated col ids provided")
         tbl = dplyr::select_at(tbl, union(self$rowid.col, cols))
       }
 
@@ -103,7 +105,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
     },
 
     data = function(newdata) {
-        return(setDT(dplyr::collect(self$tbl), key = self$rowid.col))
+        return(private$transform(setDT(dplyr::collect(self$tbl), key = self$rowid.col)))
       stop("Cannot write to DBI backend")
     },
 
@@ -126,7 +128,6 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
 
   private = list(
     con = NULL,
-
     deep_clone = function(name, value) {
       if (name == "con") NULL else value
     },

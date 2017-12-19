@@ -10,13 +10,20 @@ expect_backend = function(b) {
   expect_character(b$colnames, any.missing = FALSE, len = p, min.chars = 1L, unique = TRUE)
   expect_data_table(b$data, nrow = n, ncol = p, col.names = "unique")
 
-  cn = b$colnames[1L]
+  cn = b$colnames
   rn = b$rownames
-  x = b$get(rows = rn, cols = cn)
+  x = b$get(rows = rn, cols = cn[1L])
   expect_data_table(x, ncol = 1L, nrow = n)
-  x = x[[cn]]
+  x = x[[cn[1L]]]
   expect_atomic_vector(x, len = n)
-  expect_set_equal(b$distinct(cn), x)
+  expect_set_equal(b$distinct(cn[1L]), x)
+
+  # rows are duplicated
+  x = b$get(rows = rep(rn[1L], 2L))
+  expect_data_table(x, nrow = 2L, ncol = p)
+
+  # duplicated cols raise exception
+  expect_error(b$get(rows = rn[1L], cols = rep(cn[1L], 2L)), "Duplicated col")
 
   # mv = sapply(b$colnames, b$missing.values)
   # expect_integer(mv, names = "unique", any.missing = FALSE, lower = 0, upper = n)
@@ -33,6 +40,17 @@ expect_task = function(task) {
   expect_data_table(task$data)
   expect_data_table(task$get())
   expect_data_table(task$head(1), nrow = 1L)
+
+  expect_data_table(task$col.roles, key = "id", ncol = 3L)
+  expect_names(names(task$col.roles), identical.to = c("id", "role", "type"))
+  expect_character(task$col.roles$id, any.missing = FALSE, unique = TRUE)
+  expect_subset(task$col.roles$role, mlrng$supported.col.roles, fmatch = TRUE)
+  expect_subset(task$col.roles$type, mlrng$supported.col.types, fmatch = TRUE)
+
+  expect_data_table(task$row.roles, key = "id", ncol = 2L)
+  expect_names(names(task$row.roles), identical.to = c("id", "role"))
+  expect_atomic_vector(task$row.roles$id, any.missing = FALSE, unique = TRUE)
+  expect_subset(task$row.roles$role, mlrng$supported.row.roles, fmatch = TRUE)
 
   types = task$col.types
   expect_character(types, len = task$ncol, names = "unique")
