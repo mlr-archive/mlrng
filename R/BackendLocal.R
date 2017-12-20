@@ -3,7 +3,7 @@ BackendLocal = R6Class("BackendLocal", inherit = Backend,
   public = list(
     internal.data = NULL,
 
-    initialize = function(data, rowid.col = NULL) {
+    initialize = function(data, rowid.col = NULL, tblname, ...) {
       assertDataFrame(data)
       self$internal.data = as.data.table(data)
 

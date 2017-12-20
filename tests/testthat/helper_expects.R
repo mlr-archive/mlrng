@@ -41,20 +41,20 @@ expect_task = function(task) {
   expect_data_table(task$get())
   expect_data_table(task$head(1), nrow = 1L)
 
-  expect_data_table(task$col.roles, key = "id", ncol = 3L)
-  expect_names(names(task$col.roles), identical.to = c("id", "role", "type"))
-  expect_character(task$col.roles$id, any.missing = FALSE, unique = TRUE)
-  expect_subset(task$col.roles$role, mlrng$supported.col.roles, fmatch = TRUE)
-  expect_subset(task$col.roles$type, mlrng$supported.col.types, fmatch = TRUE)
+  expect_data_table(task$cols, key = "id", ncol = 3L)
+  expect_names(names(task$cols), identical.to = c("id", "role", "type"))
+  expect_character(task$cols$id, any.missing = FALSE, unique = TRUE)
+  expect_subset(task$cols$role, mlrng$supported.col.roles, fmatch = TRUE)
+  expect_subset(task$cols$type, mlrng$supported.col.types, fmatch = TRUE)
 
-  expect_data_table(task$row.roles, key = "id", ncol = 2L)
-  expect_names(names(task$row.roles), identical.to = c("id", "role"))
-  expect_atomic_vector(task$row.roles$id, any.missing = FALSE, unique = TRUE)
-  expect_subset(task$row.roles$role, mlrng$supported.row.roles, fmatch = TRUE)
+  expect_data_table(task$rows, key = "id", ncol = 2L)
+  expect_names(names(task$rows), identical.to = c("id", "role"))
+  expect_atomic_vector(task$rows$id, any.missing = FALSE, unique = TRUE)
+  expect_subset(task$rows$role, mlrng$supported.row.roles, fmatch = TRUE)
 
   types = task$col.types
   expect_character(types, len = task$ncol, names = "unique")
-  expect_set_equal(names(types), task$cols(roles = c("feature", "target")))
+  expect_set_equal(names(types), c(task$target, task$features))
   expect_subset(types, mlrng$supported.col.types, fmatch = TRUE)
   # task.nas = task$na.cols
   # expect_integer(task.nas, names = "unique", any.missing = FALSE, lower = 0L, upper = task$nrow)

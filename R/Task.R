@@ -103,23 +103,33 @@ Task = R6Class("Task",
   active = list(
     data = function(newdata) {
       if (missing(newdata)) {
-        ids = self$cols[role %in% c("feature", "target"), "id"][[1L]]
-        return(self$get(rows = self$rows(role = "training"), cols = ids))
+        role = NULL
+        cols = self$cols[role %in% c("feature", "target"), "id"][[1L]]
+        rows = self$rows[role == "training", "id"][[1L]]
+        return(self$get(rows = rows, cols = cols))
       }
 
       if (inherits(self$backend, "BackendLocal")) {
         self$backend$data = newdata
       } else {
-        if (getOption("mlrng.debug"))
+        if (getOption("mlrng.debug", FALSE))
           gmessage("Creating an in-memory copy of task '{self$id}'")
         self$backend = BackendLocal$new(data = newdata, rowid.col = self$backend$rowid.col)
       }
+
+      # subset rows and cols to those present in newdata
+      self$rows = setkeyv(self$rows[.(self$backend$rownames), nomatch = 0L, on = "id"], "id")
+      self$cols = setkeyv(self$cols[.(self$backend$colnames), nomatch = 0L, on = "id"], "id")
     },
 
     # [charvec]. feature names without target names
     features = function() {
       role = NULL
       features = self$cols[role == "feature", "id"][[1L]]
+    },
+
+    target = function() {
+      character(0L)
     },
 
     formula = function() {

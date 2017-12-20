@@ -61,14 +61,14 @@ test_that("Task subsetting works", {
   task = mlr.tasks$get("iris")
   expect_identical(task$nrow, 150L)
   nt = task$clone(TRUE)
-  nt$row.roles[id %in% 31:50, role := "ignore"]
+  nt$rows[id %in% 31:50, role := "ignore"]
   expect_task(nt)
   expect_different_address(task, nt)
   expect_identical(nt$nrow, 130L)
   expect_identical(task$nrow, 150L)
 
   # re-grow the task
-  nt$row.roles[, role := "training"]
+  nt$rows[, role := "training"]
   expect_identical(nt$nrow, 150L)
 })
 
@@ -90,7 +90,7 @@ test_that("Task$get() returns duplicated rows", {
     x = task$get(rows = ids)
     expect_data_table(x, nrow = length(ids))
     expect_identical(x[1:6], x[7:12])
-    x = task$backend$get(rows = ids, cols = task$col.roles$id)
+    x = task$backend$get(rows = ids, cols = task$cols$id)
     expect_identical(x[[task$backend$rowid.col]], ids)
   }
 })
@@ -98,8 +98,7 @@ test_that("Task$get() returns duplicated rows", {
 test_that("Tasks are auto-converted on change", {
   task = mlr.tasks$get("iris")
   expect_class(task$backend, "BackendDBI")
-  newdata = task$data
-  newdata[[task$backend$rowid.col]] = task$backend$rownames
+  newdata = task$backend$data
   task$data = newdata[1:15]
   expect_class(task$backend, "BackendLocal")
   expect_data_table(task$data, nrow = 15, ncol = 5, any.missing = FALSE)

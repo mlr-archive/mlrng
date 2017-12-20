@@ -3,9 +3,9 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
   public = list(
     tbl.name = NULL,
     con.pars = NULL,
-    transformators = list(),
+    converters = list(),
 
-    initialize = function(data, rowid.col = NULL, tbl.name) {
+    initialize = function(data, rowid.col = NULL, tbl.name, ...) {
       self$tbl.name = assertString(tbl.name, min.chars = 1L)
 
       if (is.data.frame(data)) {
@@ -17,12 +17,22 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
         }
 
         path = tempfile(pattern = paste0(tbl.name, "_"), fileext = ".sqlite")
-        assertPathForOutput(path, overwrite = TRUE)
         con = DBI::dbConnect(RSQLite::SQLite(), path, flags = RSQLite::SQLITE_RWC)
         dplyr::copy_to(con, data, name = tbl.name, temporary = FALSE, overwrite = TRUE, row.names = FALSE, unique_indexes = list(self$rowid.col))
         DBI::dbDisconnect(con)
         self$con.pars = list(drv = RSQLite::SQLite(), dbname = path, flags = RSQLite::SQLITE_RO)
-        self$transformators = getDefaultTransformators(data)
+
+        # data bases typically cannot handle these types natively.
+        # E.g., SQLite converts factors to character and logicals to integer
+        # Here, we define converters and re-convert to the original data type.
+        getDBITrafo = function(x) {
+          switch(class(x),
+            factor = function(x) factor(x),
+            logical = function(x) as.logical(x),
+            NULL
+          )
+        }
+        self$converters = filterNull(lapply(data, getDBITrafo))
       } else {
         self$rowid.col = assertString(rowid.col, min.chars = 1L)
         self$con.pars = assertList(data, names = "unique")
@@ -32,7 +42,6 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
     finalizer = function() {
       DBI::dbDisconnect(private$con)
     },
-
 
     get = function(rows = NULL, cols = NULL) {
       tbl = self$tbl
@@ -65,13 +74,13 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
           stop("Invalid col ids provided")
       }
 
-      return(private$transform(data))
+      return(private$convert(data))
     },
 
     distinct = function(col) {
       tbl = self$tbl
       assertChoice(col, colnames(tbl))
-      x = private$transform(setDT(dplyr::collect(dplyr::distinct(dplyr::select_at(tbl, col)))))[[1L]]
+      x = private$convert(setDT(dplyr::collect(dplyr::distinct(dplyr::select_at(tbl, col)))))[[1L]]
       if (is.factor(x))
         return(as.character(unique(x)))
       return(unique(x))
@@ -85,7 +94,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
 
     head = function(n = 6L) {
       tab = dplyr::collect(head(self$tbl, n))
-      private$transform(setDT(tab)[])
+      private$convert(setDT(tab)[])
     }
   ),
 
@@ -105,7 +114,7 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
     },
 
     data = function(newdata) {
-        return(private$transform(setDT(dplyr::collect(self$tbl), key = self$rowid.col)))
+        return(private$convert(setDT(dplyr::collect(self$tbl), key = self$rowid.col)))
       stop("Cannot write to DBI backend")
     },
 
@@ -132,24 +141,11 @@ BackendDBI = R6Class("BackendDBI", inherit = Backend,
       if (name == "con") NULL else value
     },
 
-    transform = function(data) {
-      nms = intersect(names(self$transformators), names(data))
+    convert = function(data) {
+      nms = intersect(names(self$converters), names(data))
       for (n in nms)
-        set(data, j = n, value = self$transformators[[n]](data[[n]]))
+        set(data, j = n, value = self$converters[[n]](data[[n]]))
       data
     }
   )
 )
-
-getDefaultTransformators = function(data) {
-  getTrafo = function(x) {
-    switch(class(x),
-      character = function(x) as.character(x),
-      factor = function(x) factor(x),
-      integer = function(x) as.integer(x),
-      logical = function(x) as.logical(x),
-      NULL
-    )
-  }
-  filterNull(lapply(data, getTrafo))
-}

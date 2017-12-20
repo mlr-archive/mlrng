@@ -34,10 +34,10 @@ test_that("Local (in-memory) backend", {
 })
 
 
-test_that("transformators work", {
+test_that("converters work", {
   b = BackendDBI$new(test.data, tbl.name = "iris")
 
-  b$transformators = list(
+  b$converters = list(
     Species = function(x) factor(x),
     int.col = function(x) as.integer(x)
   )
