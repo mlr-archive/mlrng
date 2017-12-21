@@ -24,11 +24,14 @@ TaskClassif = R6Class("TaskClassif",
   inherit = TaskSupervised,
   public = list(
     task.type = "classif",
+    missing.target = NA_character_,
     positive = NA_character_,
+
     initialize = function(id = deparse(substitute(data)), data, target, positive) {
       super$initialize(id = id, data = data, target = target)
       # qassert(self$head(1L)[[self$target]], c("S", "F"))
     },
+
     print = function(...) {
       cat("Classification ")
       super$print()
@@ -36,7 +39,7 @@ TaskClassif = R6Class("TaskClassif",
   ),
 
   active = list(
-    classes = function() self$backend$distinct(self$target),
-    nclasses = function() length(self$classes)
+    classes = function() as.character(unique(self$get(cols = self$target)[[1L]])),
+    nclasses = function() uniqueN(self$get(cols = self$target)[[1L]])
   )
 )

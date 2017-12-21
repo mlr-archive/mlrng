@@ -65,24 +65,6 @@ Task = R6Class("Task",
       self$backend$get(rows = selected.rows, cols = selected.cols)
     },
 
-    # rows = function(roles = "training") {
-    #   assertSubset(roles, mlrng$supported.row.roles, fmatch = TRUE)
-    #   self$rows[role %in% roles, "id", with = FALSE][[1L]]
-    # },
-
-    # cols = function(roles = NULL, types = NULL) {
-    #   assertCharacter(roles, any.missing = FALSE, null.ok = TRUE)
-    #   assertCharacter(types, any.missing = FALSE, null.ok = TRUE)
-
-    #   role = type = NULL
-    #   switch((!is.null(roles)) + 2L * (!is.null(types)) + 1L,
-    #     self$cols,
-    #     self$cols[role %in% roles],
-    #     self$cols[type %in% types],
-    #     self$cols[role %in% roles & type %in% types],
-    #   )[, "id", with = FALSE][[1L]]
-    # },
-
     head = function(n = 6L) {
       assertCount(n)
       self$backend$head(n)[, self$features, with = FALSE]

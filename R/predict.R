@@ -1,5 +1,3 @@
-#FIXME: predict REALLY has also to work with newdata!!!!
-
 #' @export
 predict.TrainResult = function(object, newdata = NULL, subset = NULL, ...) {
   if (...length() > 0L)
@@ -25,3 +23,20 @@ predictWorker = function(train.result, newdata, row.ids) {
   result = do.call(learner$predict, pars)
   PredictResult$new(train.result, row.ids, result)
 }
+
+# createMakeShiftTask = function(newdata, task) {
+#   newdata = subset(iris[100:130, ], select = -Species)
+#   task = mlr.tasks$get("iris")
+
+#   cn = names(newdata)
+#   target = task$target
+#   features = task$features
+#   rowid.col = task$backend$rowid.col
+
+#   assertNames(cn, must.include = features)
+#   if (task$backend$rowid.col %nin% cn)
+#     newdata[[rowid.col]] = sprintf("newdata.%i", seq_len(nrow(newdata)))
+#   if (task$target %nin% cn) # FIXME: won't work for multi-target tasks
+#     newdata[[target]] = task$missing.target
+
+# }

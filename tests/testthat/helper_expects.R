@@ -74,12 +74,13 @@ expect_supervisedtask = function(task) {
 }
 
 expect_classiftask = function(task) {
+  expect_class(task, "TaskClassif")
   expect_supervisedtask(task)
   x = task$truth()[[1L]]
   expect_atomic_vector(x, any.missing = FALSE)
-  expect_true(is.character(x) || is.factor(r))
+  expect_true(is.character(x) || is.factor(x))
   expect_int(task$nclasses, lower = 2L)
-  expect_atomic_vector(task$classes)
+  expect_character(task$classes, any.missing = FALSE)
   expect_subset(task$classes, x)
   if (task$nclasses > 2L)
     expect_identical(task$positive, NA_character_)
@@ -88,6 +89,7 @@ expect_classiftask = function(task) {
 }
 
 expect_regrtask = function(task) {
+  expect_class(task, "TaskRegr")
   expect_supervisedtask(task)
   expect_numeric(task$get(cols = task$target)[[1L]], any.missing = FALSE)
 }

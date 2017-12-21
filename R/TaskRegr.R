@@ -18,10 +18,23 @@ TaskRegr = R6Class("TaskRegr",
   inherit = TaskSupervised,
   public = list(
     task.type = "regr",
+    missing.target = NA_real_,
+
     initialize = function(id = deparse(substitute(data)), data, target) {
       assertString(target)
       super$initialize(id = id, data = data, target = target)
       assertNumeric(self$truth()[[1L]], finite = TRUE, any.missing = FALSE, .var.name = "target column")
+    },
+
+    print = function(...) {
+      cat("Classification ")
+      super$print()
+    }
+  ),
+
+  active = list(
+    summary = function() {
+      summary(self$get(cols = self$target)[[1L]])
     }
   )
 )

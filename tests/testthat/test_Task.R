@@ -64,6 +64,7 @@ test_that("Task subsetting works", {
   nt$rows[id %in% 31:50, role := "ignore"]
   expect_task(nt)
   expect_different_address(task, nt)
+  expect_same_address(task$backend, nt$backend)
   expect_identical(nt$nrow, 130L)
   expect_identical(task$nrow, 150L)
 
