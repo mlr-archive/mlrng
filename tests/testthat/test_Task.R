@@ -39,7 +39,7 @@ test_that("Tasks are cloned", {
   data = data.table(x = 1:30, y = factor(sample(letters[1:2], 30, replace = TRUE)))
   task = TaskSupervised$new("testthat-example", data, "y")
   task = TaskClassif$new("testthat-example", data, "y")
-  mlr.tasks$add(task$clone(deep = TRUE), overwrite = TRUE)
+  mlr.tasks$add(task$clone(deep = TRUE))
   on.exit(mlr.tasks$remove("testthat-example"))
 
   rtask = mlr.tasks$get("testthat-example")
@@ -53,7 +53,7 @@ test_that("Predefined tasks are cloned", {
 
   expect_different_address(task1, task2)
   expect_different_address(task1$cols, task2$cols)
-  expect_different_address(task1$backend, task2$backend) # lazy element
+  expect_same_address(task1$backend, task2$backend) # lazy element
 
   task1 = test.tasks$get("clm.num")
   task2 = test.tasks$get("clm.num")
