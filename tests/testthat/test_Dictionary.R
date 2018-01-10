@@ -19,9 +19,6 @@ test_that("Dictionary with R6 els", {
   f1c = d$get("x")
   expect_different_address(f1, f1c)
 
-  xs = as.list(d)
-  expect_equal(xs, list(x = f1))
-
   xd = as.data.table(d)
   expect_data_table(xd, nrow = 1L, min.cols = 2L)
 

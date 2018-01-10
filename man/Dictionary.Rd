@@ -27,7 +27,6 @@ This is used to store objects like \code{\link{mlr.tasks}}, \code{\link{mlr.lear
 \section{Methods}{
 
 \describe{
- \item{\code{add(obj, id, overwrite)}}{Add an object to the dictionary.}
  \item{\code{contains(ids)}}{Returns a logical vector signaling if objects with the respective id are stored inside the Dictionary.}
  \item{...}{...}
 }
