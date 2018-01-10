@@ -47,6 +47,22 @@ test_that("Tasks are cloned", {
   expect_same_address(task$backend, rtask$backend)
 })
 
+test_that("Predefined tasks are cloned", {
+  task1 = mlr.tasks$get("iris")
+  task2 = mlr.tasks$get("iris")
+
+  expect_different_address(task1, task2)
+  expect_different_address(task1$cols, task2$cols)
+  expect_different_address(task1$backend, task2$backend) # lazy element
+
+  task1 = test.tasks$get("clm.num")
+  task2 = test.tasks$get("clm.num")
+  expect_different_address(task1, task2)
+  expect_different_address(task1$rows, task2$rows)
+  expect_different_address(task1$cols, task2$cols)
+  expect_same_address(task1$backend, task2$backend) # same immutable backend
+})
+
 test_that("Tasks can be loaded from the fs", {
   task = TaskClassif$new(id = "iris", data = iris, "Species")
   fn.rds = tempfile(fileext = ".rds")

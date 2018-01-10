@@ -16,6 +16,9 @@ test_that("Basic ops on iris task", {
 
 test_that("$classes and $nclasses only consider active rows", {
   task = test.tasks$get("clm.num")
+  address(task)
+  task2 = test.tasks$get("clm.num")
+  address(task2)
   task$rows[3:50, role := "ignore"]
   expect_identical(task$classes, "setosa")
   expect_identical(task$nclasses, 1L)

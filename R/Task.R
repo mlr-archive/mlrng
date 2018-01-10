@@ -135,7 +135,9 @@ Task = R6Class("Task",
   ),
   private = list(
     deep_clone = function(name, value) {
-      if (name %chin% c("rows", "cols")) copy(value) else value
+      if (name %chin% c("rows", "cols"))
+        return(copy(value))
+      return(value)
     }
   )
 )

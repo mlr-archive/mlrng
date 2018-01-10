@@ -1,4 +1,4 @@
-context("TaskClassif")
+context("TaskRegr")
 
 test_that("Basic ops on BostonHousing task", {
   task = test.tasks$get("regr.num")
