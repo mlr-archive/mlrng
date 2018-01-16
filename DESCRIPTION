@@ -41,7 +41,7 @@ Suggests:
     testthat,
     withr
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'Backend.R'
     'BackendDBI.R'
     'BackendLocal.R'
@@ -87,6 +87,7 @@ Collate:
     'predict.R'
     'resample.R'
     'runExperiment.R'
+    'subset.R'
     'train.R'
     'tune.R'
     'zzz.R'

@@ -1,5 +1,5 @@
-library(checkmate)
 library(testthat)
+library(checkmate)
 library(stringi)
 library(phng)
 

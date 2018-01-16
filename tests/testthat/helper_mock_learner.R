@@ -13,7 +13,7 @@ local({
     par.vals = list(),
     properties = c("missings", "feat.factor", "feat.numeric"),
 
-    train = function(task, subset, message = FALSE, warning = FALSE, error = FALSE, ...) {
+    train = function(task, row.ids, message = FALSE, warning = FALSE, error = FALSE, ...) {
       if (message)
         message("dummy message")
       if (warning)
@@ -23,7 +23,7 @@ local({
       return(0)
     },
 
-    predict = function(model, newdata, ...) {
+    predict = function(model, task, row.ids, ...) {
       return(rep(0, nrow(newdata)))
     }
   )

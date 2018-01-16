@@ -112,6 +112,15 @@ test_that("Task$get() returns duplicated rows", {
   }
 })
 
+test_that("Task$head() only returns 'active' rows/cols", {
+  task = test.tasks$get("clm.num")
+  task$rows[1:25, role := "ignore"]
+  task$cols[id == "Sepal.Width", role := "ignore"]
+  df = task$head(10)
+  expect_data_table(df, nrow = 10L, ncol = 4L, any.missing = FALSE)
+  expect_equal(uniqueN(df$Species), 2L)
+})
+
 test_that("Tasks are auto-converted on change", {
   task = mlr.tasks$get("iris")
   expect_class(task$backend, "BackendDBI")

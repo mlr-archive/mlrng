@@ -18,21 +18,16 @@ mlr.learners$add(LearnerClassif$new(
   par.vals = list(),
   properties = c("twoclass", "multiclass", "missings", "feat.numeric", "feat.factor", "feat.ordered", "prob", "weights", "featimp", "formula"),
 
-  train = function(task, subset, ...) {
-    data = getTaskData(task, subset = subset, type = "train", props = self$properties)
+  train = function(task, row.ids, ...) {
+    data = getTaskData(task, row.ids = row.ids, type = "train", props = self$properties)
     rpart::rpart(task$formula, data, ...)
   },
 
-  predict = function(model, newdata, ...) {
-    pt = self$predict.type
-    if (pt == "response")
-      as.character(predict(model$rmodel, newdata = newdata, type = "class", ...))
+  predict = function(model, task, row.ids, ...) {
+    data = getTaskData(task, row.ids = row.ids, type = "predict", props = self$properties)
+    if (self$predict.type == "response")
+      as.character(predict(model$rmodel, newdata = data, type = "class", ...))
     else
-        predict(model$rmodel, newdata = newdata, type = "prob", ...)
-  },
-  # FIXME: can be removed, was just for testing
-  model.extractors = list(residuals = function(model, task, subset, type = "usual", ...) {
-    type = assertSubset(type, choices = c("usual", "pearson", "deviance"))
-    rpart:::residuals.rpart(model, type = type, ...)
-  })
+      predict(model$rmodel, newdata = data, type = "prob", ...)
+  }
 ))

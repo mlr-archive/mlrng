@@ -15,11 +15,12 @@
 #' @description
 #' For bug reports and feature requests please use the tracker:
 #' \url{https://github.com/mlr-org/mlrng}.
-#' Package options are convered in \link{mlrng-config}.
+#' Package options are covered in \link{mlrng-config}.
 #'
 "_PACKAGE"
 
 mlrng = new.env(parent = emptyenv())
+
 mlrng$supported.col.types = c(
   "logical", "integer", "numeric", "character", "factor", "ordered"
 )

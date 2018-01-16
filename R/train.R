@@ -14,8 +14,7 @@
 train = function(task, learner, subset = NULL) {
   assertTask(task)
   assertLearner(learner, for.task = task)
-  assertIndexSet(subset, for.task = task)
-  row.ids = translateSubset(task, subset)
+  row.ids = task$row.ids(subset)
 
   trainWorker(task, learner, row.ids)
 }
@@ -53,7 +52,7 @@ trainWorker = function(task, learner, row.ids) {
 
 fitModel = function(task, learner, row.ids) {
   requireNS(learner$packages)
-  pars = c(list(task = task, subset = row.ids), learner$par.vals)
+  pars = c(list(task = task, row.ids = row.ids), learner$par.vals)
   do.call(learner$train, pars)
 }
 

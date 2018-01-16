@@ -67,7 +67,8 @@ Task = R6Class("Task",
 
     head = function(n = 6L) {
       assertCount(n)
-      self$backend$head(n)[, self$features, with = FALSE]
+      row.ids = head(self$rows[role == "training", "id"], n)[[1L]]
+      self$backend$get(rows = row.ids, cols = c(self$features, self$target))
     },
 
     print = function(...) {
@@ -79,7 +80,28 @@ Task = R6Class("Task",
             Types: {stri_flatten(types, \", \")}")
       if (getOption("mlrng.debug", FALSE))
           cat("\n", format(self), "\n")
-  }),
+    },
+
+    # translates any subset specification to valid row.ids
+    row.ids = function(subset = NULL) {
+      if (is.null(subset)) {
+        result = self$rows[role == "training", "id"][[1L]]
+      } else {
+        type = attr(subset, "subset.type")
+        if (is.null(type)) {
+          result = self$rows[role == "training"][as.integer(subset), "id"][[1L]]
+        } else {
+          result = switch(type,
+            "ids" = self$rows[.(subset), nomatch = 0L][[1L]],
+            "numbers" = self$rows[role == "training"][subset, "id"][[1L]],
+            "roles" = self$rows[role %in% subset, "id"][[1L]],
+            stop("Unknown subset.type"))
+        }
+        attr(result, "subset.type") = "ids"
+      }
+      return(result)
+    }
+  ),
 
   ### ACTIVE ##################################################################
   active = list(
