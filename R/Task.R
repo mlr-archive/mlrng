@@ -21,6 +21,8 @@ Task = R6Class("Task",
     task.type = NA_character_,
     id = NULL,
     backend = NULL,
+    rows = NULL,
+    cols = NULL,
 
     ### METHODS ################################################################
     initialize = function(id, data) {
@@ -30,54 +32,108 @@ Task = R6Class("Task",
       } else {
         self$backend = assertR6(data, "Backend")
       }
+
+      self$rows = data.table(id = self$backend$rownames, role = "training", key = "id")
+
+      cols = data.table(id = self$backend$colnames, key = "id")
+      cols$role = ifelse(cols$id == self$backend$rowid.col, "primary.id", "feature")
+      types = vcapply(self$backend$head(1L), class)
+      cols$type = types[match(cols$id, names(types), 0L)]
+      self$cols = cols
     },
 
     get = function(rows = NULL, cols = NULL) {
-      self$backend$get(rows = rows, cols = cols)
+      if (is.null(rows)) {
+        if (self$rows[role == "training", .N] == nrow(self$rows)) {
+          # not necessarily required ... but lessens the burden on the data base
+          selected.rows = NULL
+        } else {
+          selected.rows = self$rows[role == "training", "id"][[1L]]
+        }
+      } else {
+        selected.rows = self$rows[role == "training"][.(rows), "id"][[1L]]
+        if (length(selected.rows) != length(rows))
+          stop("Invalid row ids provided")
+      }
+      if (is.null(cols)) {
+        selected.cols = self$cols[role %in% c("feature", "target"), "id"][[1L]]
+      } else {
+        selected.cols = self$cols[role %in% c("feature", "target")][.(cols), "id"][[1L]]
+        if (length(selected.cols) != length(cols))
+          stop("Invalid col ids provided")
+      }
+      self$backend$get(rows = selected.rows, cols = selected.cols)
     },
 
     head = function(n = 6L) {
       assertCount(n)
-      self$backend$head(n)
-    },
-
-    subset = function(rows = NULL, cols = NULL) {
-      self$backend$subset(rows, cols)
-      invisible(self)
+      row.ids = head(self$rows[role == "training", "id"], n)[[1L]]
+      self$backend$get(rows = row.ids, cols = c(self$features, self$target))
     },
 
     print = function(...) {
-      cols = self$col.types
-      if(hasName(self, "target"))
-        cols = cols[names(cols) != self$target]
-      tbl = table(cols)
+      features = self$features
+      types = glue_data(self$cols[features, .N, keyby = "type"], "{N} {type}")
       gcat("Task name: {self$id}
-            {self$nrow} rows and {length(cols)} features.
-            Features: {stri_peek(names(cols))}
-            Feature types: {stri_pasteNames(tbl, names.first = FALSE)}
-            Missings: {any(self$backend$missing.values) > 0L}")
+            {self$nrow} rows and {length(features)} features.
+            Features: {stri_peek(features)}
+            Types: {stri_flatten(types, \", \")}")
       if (getOption("mlrng.debug", FALSE))
           cat("\n", format(self), "\n")
-  }),
+    },
+
+    # translates any subset specification to valid row.ids
+    row.ids = function(subset = NULL) {
+      if (is.null(subset)) {
+        result = self$rows[role == "training", "id"][[1L]]
+      } else {
+        type = attr(subset, "subset.type")
+        if (is.null(type)) {
+          result = self$rows[role == "training"][as.integer(subset), "id"][[1L]]
+        } else {
+          result = switch(type,
+            "ids" = self$rows[.(subset), nomatch = 0L][[1L]],
+            "numbers" = self$rows[role == "training"][subset, "id"][[1L]],
+            "roles" = self$rows[role %in% subset, "id"][[1L]],
+            stop("Unknown subset.type"))
+        }
+        attr(result, "subset.type") = "ids"
+      }
+      return(result)
+    }
+  ),
 
   ### ACTIVE ##################################################################
   active = list(
     data = function(newdata) {
       if (missing(newdata)) {
-        return(self$backend$data)
+        role = NULL
+        cols = self$cols[role %in% c("feature", "target"), "id"][[1L]]
+        rows = self$rows[role == "training", "id"][[1L]]
+        return(self$get(rows = rows, cols = cols))
       }
+
       if (inherits(self$backend, "BackendLocal")) {
         self$backend$data = newdata
       } else {
-        if (getOption("mlrng.debug"))
+        if (getOption("mlrng.debug", FALSE))
           gmessage("Creating an in-memory copy of task '{self$id}'")
         self$backend = BackendLocal$new(data = newdata, rowid.col = self$backend$rowid.col)
       }
+
+      # subset rows and cols to those present in newdata
+      self$rows = setkeyv(self$rows[.(self$backend$rownames), nomatch = 0L, on = "id"], "id")
+      self$cols = setkeyv(self$cols[.(self$backend$colnames), nomatch = 0L, on = "id"], "id")
     },
 
     # [charvec]. feature names without target names
     features = function() {
-      self$backend$colnames
+      role = NULL
+      features = self$cols[role == "feature", "id"][[1L]]
+    },
+
+    target = function() {
+      character(0L)
     },
 
     formula = function() {
@@ -85,19 +141,25 @@ Task = R6Class("Task",
     },
 
     nrow = function() {
-      self$backend$nrow
+      role = NULL
+      self$rows[role == "training", .N]
     },
 
     ncol = function() {
-      self$backend$ncol
+      role = NULL
+      self$cols[role %in% c("feature", "target"), .N]
     },
 
     col.types = function() {
-      self$backend$types
-    },
-
-    missing.values = function() {
-      self$backend$missing.values
+      cols = self$cols[role %in% c("feature", "target"), c("id", "type")]
+      setNames(cols$type, cols$id)
+    }
+  ),
+  private = list(
+    deep_clone = function(name, value) {
+      if (name %chin% c("rows", "cols"))
+        return(copy(value))
+      return(value)
     }
   )
 )

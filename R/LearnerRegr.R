@@ -17,4 +17,3 @@ LearnerRegr = R6Class("LearnerRegr",
     }
   )
 )
-

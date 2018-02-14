@@ -10,18 +10,18 @@ mlr.learners$add(LearnerClassif$new(
   par.vals = list(),
   properties = c("missings", "feat.factor", "feat.numeric"),
 
-  train = function(task, subset, ...) {
-    data = task$get(subset)
+  train = function(task, row.ids, ...) {
+    data = task$get(row.ids)
     tn = task$target
     mod = data[, .N, by = tn]
     class(mod) = c("dummy.model", class(mod))
     mod
   },
 
-  predict = function(model, newdata, method = "mode", ...) {
+  predict = function(model, task, row.ids, method = "mode", ...) {
     if (method == "mode")
-      rep.int(as.character(sample(model$rmodel[N == max(N)][[model$task$target]], 1L)), nrow(newdata))
+      rep.int(as.character(sample(model$rmodel[N == max(N)][[model$task$target]], 1L)), length(row.ids))
     else
-      as.character(sample(model$rmodel[[model$task$target]], nrow(newdata), replace = TRUE, prob = model$rmodel[["N"]]))
+      as.character(sample(model$rmodel[[model$task$target]], length(row.ids), replace = TRUE, prob = model$rmodel[["N"]]))
   }
 ))

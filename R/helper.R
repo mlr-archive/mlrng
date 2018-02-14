@@ -46,11 +46,8 @@ stri_peek = function(str, append = "...") {
   return(str)
 }
 
-stri_pasteNames = function(str, sep = " ", collapse = ", ", names.first = TRUE) {
-  if(names.first)
-    stri_paste(names(str), str, sep = sep, collapse = collapse)
-  else
-    stri_paste(str, names(str), sep = sep, collapse = collapse)
+stri_paste_names = function(str, sep = " ", collapse = ", ") {
+  stri_paste(names(str), str, sep = sep, collapse = collapse)
 }
 
 translateSubset = function(task, subset = NULL) {
@@ -70,6 +67,10 @@ createFallbackLearner = function(task) {
 
 `%nin%` = function(x, y) {
   !match(x, y, nomatch = 0L)
+}
+
+`%chnin%` = function(x, y) {
+  !chmatch(x, y, nomatch = 0L)
 }
 
 `%fnin%` = function(x, y) {

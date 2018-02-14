@@ -28,8 +28,8 @@ test_that("getTaskData", {
   task = TaskSupervised$new(id = "testtask", x, target = "y")
 
   expect_data_table(getTaskData(task, 1:5, "train"), nrows = 5, ncols = 6, any.missing = FALSE)
-  expect_data_table(getTaskData(task, 1:5, "test"), nrows = 5, ncols = 5, any.missing = FALSE)
-  expect_data_table(getTaskData(task, 1:5, "test", "feat.factor"), nrows = 5, ncols = 5, types = setdiff(types, "character"))
+  expect_data_table(getTaskData(task, 1:5, "predict"), nrows = 5, ncols = 5, any.missing = FALSE)
+  expect_data_table(getTaskData(task, 1:5, "predict", "feat.factor"), nrows = 5, ncols = 5, types = setdiff(types, "character"))
 
   y = getTaskData(task, 1:5, "extra", "feat.character")
   expect_list(y, len = 2)

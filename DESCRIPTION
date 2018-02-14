@@ -15,7 +15,7 @@ Depends:
     data.table,
     phng
 Imports:
-    backports (>= 1.1.1),
+    backports (>= 1.1.2),
     BBmisc,
     checkmate (>= 1.8.4),
     DBI,
@@ -87,6 +87,7 @@ Collate:
     'predict.R'
     'resample.R'
     'runExperiment.R'
+    'subset.R'
     'train.R'
     'tune.R'
     'zzz.R'

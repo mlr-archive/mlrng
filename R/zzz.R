@@ -4,7 +4,7 @@
 #' @importFrom BBmisc vlapply viapply vcapply vnapply seq_row seq_col isFALSE
 #' @importFrom digest digest
 #' @importFrom fastmatch fmatch %fin%
-#' @importFrom glue glue double_quote
+#' @importFrom glue glue double_quote glue_data
 #' @importFrom parallelMap parallelMap parallelExport parallelLibrary
 #' @importFrom prettyunits pretty_sec
 #' @importFrom R6 R6Class
@@ -15,22 +15,34 @@
 #' @description
 #' For bug reports and feature requests please use the tracker:
 #' \url{https://github.com/mlr-org/mlrng}.
-#' Package options are convered in \link{mlrng-config}.
+#' Package options are covered in \link{mlrng-config}.
 #'
 "_PACKAGE"
 
 mlrng = new.env(parent = emptyenv())
+
 mlrng$supported.col.types = c(
   "logical", "integer", "numeric", "character", "factor", "ordered"
 )
+
+mlrng$supported.col.roles = c(
+  c("primary.id", "feature", "target", "grouping", "ignore")
+)
+
+mlrng$supported.row.roles = c(
+  c("training", "evaluation", "ignore")
+)
+
 mlrng$supported.learner.props = c(
   sprintf("feat.%s", mlrng$supported.col.types),
   "missings", "weights", "twoclass", "multiclass", "prob", "featimp", "parallel",
   "formula", "oobpreds", "se"
 )
+
 mlrng$result.states = c(
   "Result", "TrainResult", "PredictResult", "PerformanceResult", "ResampleResult", "BenchmarkResult"
 )
+
 mlrng$default.opts = list(
   mlrng.verbose = TRUE,
   mlrng.debug = TRUE,

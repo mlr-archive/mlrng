@@ -48,27 +48,25 @@ getExampleTaskBackend = function(name, rowid.col = "rowid") {
 }
 
 mlr.tasks$add(
-  LazyElement$new("iris", function() TaskClassif$new(id = "iris", getExampleTaskBackend("iris"), target = "Species"))
+  TaskClassif$new(id = "iris", getExampleTaskBackend("iris"), target = "Species")
 )
 
 mlr.tasks$add(
-  LazyElement$new("bh", function() TaskRegr$new(id = "bh", getExampleTaskBackend("bh"), target = "medv"))
+  TaskRegr$new(id = "bh", getExampleTaskBackend("bh"), target = "medv")
 )
 
 mlr.tasks$add(
-  LazyElement$new("sonar", function() TaskClassif$new(id = "sonar", getExampleTaskBackend("sonar"), target = "Class", positive = "M"))
+   TaskClassif$new(id = "sonar", getExampleTaskBackend("sonar"), target = "Class", positive = "M")
 )
 
 mlr.tasks$add(
-  LazyElement$new("pima", function() TaskClassif$new(id = "pima", getExampleTaskBackend("pima"), target = "diabetes", positive = "pos"))
+  TaskClassif$new(id = "pima", getExampleTaskBackend("pima"), target = "diabetes", positive = "pos")
 )
 
 mlr.tasks$add(
-  LazyElement$new("spam", function() TaskClassif$new(id = "spam", getExampleTaskBackend("spam"), target = "type", positive = "spam"))
+  TaskClassif$new(id = "spam", getExampleTaskBackend("spam"), target = "type", positive = "spam")
 )
 
 mlr.tasks$add(
-  LazyElement$new("zoo", function() {
-    TaskClassif$new(id = "zoo", getExampleTaskBackend("zoo", "animal"), target = "type")
-  })
+  TaskClassif$new(id = "zoo", getExampleTaskBackend("zoo", "animal"), target = "type")
 )

@@ -1,5 +1,3 @@
-library(checkmate)
-
 expect_backend = function(b) {
   expect_r6(b, cloneable = TRUE, public = c("nrow", "ncol", "colnames", "rownames", "data", "head", "distinct", "missing.values", "types"))
   n = b$nrow
@@ -10,25 +8,26 @@ expect_backend = function(b) {
   expect_character(b$colnames, any.missing = FALSE, len = p, min.chars = 1L, unique = TRUE)
   expect_data_table(b$data, nrow = n, ncol = p, col.names = "unique")
 
-  cn = b$colnames[1L]
-  x = b$get(cols = cn)
-  expect_data_table(x, ncol = 1, nrow = n)
-  x = x[[cn]]
+  cn = b$colnames
+  rn = b$rownames
+  x = b$get(rows = rn, cols = cn[1L])
+  expect_data_table(x, ncol = 1L, nrow = n)
+  x = x[[cn[1L]]]
   expect_atomic_vector(x, len = n)
-  expect_set_equal(b$distinct(cn), x)
+  expect_set_equal(b$distinct(cn[1L]), x)
 
-  types = b$types
-  expect_character(types, len = p, names = "unique")
-  expect_set_equal(names(types), b$colnames)
-  expect_subset(types, mlrng$supported.col.types)
+  # rows are duplicated
+  x = b$get(rows = rep(rn[1L], 2L))
+  expect_data_table(x, nrow = 2L, ncol = p)
 
-  mv = b$missing.values
-  expect_integer(mv, names = "unique", any.missing = FALSE, lower = 0, upper = n)
-  expect_set_equal(names(mv), b$colnames)
+  # duplicated cols raise exception
+  expect_error(b$get(rows = rn[1L], cols = rep(cn[1L], 2L)), "Duplicated col")
 
+  # mv = sapply(b$colnames, b$missing.values)
+  # expect_integer(mv, names = "unique", any.missing = FALSE, lower = 0, upper = n)
+  # expect_set_equal(names(mv), b$colnames)
   expect_data_table(b$head(3), nrow = 3, ncol = p)
 }
-
 
 expect_task = function(task) {
   expect_r6(task, "Task", cloneable = TRUE)
@@ -39,6 +38,22 @@ expect_task = function(task) {
   expect_data_table(task$data)
   expect_data_table(task$get())
   expect_data_table(task$head(1), nrow = 1L)
+
+  expect_data_table(task$cols, key = "id", ncol = 3L)
+  expect_names(names(task$cols), identical.to = c("id", "role", "type"))
+  expect_character(task$cols$id, any.missing = FALSE, unique = TRUE)
+  expect_subset(task$cols$role, mlrng$supported.col.roles, fmatch = TRUE)
+  expect_subset(task$cols$type, mlrng$supported.col.types, fmatch = TRUE)
+
+  expect_data_table(task$rows, key = "id", ncol = 2L)
+  expect_names(names(task$rows), identical.to = c("id", "role"))
+  expect_atomic_vector(task$rows$id, any.missing = FALSE, unique = TRUE)
+  expect_subset(task$rows$role, mlrng$supported.row.roles, fmatch = TRUE)
+
+  types = task$col.types
+  expect_character(types, len = task$ncol, names = "unique")
+  expect_set_equal(names(types), c(task$target, task$features))
+  expect_subset(types, mlrng$supported.col.types, fmatch = TRUE)
   # task.nas = task$na.cols
   # expect_integer(task.nas, names = "unique", any.missing = FALSE, lower = 0L, upper = task$nrow)
   # expect_set_equal(names(task.nas), task$backend$colnames)
@@ -57,12 +72,13 @@ expect_supervisedtask = function(task) {
 }
 
 expect_classiftask = function(task) {
+  expect_class(task, "TaskClassif")
   expect_supervisedtask(task)
   x = task$truth()[[1L]]
   expect_atomic_vector(x, any.missing = FALSE)
-  expect_true(is.character(x) || is.factor(r))
+  expect_true(is.character(x) || is.factor(x))
   expect_int(task$nclasses, lower = 2L)
-  expect_atomic_vector(task$classes)
+  expect_character(task$classes, any.missing = FALSE)
   expect_subset(task$classes, x)
   if (task$nclasses > 2L)
     expect_identical(task$positive, NA_character_)
@@ -71,6 +87,7 @@ expect_classiftask = function(task) {
 }
 
 expect_regrtask = function(task) {
+  expect_class(task, "TaskRegr")
   expect_supervisedtask(task)
   expect_numeric(task$get(cols = task$target)[[1L]], any.missing = FALSE)
 }
@@ -79,7 +96,7 @@ expect_learner = function(lrn) {
   expect_is(lrn, "Learner")
   expect_string(lrn$id, min.chars = 1L)
   expect_character(lrn$packages, min.chars = 1L)
-  expect_subset(lrn$properties, mlrng$supported.learner.props)
+  expect_subset(lrn$properties, mlrng$supported.learner.props, fmatch = TRUE)
   expect_is(lrn$par.set, "ParamSet")
   expect_list(lrn$par.vals, names = "unique")
   expect_function(lrn$predict, args = c("model", "newdata"), ordered = TRUE)

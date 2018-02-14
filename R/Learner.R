@@ -28,12 +28,12 @@ Learner = R6Class("Learner",
       private$pv = assertList(par.vals, names = "unique")
       self$packages = assertCharacter(packages, any.missing = FALSE, unique = TRUE)
       self$properties = assertCharacter(properties, any.missing = FALSE, unique = TRUE)
-      self$train = assertFunction(train, args = c("task", "subset"), ordered = TRUE)
-      self$predict = assertFunction(predict, args = c("model", "newdata"), ordered = TRUE)
+      self$train = assertFunction(train, args = c("task", "row.ids"), ordered = TRUE)
+      self$predict = assertFunction(predict, args = c("model", "task", "row.ids"), ordered = TRUE)
       self$model.extractors = lapply(model.extractors,
-        function(m) assertFunction(m, args = c("model", "task", "subset"), ordered = TRUE, null.ok = TRUE))
+        function(m) assertFunction(m, args = c("model", "task", "row.ids"), ordered = TRUE, null.ok = TRUE))
       self$allowed.predict.types = assertCharacter(allowed.predict.types, any.missing = FALSE, min.len = 1L)
-      self$predict.type = assertChoice(predict.type, allowed.predict.types)
+      private$pt = assertChoice(predict.type, allowed.predict.types)
 
       # set environments for functions
       if (length(self$model.extractors) > 0)
