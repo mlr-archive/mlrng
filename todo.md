@@ -1,5 +1,6 @@
 # TODO
 
+* strange R6 bug. sometimes private is not set correctly; depends on package loading (library vs devtools)
 * names / vocabulary: assessment etc
 * getTaskData helper
 * clone testing
