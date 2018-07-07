@@ -25,6 +25,8 @@ tune = function(task, learner, resampling, measures, ctrl) {
   assertList(measures, "Measure")
   assertR6(ctrl, "TuneControl")
 
+  ctrl$run(task = task, learner = learner, reampling = resampling, measures = measures)
+
   # if (is.null(resampling$instance))
   #   resampling$instantiate(task)
 

@@ -1,9 +1,9 @@
-TuneControlGrid = R6Class("TuneControlGrid",
+TuneControlRandomSearch = R6Class("TuneControlRandomSearch",
   cloneable = FALSE,
   inherit = TuneControl,
   public = list(
     run = function(task, learner, resampling, measures) {
-      design = self$par.set$generateGridDesign(self$budget))
+      design = setDT(ParamHelpers::generateGridDesign(self$par.set, self$budget))
       jobs = CJ(i.design = seq_row(design), i.outer = seq_len(resampling$iters), i.inner = seq_len(self$resampling$iters))
 
       res = parallelMap(function(i) {

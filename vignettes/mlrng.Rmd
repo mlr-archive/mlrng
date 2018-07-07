@@ -35,6 +35,7 @@ All objects are stored in dictionaries (a.k.a. hash maps):
 
 ### Task Creation
 We use the `iris` data set to create a multilabel classification task:
+
 ```{r}
 iris.task = TaskClassif$new(data = iris, target = "Species")
 ```
@@ -42,6 +43,7 @@ iris.task = TaskClassif$new(data = iris, target = "Species")
 ### Task Object
 
 Task objects come with some handy self-explanatory getters:
+
 ```{r}
 # id
 iris.task$id
@@ -79,6 +81,7 @@ iris.task$head()
 # complete data
 iris.task$data
 ```
+
 In `mlrng`, tasks can rely on different data backends to hold tabular data.
 Per default, data is stored in SQLite data bases where the data does not occupy any memory unless fetched from the data base.
 This allows you to work with hundreds of tasks simultaneously or to conveniently learn on subsets of "big data".
@@ -88,6 +91,7 @@ This is covered in detail in the help (FIXME).
 
 The backend treats the data as immutable.
 While some operations work without touching or querying the data (filtering rows or selecting columns), other (preprocessing) operations will create an in-memory copy of the data (or subset) on the fly.
+
 ```{r}
 # subset to 120 rows and remove column "Petal.Length"
 keep = setdiff(c(iris.task$target, iris.task$features), "Petal.Length")
@@ -96,6 +100,7 @@ iris.task$subset(rows = 1:120, cols = keep)
 iris.task$nrow
 iris.task$features
 ```
+
 If you for example subsample your data first to only use 0.1% of all observations before preprocessing and feeding it into a model, you can keep the memory footprint reasonable.
 
 
@@ -103,11 +108,14 @@ If you for example subsample your data first to only use 0.1% of all observation
 
 The package ships with some popular tasks to toy around with.
 Like most objects in `mlrng`, tasks are stored in a `Dictionary` which is called `mlr.tasks` here:
+
 ```{r}
 print(mlr.tasks)
 print(mlr.tasks$summary())
 ```
+
 We use the `$get()` function to retrieve a specific task, here a regression task based on the dataset `BostonHousing`:
+
 ```{r}
 bh.task = mlr.tasks$get("bh")
 bh.task$head()
@@ -152,6 +160,7 @@ lrn = LearnerClassif$new(
 ### Predefined Learners
 
 All learners are stored in a register called `mlr.learners` and can easily be listed:
+
 ```{r}
 mlr.learners
 mlr.learners$summary()
@@ -160,23 +169,27 @@ mlr.learners$summary()
 ### Dummy classification learner
 
 You can retrieve learners from the dictionary `Learners`:
+
 ```{r}
 lrn.dummy = mlr.learners$get("classif.dummy")
 ```
 
 The parameter set is stored in the slot `par.set` and parameters deviating from the default are stored in `par.vals`:
+
 ```{r}
 lrn.dummy$par.set
 lrn.dummy$par.vals
 ```
 
 Now, we set the parameter `method` to `"sample"`, change the `id` and add the learner to the register:
+
 ```{r}
 lrn.dummy$par.vals = list(method = "sample")
 lrn.dummy$id = "classif.dummy.sample"
 mlr.learners$add(lrn.dummy)
 mlr.learners$summary()
 ```
+
 From now on, we can just pass the id `"classif.dummy.sample"` to other functions to use this learner.
 
 ## Measures
@@ -202,6 +215,7 @@ r$iters = 3
 
 Here, we fit a simple CART on a random subset of the iris task.
 The returned object is a `TrainResult`:
+
 ```{r}
 task = mlr.tasks$get("iris")
 lrn = mlr.learners$get("classif.rpart")
@@ -210,12 +224,15 @@ tr = train(task, lrn, subset = train)
 print(tr)
 tr$train.log
 ```
+
 We can access the returned `rpart` model via the slot `$rmodel`:
+
 ```{r}
 print(tr$rmodel)
 ```
 
 Next, we can use the `TrainResult` to predict on the left-out observations:
+
 ```{r}
 test = setdiff(1:task$nrow, train)
 pr = predict(tr, subset = test)
