@@ -14,10 +14,10 @@ DictionaryLearners = R6Class("DictionaryLearners", inherit = Dictionary,
 
 #' @title Registered Learners
 #' @docType class
-#' @format \code{\link{R6Class}} object
+#' @format [R6Class()] object
 #'
 #' @description
-#' \code{mlr.learners} is a \code{\link{Dictionary}} used to manage learners.
+#' `mlr.learners` is a [Dictionary()] used to manage learners.
 #'
 #' @export
 #' @examples

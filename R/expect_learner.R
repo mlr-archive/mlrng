@@ -3,8 +3,8 @@
 #' @description
 #' Check if Learner object is valid.
 #'
-#' @param lrn [\code{\link{Learner}}]\cr
-#'   Object of type \code{\link{Learner}}.
+#' @param lrn [[Learner()]]\cr
+#'   Object of type [Learner()].
 #' @export
 expect_learner = function(lrn) {
   testthat::expect_is(lrn, "Learner")

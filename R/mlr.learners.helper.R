@@ -9,22 +9,22 @@ propVectorToMatrix = function(p, levs) {
 #' @title Convert arguments to control structure.
 #'
 #' @description
-#' Find all elements in \code{...} which are not missing and
-#' call \code{control} on them.
+#' Find all elements in `...` which are not missing and
+#' call `control` on them.
 #'
-#' @param control [\code{function}]\cr
+#' @param control [`function`]\cr
 #'   Function that creates control structure.
 #' @param ... [any]\cr
 #'   Arguments for control structure function.
-#' @param .defaults [\code{list}]\cr
+#' @param .defaults [`list`]\cr
 #'   Initial default values that the control function is called on.
 #'   One can use this if control should be called on different defaults than in its signature.
 #'   The values in ... will overwrite these.
 #'   Default is empty list.
-#' @param .restrict [\code{logical(1)}]\cr
-#'   Restrict the elements from \code{...}, which are passed to \code{control}, only to the arg-names
-#'   that occur in the signature of \code{control}?
-#'   Default is \code{FALSE}.
+#' @param .restrict [`logical(1)`]\cr
+#'   Restrict the elements from `...`, which are passed to `control`, only to the arg-names
+#'   that occur in the signature of `control`?
+#'   Default is `FALSE`.
 #' @return Control structure for learner.
 #' @export
 learnerArgsToControl = function(control, ..., .defaults = list(), .restrict = FALSE) {

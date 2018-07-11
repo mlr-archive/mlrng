@@ -3,15 +3,15 @@
 #' @description
 #' Runs a resampling (possibly in parallel).
 #'
-#' @param task [\code{\link{Task}}]\cr
-#'   Object of type \code{\link{Task}}.
-#' @param learner [\code{\link{Learner}}]\cr
-#'   Object of type \code{\link{Learner}}.
-#' @param resampling [\code{\link{Resampling}}]\cr
-#'   Object of type \code{\link{Resampling}}.
-#' @param measures [\code{list} of \code{\link{Measure}}]\cr
-#'   List of objects of type \code{\link{Measure}}.
-#' @return \code{\link{ResampleResult}}.
+#' @param task [[Task()]]\cr
+#'   Object of type [Task()].
+#' @param learner [[Learner()]]\cr
+#'   Object of type [Learner()].
+#' @param resampling [[Resampling()]]\cr
+#'   Object of type [Resampling()].
+#' @param measures [`list` of [Measure()]]\cr
+#'   List of objects of type [Measure()].
+#' @return [ResampleResult()].
 #' @export
 resample = function(task, learner, resampling, measures) {
   assertTask(task)

@@ -1,13 +1,13 @@
 #' @title Regression Tasks
-#' @format \code{\link{R6Class}} object
+#' @format [R6Class()] object
 #'
 #' @description
-#' A \code{\link[R6]{R6Class}} to construct regression tasks.
+#' A [R6::R6Class()] to construct regression tasks.
 #'
 #' @template fields-task
 #' @template fields-supervisedtask
 #'
-#' @return [\code{\link{TaskRegr}}].
+#' @return [[TaskRegr()]].
 #' @include TaskSupervised.R
 #' @family Tasks
 #' @export

@@ -13,10 +13,10 @@ DictionaryMeasures = R6Class("DictionaryMeasures", inherit = Dictionary,
 
 #' @title Registered Resampling Methods
 #' @docType class
-#' @format \code{\link{R6Class}} object
+#' @format [R6Class()] object
 #'
 #' @description
-#' \code{mlr.measures} is a \code{\link{Dictionary}} used to manage performance measures.
+#' `mlr.measures` is a [Dictionary()] used to manage performance measures.
 #'
 #' @export
 mlr.measures = DictionaryMeasures$new()
