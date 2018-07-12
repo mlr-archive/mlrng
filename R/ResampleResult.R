@@ -1,11 +1,11 @@
 #' @title ResampleResult
-#' @format \code{\link{R6Class}} object
+#' @format [R6Class()] object
 #'
 #' @description
-#' A \code{\link[R6]{R6Class}} containing data of a \code{\link{resample}}.
+#' A [R6::R6Class()] containing data of a [resample()].
 #'
-#' @field aggr [\code{named numeric}]: Aggregated performance measures.
-#' @field data [\code{data.table}]: Data stored in a tabular format.
+#' @field aggr [`named numeric`]: Aggregated performance measures.
+#' @field data [`data.table`]: Data stored in a tabular format.
 ResampleResult = R6Class(c("ResampleResult", "PerformanceResult", "PredictResult", "TrainResult"),
   inherit = Result,
   cloneable = FALSE,

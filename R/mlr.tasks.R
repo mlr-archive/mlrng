@@ -16,10 +16,10 @@ DictionaryTasks = R6Class("DictionaryTasks", inherit = Dictionary,
 
 #' @title Dictionary of defined Tasks
 #' @docType class
-#' @format \code{\link{R6Class}} object
+#' @format [R6Class()] object
 #'
 #' @description
-#' \code{Tasks} is a \code{\link{Dictionary}} used to manage tasks.
+#' `Tasks` is a [Dictionary()] used to manage tasks.
 #'
 #' @export
 #' @examples

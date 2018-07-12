@@ -3,13 +3,13 @@
 #' @description
 #' Fits a model on a subset of the task data.
 #'
-#' @param task [\code{\link{Task}}]\cr
-#'   Object of type \code{\link{Task}}.
-#' @param learner [\code{\link{Learner}}]\cr
-#'   Object of type \code{\link{Learner}}.
-#' @param subset [\code{integer} | \code{logical}]\cr
-#'   Subset of \code{task} to train the data on.
-#' @return \code{\link{TrainResult}}.
+#' @param task [[Task()]]\cr
+#'   Object of type [Task()].
+#' @param learner [[Learner()]]\cr
+#'   Object of type [Learner()].
+#' @param subset [`integer` | `logical`]\cr
+#'   Subset of `task` to train the data on.
+#' @return [TrainResult()].
 #' @export
 train = function(task, learner, subset = NULL) {
   assertTask(task)

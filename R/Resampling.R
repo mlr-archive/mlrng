@@ -1,16 +1,16 @@
 #' @title Base Class for Resampling Measures
-#' @format \code{\link{R6Class}} object
+#' @format [R6Class()] object
 #'
 #' @description
-#' A \code{\link[R6]{R6Class}} to construct resampling measures.
+#' A [R6::R6Class()] to construct resampling measures.
 #' This is the abstract base class, do not use directly!
 #'
-#' Predefined resampling measures are stored in \code{\link{mlr.resamplings}}.
+#' Predefined resampling measures are stored in [mlr.resamplings()].
 #'
-#' @field id [\code{character(1)}]: Identifier of the measure.
-#' @field task.types [\code{character}]: Set of compatible task types.
-#' @field fun [\code{function(truth, predicted)}]: function to compute the measure.
-#' @return [\code{Measure}].
+#' @field id [`character(1)`]: Identifier of the measure.
+#' @field task.types [`character`]: Set of compatible task types.
+#' @field fun [`function(truth, predicted)`]: function to compute the measure.
+#' @return [`Measure`].
 #' @export
 Resampling = R6Class("Resampling",
   public = list(

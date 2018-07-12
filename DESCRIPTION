@@ -91,3 +91,4 @@ Collate:
     'tune.R'
     'zzz.R'
 VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)

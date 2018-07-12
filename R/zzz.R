@@ -14,7 +14,7 @@
 #'
 #' @description
 #' For bug reports and feature requests please use the tracker:
-#' \url{https://github.com/mlr-org/mlrng}.
+#' <https://github.com/mlr-org/mlrng>.
 #' Package options are convered in \link{mlrng-config}.
 #'
 "_PACKAGE"

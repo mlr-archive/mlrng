@@ -1,14 +1,14 @@
 #' @title TrainLog
-#' @format \code{\link{R6Class}} object
+#' @format [R6Class()] object
 #'
 #' @description
-#' A \code{\link[R6]{R6Class}} containing logging information of a \code{\link{train}} call.
-#' Constructor is called with output [\code{list}]: List of output, messages, warnings and errors occured in training and the training time.
-#' @field train.time [\code{numeric(1)}]: Training time.
-#' @field messages [\code{list}]: List of messages encountered while training the model.
-#' @field warnings [\code{list}]: List of warnings encountered while training the model.
-#' @field errors [\code{list}]: List of errors encountered while training the model.
-#' @field output [\code{list}]: Remaining output from model fit, only saved if \code{mlrng.keep.train.output} option is set to \code{TRUE}.
+#' A [R6::R6Class()] containing logging information of a [train()] call.
+#' Constructor is called with output [`list`]: List of output, messages, warnings and errors occured in training and the training time.
+#' @field train.time [`numeric(1)`]: Training time.
+#' @field messages [`list`]: List of messages encountered while training the model.
+#' @field warnings [`list`]: List of warnings encountered while training the model.
+#' @field errors [`list`]: List of errors encountered while training the model.
+#' @field output [`list`]: Remaining output from model fit, only saved if `mlrng.keep.train.output` option is set to `TRUE`.
 TrainLog = R6Class("TrainLog",
   public = list(
     train.time = NULL,
