@@ -9,7 +9,7 @@
 #'
 #' @field id (`character(1)`): Identifier of the measure.
 #' @field task.types [`character`]: Set of compatible task types.
-#' @field fun [`function(truth, predicted)`]: function to compute the measure.
+#' @field fun (`function(truth, predicted)`): function to compute the measure.
 #' @return [`Measure`].
 #' @export
 Resampling = R6Class("Resampling",

@@ -13,7 +13,7 @@
 #' @field nclasses (`integer(1)`)\cr
 #'  Number of levels of class labels.
 #'
-#' @return [[TaskClassif()]].
+#' @return [TaskClassif()].
 #' @include TaskSupervised.R
 #' @export
 #' @family Tasks
