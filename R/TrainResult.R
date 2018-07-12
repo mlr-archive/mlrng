@@ -10,7 +10,7 @@
 #' @field wrapped.model [any]: Result of the model fit as returned by third party packages.
 #' @field train [`integer`]: Indices of training data used to fit the model.
 #' @field train.log [[TrainLog()]]: Logging information from model fit.
-#' @field train.success [`logical(1)`]: Was the training sucessfull.
+#' @field train.success (`logical(1)`): Was the training sucessfull.
 #'  Depending on the settings of `mlrng.continue.on.train.error` this can still be a valid model, but it uses a dummy fallback learner.
 TrainResult = R6Class("TrainResult",
   inherit = Result,

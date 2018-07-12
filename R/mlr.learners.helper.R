@@ -21,7 +21,7 @@ propVectorToMatrix = function(p, levs) {
 #'   One can use this if control should be called on different defaults than in its signature.
 #'   The values in ... will overwrite these.
 #'   Default is empty list.
-#' @param .restrict [`logical(1)`]\cr
+#' @param .restrict (`logical(1)`)\cr
 #'   Restrict the elements from `...`, which are passed to `control`, only to the arg-names
 #'   that occur in the signature of `control`?
 #'   Default is `FALSE`.

@@ -1,7 +1,7 @@
 #' @title Configuration
 #' @name mlrng-config
 #'
-#' @param conf [`character(1)`]\cr
+#' @param conf (`character(1)`)\cr
 #'   Location of the configuration file to load or write.
 #'
 #' @description
