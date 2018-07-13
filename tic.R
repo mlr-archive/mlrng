@@ -1,5 +1,4 @@
 get_stage("install") %>%
-  add_code_step(install.packages(old.packages())) %>%
   add_code_step(devtools::install_github("pat-s/rcmdcheck@build-args")) %>% # FIXME: If this is solved in r-lib/rcmdcheck
   add_code_step(devtools::install_github("mlr-org/phng")) %>%
   add_code_step(devtools::install_github("mllg/backports")) %>%
