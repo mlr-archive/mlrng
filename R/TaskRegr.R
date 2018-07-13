@@ -7,7 +7,7 @@
 #' @template fields-task
 #' @template fields-supervisedtask
 #'
-#' @return [[TaskRegr()]].
+#' @return [TaskRegr()].
 #' @include TaskSupervised.R
 #' @family Tasks
 #' @export

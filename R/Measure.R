@@ -7,10 +7,10 @@
 #'
 #' Predefined measures are stored in [mlr.measures()].
 #'
-#' @field id [`character(1)`]: Identifier of the measure.
-#' @field description [`character(1)`]: Description of the measure.
-#' @field task.types [`character`]: Set of compatible task types.
-#' @field fun [`function(truth, predicted)`]: function to compute the measure.
+#' @field id (`character(1)`): Identifier of the measure.
+#' @field description (`character(1)`): Description of the measure.
+#' @field task.types (`character(1)`): Set of compatible task types.
+#' @field fun (`function(truth, predicted)`): function to compute the measure.
 #' @return [`Measure`].
 #' @export
 Measure = R6Class("Measure",

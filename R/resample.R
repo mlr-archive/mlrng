@@ -3,13 +3,13 @@
 #' @description
 #' Runs a resampling (possibly in parallel).
 #'
-#' @param task [[Task()]]\cr
+#' @param task ([Task()])\cr
 #'   Object of type [Task()].
-#' @param learner [[Learner()]]\cr
+#' @param learner ([Learner()])\cr
 #'   Object of type [Learner()].
-#' @param resampling [[Resampling()]]\cr
+#' @param resampling ([Resampling()])\cr
 #'   Object of type [Resampling()].
-#' @param measures [`list` of [Measure()]]\cr
+#' @param measures ([`list` of [Measure()])\cr
 #'   List of objects of type [Measure()].
 #' @return [ResampleResult()].
 #' @export

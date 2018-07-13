@@ -8,7 +8,7 @@
 #' @template fields-task
 #' @template fields-supervisedtask
 #'
-#' @return [[Task()]].
+#' @return [Task()].
 #' @export
 #' @family Tasks
 #' @examples

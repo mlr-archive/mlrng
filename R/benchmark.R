@@ -3,13 +3,13 @@
 #' @description
 #' Runs a benchmark (possibly in parallel).
 #'
-#' @param tasks [`list` of [Task()]]\cr
+#' @param tasks (`list` of [Task()])\cr
 #'   List of objects of type [Task()].
-#' @param learners [`list` of [Learner()]]\cr
+#' @param learners (`list` of [Learner()])\cr
 #'   List of objects of type [Learner()].
-#' @param resamplings [`list` of [Resampling()]]\cr
+#' @param resamplings (`list` of [Resampling()])\cr
 #'   List of objects of type [Resampling()].
-#' @param measures [`list` of [Measure()]]\cr
+#' @param measures (`list` of [Measure()])\cr
 #'   List of objects of type [Measure()].
 #' @return [BenchmarkResult()].
 #' @export
