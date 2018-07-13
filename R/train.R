@@ -44,7 +44,7 @@ trainWorker = function(task, learner, row.ids) {
       result = fitModel(task, createFallbackLearner(task), row.ids)
       ginfo("Training {learner$id} on {task$id} failed, fallback to dummy model.")
     } else {
-      gstop("Training {learner$id} on {task$id} failed with {train.log$errors([1])$message}.")
+      gstop("Training {learner$id} on {task$id} failed with {train.log$errors[[1]]$message}.")
     }
   }
 
