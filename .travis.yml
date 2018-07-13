@@ -14,10 +14,8 @@ addons:
       - ghostscript
 
 r:
-  - 3.2
-  - 3.3
-  - 3.4
-  - 3.5
+  - oldrelease
+  - release
   - devel
 
 before_install: R -q -e 'install.packages("devtools"); devtools::install_github("pat-s/tic@rcmdcheck-build-args"); tic::prepare_all_stages()'
