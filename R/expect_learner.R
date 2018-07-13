@@ -3,7 +3,7 @@
 #' @description
 #' Check if Learner object is valid.
 #'
-#' @param lrn [[Learner()]]\cr
+#' @param lrn ([Learner()])\cr
 #'   Object of type [Learner()].
 #' @export
 expect_learner = function(lrn) {

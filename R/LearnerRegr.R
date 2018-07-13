@@ -4,7 +4,7 @@
 #' @description
 #' A [R6::R6Class()] to construct learners.
 #'
-#' @return [[Learner()]].
+#' @return [Learner()].
 #' @family Learner
 #' @include Learner.R
 #' @export

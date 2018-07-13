@@ -40,7 +40,6 @@ Suggests:
     rpart,
     testthat,
     withr
-RoxygenNote: 6.0.1
 Collate: 
     'Backend.R'
     'BackendDBI.R'
@@ -92,3 +91,5 @@ Collate:
     'zzz.R'
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.0.1
+Encoding: UTF-8
