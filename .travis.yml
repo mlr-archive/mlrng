@@ -1,7 +1,7 @@
 dist: trusty
 sudo: false
 language: r
-cache: packages
+# cache: packages
 
 env:
   global:
