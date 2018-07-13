@@ -46,7 +46,6 @@ after_success:
   - git checkout master
   - "export TRAVIS_COMMIT_MSG=\"$(git log --format=%B --no-merges -n 1)\""
   - R --no-save <<< "devtools::document(roclets=c('rd', 'collate', 'namespace'))"
-  - ./thirdparty/gen_families.sh > man/mlrFamilies.Rd
   - git config user.name $GN
   - git config user.email $GM
   - git config credential.helper "store --file=.git/credentials"
