@@ -11,7 +11,7 @@ get_stage("script") %>%
   add_step(step_rcmdcheck(notes_are_errors = FALSE, build_args = "--no-build-vignettes",
                           check_args = "--ignore-vignettes --no-manual --as-cran"))
 
-if ("TRAVIS_R_VERSION_STRING" == "release") {
+if (Sys.getenv("TRAVIS_R_VERSION_STRING" == "release")) {
 
   get_stage("after_success") %>%
     add_code_step(covr::codecov(quiet = FALSE))
