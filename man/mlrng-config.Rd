@@ -13,29 +13,29 @@ writeMlrngConfig(conf = file.path(rappdirs::user_config_dir("mlrng"),
   "config.yml"))
 }
 \arguments{
-\item{conf}{[\code{character(1)}]\cr
+\item{conf}{\code{\link{character(1)}}\cr
 Location of the configuration file to load or write.}
 }
 \description{
-The following options are currently supported to be set via \code{\link[base]{options}}.
+The following options are currently supported to be set via \code{\link[base:options]{base::options()}}.
 \describe{
-  \item{\code{mlrng.verbose}}{
-    Verbosity. Set to \code{FALSE} to suppress some output.
-  }
-  \item{\code{mlrng.debug}}{
-    Debug mode. Set to \code{TRUE} to enable additional output and some (slower) checks.
-  }
-  \item{\code{mlrng.keep.train.output}}{
-    Store the output of the models in the log file. Default: \code{FALSE}.
-  }
-  \item{\code{mlrng.continue.on.learner.error}}{
-    Keep running if a learner encounters a problem. The resulting model will be a model fitted by a dummy learner.
-  }
-  \item{\code{mlrng.train.encapsulation}}{
-    Control how the training of learners is encapsulated. \dQuote{none} means no encapsulation but also no logging (fastest).
-    If set to \dQuote{evaluate} (default), the package \pkg{evaluate} is used to run the model fit.
-    If set to \dQuote{callr}, the package \pkg{callr} starts the training in a separate R process to guard your session against segfaults.
-  }
+\item{\code{mlrng.verbose}}{
+Verbosity. Set to \code{FALSE} to suppress some output.
+}
+\item{\code{mlrng.debug}}{
+Debug mode. Set to \code{TRUE} to enable additional output and some (slower) checks.
+}
+\item{\code{mlrng.keep.train.output}}{
+Store the output of the models in the log file. Default: \code{FALSE}.
+}
+\item{\code{mlrng.continue.on.learner.error}}{
+Keep running if a learner encounters a problem. The resulting model will be a model fitted by a dummy learner.
+}
+\item{\code{mlrng.train.encapsulation}}{
+Control how the training of learners is encapsulated. \dQuote{none} means no encapsulation but also no logging (fastest).
+If set to \dQuote{evaluate} (default), the package \pkg{evaluate} is used to run the model fit.
+If set to \dQuote{callr}, the package \pkg{callr} starts the training in a separate R process to guard your session against segfaults.
+}
 }
 
 These options may be set in a configuration file which is automatically parsed on package load.

@@ -7,20 +7,20 @@
 benchmark(tasks, learners, resamplings, measures)
 }
 \arguments{
-\item{tasks}{[\code{list} of \code{\link{Task}}]\cr
-List of objects of type \code{\link{Task}}.}
+\item{tasks}{[\code{list} of \code{\link[=Task]{Task()}}]\cr
+List of objects of type \code{\link[=Task]{Task()}}.}
 
-\item{learners}{[\code{list} of \code{\link{Learner}}]\cr
-List of objects of type \code{\link{Learner}}.}
+\item{learners}{[\code{list} of \code{\link[=Learner]{Learner()}}]\cr
+List of objects of type \code{\link[=Learner]{Learner()}}.}
 
-\item{resamplings}{[\code{list} of \code{\link{Resampling}}]\cr
-List of objects of type \code{\link{Resampling}}.}
+\item{resamplings}{[\code{list} of \code{\link[=Resampling]{Resampling()}}]\cr
+List of objects of type \code{\link[=Resampling]{Resampling()}}.}
 
-\item{measures}{[\code{list} of \code{\link{Measure}}]\cr
-List of objects of type \code{\link{Measure}}.}
+\item{measures}{[\code{list} of \code{\link[=Measure]{Measure()}}]\cr
+List of objects of type \code{\link[=Measure]{Measure()}}.}
 }
 \value{
-\code{\link{BenchmarkResult}}.
+\code{\link[=BenchmarkResult]{BenchmarkResult()}}.
 }
 \description{
 Runs a benchmark (possibly in parallel).
