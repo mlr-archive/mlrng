@@ -7,7 +7,8 @@ get_stage("install") %>%
 
 get_stage("script") %>%
   add_code_step(devtools::document()) %>%
-  add_step(step_rcmdcheck(notes_are_errors = FALSE, build_args = "--no-build-vignettes",
+  add_step(step_rcmdcheck(notes_are_errors = FALSE, warnings_are_errors = FALSE,
+                          build_args = "--no-build-vignettes",
                           check_args = "--ignore-vignettes --no-manual --as-cran"))
 
 if (inherits(ci(), "TravisCI") && Sys.getenv("TRAVIS_R_VERSION_STRING") == "release") {
