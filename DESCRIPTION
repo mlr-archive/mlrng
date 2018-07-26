@@ -40,7 +40,7 @@ Suggests:
     rpart,
     testthat,
     withr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000
 Collate: 
     'Backend.R'
     'BackendDBI.R'
