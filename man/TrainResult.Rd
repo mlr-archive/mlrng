@@ -4,27 +4,27 @@
 \name{TrainResult}
 \alias{TrainResult}
 \title{TrainResult}
-\format{\code{\link{R6Class}} object}
+\format{\code{\link[=R6Class]{R6Class()}} object}
 \usage{
 TrainResult
 }
 \description{
-A \code{\link[R6]{R6Class}} containing data of a \code{\link{train}}.
+A \code{\link[R6:R6Class]{R6::R6Class()}} containing data of a \code{\link[=train]{train()}}.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{task}}{[\code{\link{Task}}]: Task used to fit the model.}
+\item{\code{task}}{(\code{\link[=Task]{Task()}}): Task used to fit the model.}
 
-\item{\code{learner}}{[\code{\link{Learner}}]: Learner used to fit the model.}
+\item{\code{learner}}{(\code{\link[=Learner]{Learner()}}): Learner used to fit the model.}
 
-\item{\code{wrapped.model}}{[any]: Result of the model fit as returned by third party packages.}
+\item{\code{wrapped.model}}{\link{any}: Result of the model fit as returned by third party packages.}
 
-\item{\code{train}}{[\code{integer}]: Indices of training data used to fit the model.}
+\item{\code{train}}{(\code{integer}): Indices of training data used to fit the model.}
 
-\item{\code{train.log}}{[\code{\link{TrainLog}}]: Logging information from model fit.}
+\item{\code{train.log}}{(\code{\link[=TrainLog]{TrainLog()}}): Logging information from model fit.}
 
-\item{\code{train.success}}{[\code{logical(1)}]: Was the training sucessfull.
+\item{\code{train.success}}{(\code{logical(1)}): Was the training sucessfull.
 Depending on the settings of \code{mlrng.continue.on.train.error} this can still be a valid model, but it uses a dummy fallback learner.}
 }}
 
