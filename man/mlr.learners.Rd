@@ -4,12 +4,12 @@
 \name{mlr.learners}
 \alias{mlr.learners}
 \title{Registered Learners}
-\format{\code{\link{R6Class}} object}
+\format{\code{\link[=R6Class]{R6Class()}} object}
 \usage{
 mlr.learners
 }
 \description{
-\code{mlr.learners} is a \code{\link{Dictionary}} used to manage learners.
+\code{mlr.learners} is a \code{\link[=Dictionary]{Dictionary()}} used to manage learners.
 }
 \examples{
 mlr.learners$ids
