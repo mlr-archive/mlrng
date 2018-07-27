@@ -4,19 +4,19 @@
 \name{ResampleResult}
 \alias{ResampleResult}
 \title{ResampleResult}
-\format{\code{\link[=R6Class]{R6Class()}} object}
+\format{\code{\link{R6Class}} object}
 \usage{
 ResampleResult
 }
 \description{
-A \code{\link[R6:R6Class]{R6::R6Class()}} containing data of a \code{\link[=resample]{resample()}}.
+A \code{\link[R6]{R6Class}} containing data of a \code{\link{resample}}.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{aggr}}{(\code{named numeric}): Aggregated performance measures.}
+\item{\code{aggr}}{[\code{named numeric}]: Aggregated performance measures.}
 
-\item{\code{data}}{\code{\link{data.table}}: Data stored in a tabular format.}
+\item{\code{data}}{[\code{data.table}]: Data stored in a tabular format.}
 }}
 
 \keyword{datasets}

@@ -4,19 +4,18 @@
 \name{LearnerRegr}
 \alias{LearnerRegr}
 \title{Class for Regr Learners}
-\format{\code{\link[=R6Class]{R6Class()}} object}
+\format{\code{\link{R6Class}} object}
 \usage{
 LearnerRegr
 }
 \value{
-\code{\link[=Learner]{Learner()}}.
+[\code{\link{Learner}}].
 }
 \description{
-A \code{\link[R6:R6Class]{R6::R6Class()}} to construct learners.
+A \code{\link[R6]{R6Class}} to construct learners.
 }
 \seealso{
 Other Learner: \code{\link{LearnerClassif}},
   \code{\link{Learner}}
 }
-\concept{Learner}
 \keyword{datasets}

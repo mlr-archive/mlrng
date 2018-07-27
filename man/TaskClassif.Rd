@@ -4,65 +4,65 @@
 \name{TaskClassif}
 \alias{TaskClassif}
 \title{Classification Tasks}
-\format{\code{\link[=R6Class]{R6Class()}} object}
+\format{\code{\link{R6Class}} object}
 \usage{
 TaskClassif
 }
 \value{
-\code{\link[=TaskClassif]{TaskClassif()}}.
+[\code{\link{TaskClassif}}].
 }
 \description{
-A \code{\link[R6:R6Class]{R6::R6Class()}} to construct classification tasks.
+A \code{\link[R6]{R6Class}} to construct classification tasks.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{id}}{(\code{character(1)})\cr
+\item{\code{id}}{[\code{character(1)}]\cr
 Identifier of the task.}
 
-\item{\code{backend}}{(\code{Backend})\cr
+\item{\code{backend}}{[\code{Backend}]\cr
 Internal abstraction for data access. Leave this alone unless you know exactly what you are doing.}
 
-\item{\code{get}}{(\code{function(rows = NULL, cols = NULL)})\cr
+\item{\code{get}}{[\code{function(rows = NULL, cols = NULL)}]\cr
 Get (a subset of) the task data. Rows must be specified by row ids (defaulting to integers if not specified otherwise), columns must be addressed by name.}
 
-\item{\code{head}}{(\code{function(n = 6L)})\cr
+\item{\code{head}}{[\code{function(n = 6L)}]\cr
 Fetches the first \code{n} rows of the data and returns a \code{data.table}.}
 
-\item{\code{features}}{\link{character}\cr
+\item{\code{features}}{[\code{character}]\cr
 Names of the features.}
 
-\item{\code{formula}}{\link{character}\cr
+\item{\code{formula}}{[\code{character}]\cr
 Formula describing the learning task.}
 
-\item{\code{subset}}{(\code{function(rows = NULL, cols = NULL)})\cr
+\item{\code{subset}}{[\code{function(rows = NULL, cols = NULL)}]\cr
 Subset this task to contain only the specified rows and columns.}
 
-\item{\code{nrow}}{(\code{integer(1)})\cr
+\item{\code{nrow}}{[\code{integer(1)}]\cr
 Number of rows in the current view of the task.}
 
-\item{\code{ncol}}{(\code{integer(1)})\cr
+\item{\code{ncol}}{[\code{integer(1)}]\cr
 Number of columns in the current view of the task.}
 
-\item{\code{col.types}}{(\code{named character})\cr
+\item{\code{col.types}}{[\code{named character}]\cr
 Column class information.}
 
-\item{\code{missing.values}}{(\code{named integer})\cr
+\item{\code{missing.values}}{[\code{named integer}]\cr
 Number of missing values per column.}
 
-\item{\code{target}}{(\code{character(1)})\cr
+\item{\code{target}}{[\code{character(1)}]\cr
 Name of the target column.}
 
-\item{\code{truth}}{(\code{function(rows = NULL})\cr
+\item{\code{truth}}{[\code{function(rows = NULL}]\cr
 Returns \code{data.table} with the true outcome for specified rows.}
 
-\item{\code{positive}}{(\code{character(1)})\cr
+\item{\code{positive}}{[\code{character(1)}]\cr
 Only for binary classification: Level of the positive class (\code{NA} otherwise).}
 
-\item{\code{classes}}{\code{\link[=character]{character()}}\cr
+\item{\code{classes}}{[\code{character()}]\cr
 Levels of class labels.}
 
-\item{\code{nclasses}}{(\code{integer(1)})\cr
+\item{\code{nclasses}}{[\code{integer(1)}]\cr
 Number of levels of class labels.}
 }}
 
@@ -73,5 +73,4 @@ task$formula
 \seealso{
 Other Tasks: \code{\link{TaskRegr}}, \code{\link{Task}}
 }
-\concept{Tasks}
 \keyword{datasets}

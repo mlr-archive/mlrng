@@ -4,11 +4,11 @@
 \name{mlr.measures}
 \alias{mlr.measures}
 \title{Registered Resampling Methods}
-\format{\code{\link[=R6Class]{R6Class()}} object}
+\format{\code{\link{R6Class}} object}
 \usage{
 mlr.measures
 }
 \description{
-\code{mlr.measures} is a \code{\link[=Dictionary]{Dictionary()}} used to manage performance measures.
+\code{mlr.measures} is a \code{\link{Dictionary}} used to manage performance measures.
 }
 \keyword{datasets}

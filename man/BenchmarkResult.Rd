@@ -4,17 +4,17 @@
 \name{BenchmarkResult}
 \alias{BenchmarkResult}
 \title{BenchmarkResult}
-\format{\code{\link[=R6Class]{R6Class()}} object}
+\format{\code{\link{R6Class}} object}
 \usage{
 BenchmarkResult
 }
 \description{
-A \code{\link[R6:R6Class]{R6::R6Class()}} containing data of a \code{\link[=benchmark]{benchmark()}}.
+A \code{\link[R6]{R6Class}} containing data of a \code{\link{benchmark}}.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{data}}{\code{\link{data.table}}: Data stored in a tabular format.}
+\item{\code{data}}{[\code{data.table}]: Data stored in a tabular format.}
 }}
 
 \keyword{datasets}
