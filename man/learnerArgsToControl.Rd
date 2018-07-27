@@ -20,7 +20,7 @@ One can use this if control should be called on different defaults than in its s
 The values in ... will overwrite these.
 Default is empty list.}
 
-\item{.restrict}{\code{\link{logical(1)}}\cr
+\item{.restrict}{(\code{logical(1)})\cr
 Restrict the elements from \code{...}, which are passed to \code{control}, only to the arg-names
 that occur in the signature of \code{control}?
 Default is \code{FALSE}.}

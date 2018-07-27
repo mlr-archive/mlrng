@@ -13,7 +13,7 @@ writeMlrngConfig(conf = file.path(rappdirs::user_config_dir("mlrng"),
   "config.yml"))
 }
 \arguments{
-\item{conf}{\code{\link{character(1)}}\cr
+\item{conf}{(\code{character(1)})\cr
 Location of the configuration file to load or write.}
 }
 \description{

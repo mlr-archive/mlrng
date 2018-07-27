@@ -7,7 +7,7 @@
 expect_learner(lrn)
 }
 \arguments{
-\item{lrn}{[\code{\link[=Learner]{Learner()}}]\cr
+\item{lrn}{(\code{\link[=Learner]{Learner()}})\cr
 Object of type \code{\link[=Learner]{Learner()}}.}
 }
 \description{

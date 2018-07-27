@@ -9,7 +9,7 @@
 LearnerRegr
 }
 \value{
-[\code{\link[=Learner]{Learner()}}].
+\code{\link[=Learner]{Learner()}}.
 }
 \description{
 A \code{\link[R6:R6Class]{R6::R6Class()}} to construct learners.

@@ -10,20 +10,24 @@ TrainLog
 }
 \description{
 A \code{\link[R6:R6Class]{R6::R6Class()}} containing logging information of a \code{\link[=train]{train()}} call.
-Constructor is called with output \code{\link{list}}: List of output, messages, warnings and errors occured in training and the training time.
+Constructor is called with output (\code{list}): List of output, messages, warnings and errors occured in training and the training time.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{train.time}}{\code{\link{numeric(1)}}: Training time.}
+\item{\code{train.time}}{(\code{numeric(1)}): Training time.}
 
-\item{\code{messages}}{\code{\link{list}}: List of messages encountered while training the model.}
+\item{\code{messages}}{(\link{list}): List of messages encountered while training the model.}
 
-\item{\code{warnings}}{\code{\link{list}}: List of warnings encountered while training the model.}
+\item{\code{warnings}}{([list)]: List of warnings encountered while training the model.
 
-\item{\code{errors}}{\code{\link{list}}: List of errors encountered while training the model.}
+[list)]: R:list)}
 
-\item{\code{output}}{\code{\link{list}}: Remaining output from model fit, only saved if \code{mlrng.keep.train.output} option is set to \code{TRUE}.}
+\item{\code{errors}}{([list)]: List of errors encountered while training the model.
+
+[list)]: R:list)}
+
+\item{\code{output}}{(\link{list}): Remaining output from model fit, only saved if \code{mlrng.keep.train.output} option is set to \code{TRUE}.}
 }}
 
 \keyword{datasets}

@@ -7,16 +7,16 @@
 resample(task, learner, resampling, measures)
 }
 \arguments{
-\item{task}{[\code{\link[=Task]{Task()}}]\cr
+\item{task}{(\code{\link[=Task]{Task()}})\cr
 Object of type \code{\link[=Task]{Task()}}.}
 
-\item{learner}{[\code{\link[=Learner]{Learner()}}]\cr
+\item{learner}{(\code{\link[=Learner]{Learner()}})\cr
 Object of type \code{\link[=Learner]{Learner()}}.}
 
-\item{resampling}{[\code{\link[=Resampling]{Resampling()}}]\cr
+\item{resampling}{(\code{\link[=Resampling]{Resampling()}})\cr
 Object of type \code{\link[=Resampling]{Resampling()}}.}
 
-\item{measures}{[\code{list} of \code{\link[=Measure]{Measure()}}]\cr
+\item{measures}{([\code{list} of \code{\link[=Measure]{Measure()}})\cr
 List of objects of type \code{\link[=Measure]{Measure()}}.}
 }
 \value{

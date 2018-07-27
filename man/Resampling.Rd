@@ -20,11 +20,11 @@ Predefined resampling measures are stored in \code{\link[=mlr.resamplings]{mlr.r
 \section{Fields}{
 
 \describe{
-\item{\code{id}}{\code{\link{character(1)}}: Identifier of the measure.}
+\item{\code{id}}{(\code{character(1)}): Identifier of the measure.}
 
 \item{\code{task.types}}{\code{\link{character}}: Set of compatible task types.}
 
-\item{\code{fun}}{\code{\link{function(truth, predicted)}}: function to compute the measure.}
+\item{\code{fun}}{(\code{function(truth, predicted)}): function to compute the measure.}
 }}
 
 \keyword{datasets}

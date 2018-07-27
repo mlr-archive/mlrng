@@ -14,7 +14,7 @@ A \code{\link[R6:R6Class]{R6::R6Class()}} containing data of a \code{\link[=resa
 \section{Fields}{
 
 \describe{
-\item{\code{aggr}}{\code{\link{named numeric}}: Aggregated performance measures.}
+\item{\code{aggr}}{(\code{named numeric}): Aggregated performance measures.}
 
 \item{\code{data}}{\code{\link{data.table}}: Data stored in a tabular format.}
 }}
