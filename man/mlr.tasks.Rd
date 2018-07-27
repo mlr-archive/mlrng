@@ -4,12 +4,12 @@
 \name{mlr.tasks}
 \alias{mlr.tasks}
 \title{Dictionary of defined Tasks}
-\format{\code{\link[=R6Class]{R6Class()}} object}
+\format{\code{\link{R6Class}} object}
 \usage{
 mlr.tasks
 }
 \description{
-\code{Tasks} is a \code{\link[=Dictionary]{Dictionary()}} used to manage tasks.
+\code{Tasks} is a \code{\link{Dictionary}} used to manage tasks.
 }
 \examples{
 # List task ids:

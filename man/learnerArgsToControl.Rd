@@ -7,19 +7,19 @@
 learnerArgsToControl(control, ..., .defaults = list(), .restrict = FALSE)
 }
 \arguments{
-\item{control}{\code{\link{function}}\cr
+\item{control}{[\code{function}]\cr
 Function that creates control structure.}
 
-\item{...}{\link{any}\cr
+\item{...}{[any]\cr
 Arguments for control structure function.}
 
-\item{.defaults}{\code{\link{list}}\cr
+\item{.defaults}{[\code{list}]\cr
 Initial default values that the control function is called on.
 One can use this if control should be called on different defaults than in its signature.
 The values in ... will overwrite these.
 Default is empty list.}
 
-\item{.restrict}{(\code{logical(1)})\cr
+\item{.restrict}{[\code{logical(1)}]\cr
 Restrict the elements from \code{...}, which are passed to \code{control}, only to the arg-names
 that occur in the signature of \code{control}?
 Default is \code{FALSE}.}

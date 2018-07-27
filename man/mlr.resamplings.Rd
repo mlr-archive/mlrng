@@ -4,11 +4,11 @@
 \name{mlr.resamplings}
 \alias{mlr.resamplings}
 \title{Registered Resampling Methods}
-\format{\code{\link[=R6Class]{R6Class()}} object}
+\format{\code{\link{R6Class}} object}
 \usage{
 mlr.resamplings
 }
 \description{
-\code{Resamplings} is a \code{\link[=Dictionary]{Dictionary()}} used to manage resampling methods.
+\code{Resamplings} is a \code{\link{Dictionary}} used to manage resampling methods.
 }
 \keyword{datasets}
