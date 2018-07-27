@@ -20,7 +20,7 @@ if (inherits(ci(), "TravisCI") && Sys.getenv("TRAVIS_R_VERSION_STRING") == "rele
     add_code_step(devtools::document(roclets=c('rd', 'collate', 'namespace'))) %>%
     add_step(step_build_pkgdown()) %>%
     add_step(step_push_deploy(orphan = TRUE, path = "docs", branch = "gh-pages")) %>%
-    add_step(step_push_deploy(orphan = FALSE, branch = "travis", commit_paths = c("NAMESPACE", "man/*")))
+    add_step(step_push_deploy(orphan = FALSE, branch = "master", commit_paths = c("NAMESPACE", "man/*")))
 
   get_stage("after_success") %>%
     add_code_step(covr::codecov(quiet = FALSE))
