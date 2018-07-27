@@ -7,10 +7,20 @@ get_stage("install") %>%
 
 get_stage("script") %>%
   add_code_step(devtools::document()) %>%
-  add_step(step_rcmdcheck(notes_are_errors = FALSE, build_args = "--no-build-vignettes",
+  add_step(step_rcmdcheck(notes_are_errors = FALSE, warnings_are_errors = FALSE,
+                          build_args = "--no-build-vignettes",
                           check_args = "--ignore-vignettes --no-manual --as-cran"))
 
-if (Sys.getenv("TRAVIS_R_VERSION_STRING") == "release") {
+if (inherits(ci(), "TravisCI") && Sys.getenv("TRAVIS_R_VERSION_STRING") == "release") {
+
+  get_stage("before_deploy") %>%
+    add_step(step_setup_ssh())
+
+  get_stage("deploy") %>%
+    add_code_step(devtools::document(roclets=c('rd', 'collate', 'namespace'))) %>%
+    add_step(step_build_pkgdown()) %>%
+    add_step(step_push_deploy(orphan = TRUE, path = "docs", branch = "gh-pages")) %>%
+    add_step(step_push_deploy(orphan = FALSE, branch = "travis", commit_paths = c("NAMESPACE", "man/*")))
 
   get_stage("after_success") %>%
     add_code_step(covr::codecov(quiet = FALSE))
