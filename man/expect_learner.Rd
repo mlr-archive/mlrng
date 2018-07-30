@@ -7,8 +7,8 @@
 expect_learner(lrn)
 }
 \arguments{
-\item{lrn}{(\code{\link[=Learner]{Learner()}})\cr
-Object of type \code{\link[=Learner]{Learner()}}.}
+\item{lrn}{[\code{\link{Learner}}]\cr
+Object of type \code{\link{Learner}}.}
 }
 \description{
 Check if Learner object is valid.
