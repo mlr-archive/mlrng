@@ -17,3 +17,39 @@ r:
   - 3.3
   - 3.4
   - devel
+dist: trusty
+sudo: false
+language: r
+cache: packages
+
+env:
+  global:
+    - _R_CHECK_TESTS_NLINES_=999
+    - _R_CHECK_LENGTH_1_CONDITION_=true
+    - secure: "d0xff7hriQyReF4y3/iR5sHJlXocKNKcN6/Gi/r9Hxsfuh2Hx3fouQCMSPP+Oba6MDgEvAfryToAxcmaoZByQMwgevB0OBy5xkatj3oTHmhN5Nbk3jNXxXfA6P0Oqxaf7lXVZk2+Ly+PWnbgXn0uhjzdaZo0cWtVJ660ajS0x9Q="
+
+addons:
+  apt:
+    packages:
+      - ghostscript
+
+r:
+  - oldrel
+  - release
+  - devel
+
+before_install: R -q -e 'install.packages("remotes"); remotes::install_github("pat-s/tic@rcmdcheck-build-args"); tic::prepare_all_stages()'
+install: R -q -e 'tic::install()'
+before_script: R -q -e 'tic::before_script()'
+script: R -q -e 'tic::script()'
+after_script: R -q -e 'tic::after_script()'
+before_deploy: R -q -e 'tic::before_deploy()'
+deploy:
+  provider: script
+  script: R -q -e 'tic::deploy()'
+  on:
+    branch: master
+    condition:
+      - $TRAVIS_PULL_REQUEST = false
+      - $TRAVIS_EVENT_TYPE != cron
+after_success: R -q -e 'tic::after_success()'

@@ -12,3 +12,5 @@
 ^docs$
 ^todo.md$
 ^attic$
+tic.R
+appveyor.yml
