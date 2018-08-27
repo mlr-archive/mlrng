@@ -1,10 +1,8 @@
 get_stage("install") %>%
   add_code_step(devtools::install_github("pat-s/rcmdcheck@build-args")) %>% # FIXME: If this is solved in r-lib/rcmdcheck
-  #add_code_step(devtools::install_github("mlr-org/phng")) %>%
-  #add_code_step(devtools::install_github("mllg/backports")) %>%
   add_step(step_install_cran("roxygen2")) %>%
-  add_code_step(devtools::install_dev_deps()) %>%
-  add_code_step(devtools::install_deps(upgrade = TRUE, dependencies = TRUE))
+  add_code_step(devtools::install_deps(upgrade = TRUE, dependencies = TRUE)) %>%
+  add_code_step(devtools::update_packages(TRUE))
 
 get_stage("script") %>%
   add_code_step(devtools::document()) %>%
