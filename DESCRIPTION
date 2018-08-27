@@ -1,19 +1,22 @@
-Package: mlrng
 Type: Package
+Package: mlrng
 Title: Machine Learning in R - Next Generation
 Version: 0.1
-Authors@R: c(
-        person("Bernd", "Bischl", NULL, "bernd_bischl@gmx.de", role = c("cre",
-        "aut")),
-    person("Michel", "Lang", NULL, "michellang@gmail.com", role = c("aut"))
-    )
+Authors@R: 
+    c(person(given = "Bernd",
+             family = "Bischl",
+             role = c("cre", "aut"),
+             email = "bernd_bischl@gmx.de"),
+      person(given = "Michel",
+             family = "Lang",
+             role = "aut",
+             email = "michellang@gmail.com"))
 Description: Machine Learning in R. Next Gen.
 License: GPL-2
-NeedsCompilation: no
 Depends:
-    R (>= 3.2.0),
     data.table,
-    phng
+    phng,
+    R (>= 3.2.0)
 Imports:
     backports (>= 1.1.1),
     BBmisc,
@@ -40,6 +43,15 @@ Suggests:
     rpart,
     testthat,
     withr
+VignetteBuilder: 
+    knitr
+Remotes: 
+    mllg/backports,
+    mlr-org/phng
+Encoding: UTF-8
+NeedsCompilation: no
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.0
 Collate: 
     'Backend.R'
     'BackendDBI.R'
@@ -89,7 +101,3 @@ Collate:
     'train.R'
     'tune.R'
     'zzz.R'
-VignetteBuilder: knitr
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.0.1
-Encoding: UTF-8
